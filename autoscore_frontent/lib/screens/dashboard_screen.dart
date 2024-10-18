@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/sidebar.dart';
+import '../widgets/dynamic_sidebar.dart';
 import '../widgets/top_bar.dart';
 import '../widgets/stat_cards.dart';
 import '../widgets/exam_chart.dart';
@@ -17,7 +17,7 @@ class DashboardScreen extends StatelessWidget {
     return Scaffold(
       body: Row(
         children: [
-          const Sidebar(),
+          DynamicSidebar(),
           Expanded(
             child: Column(
               children: [
@@ -50,7 +50,7 @@ class DashboardScreen extends StatelessWidget {
                               Expanded(
                                 child: Column(
                                   children: const [
-                                    TransactionWidget(),
+                                    // TransactionWidget(),
                                     SizedBox(height: 20),
                                     GradingWidget(),
                                     SizedBox(height: 20),

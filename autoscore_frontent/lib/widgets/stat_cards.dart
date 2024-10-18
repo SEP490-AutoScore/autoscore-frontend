@@ -10,7 +10,7 @@ class StatCards extends StatelessWidget {
         _buildStatCard('Exams', '8', '95%', Colors.green),
         _buildStatCard('Today Users', '2000', '8%', Colors.blue),
         _buildStatCard('Re-reviews', '1k', '2%', Colors.orange),
-        _buildStatCard('Transactions', '1000', '10%', Colors.red),
+        // _buildStatCard('Transactions', '1000', '10%', Colors.red),
       ],
     );
   }

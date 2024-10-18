@@ -1,4 +1,4 @@
-import 'package:autoscore_frontent/screens/dashboard_screen';
+import 'package:autoscore_frontent/screens/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'screens/login_screen.dart';
 

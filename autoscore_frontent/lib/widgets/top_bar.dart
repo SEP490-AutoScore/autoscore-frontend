@@ -25,9 +25,9 @@ class TopBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          CircleAvatar(
-            backgroundImage: AssetImage('assets/profile_image.png'),
-          ),
+          // CircleAvatar(
+          //   backgroundImage: AssetImage('assets/profile_image.png'),
+          // ),
           const SizedBox(width: 8),
           const Text('Aiden Max'),
           const Icon(Icons.arrow_drop_down),
