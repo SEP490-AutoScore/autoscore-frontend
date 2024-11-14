@@ -1,14 +1,18 @@
 import './App.css'
-import { Button } from "@/components/ui/button"
+import Header from './components/Header';
+import Footer from './components/Footer';
 
 function App() {
   return (
-    <>
-        <div>
-          <Button>Click me</Button>
-        </div>
-    </>
-  )
+    <div className="App">
+      <Header />
+      <main>
+        {/* Main content goes here */}
+        <h1>Welcome to the Application</h1>
+      </main>
+      <Footer />
+    </div>
+  );
 }
 
 export default App
