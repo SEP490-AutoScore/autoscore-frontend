@@ -1,0 +1,16 @@
+.footer {
+    width: 100%;                   /* Chiều rộng cả trang */
+    max-height: 100px;              /* Chiều cao tối đa 100px */
+    background-color: #ffa500;      /* Màu nền cam */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    padding: 1rem;
+    box-sizing: border-box;
+    position: fixed;                /* Cố định ở dưới cùng */
+    bottom: 0;                      /* Đặt ở vị trí dưới cùng của trang */
+    left: 0;                        /* Căn trái để chiếm toàn bộ chiều rộng */
+    z-index: 1000;                  /* Đảm bảo footer nằm trên các thành phần khác nếu cần */
+  }
