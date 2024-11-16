@@ -35,7 +35,7 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: PieChart,
       isActive: true,
       items: [],
@@ -91,13 +91,13 @@ const data = {
     },
     {
       title: "Scores",
-      url: "#",
+      url: "/scores",
       icon: BadgeCheck,
       items: [],
     },
     {
       title: "Setting",
-      url: "#",
+      url: "/setting",
       icon: Settings,
       items: [],
     },
