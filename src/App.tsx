@@ -1,14 +1,25 @@
 import "./App.css";
-import Page from "./app/dashboard/page";
-import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Dashboard from "./app/dashboard/page";
+import Login from "./app/login/page";
+import ProtectedRoute from "./route/ProtectedRoute";
 
 function App() {
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <Page />
-    </SidebarProvider>
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
+
 export default App;

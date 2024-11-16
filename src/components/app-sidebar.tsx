@@ -25,12 +25,12 @@ import { NavGrading } from "./nav-grading";
 // This is sample data.
 const data = {
   user: {
-    name: "Võ Thanh Tuyền",
-    email: "tuyenvtse160607@fpt.edu.vn",
-    role: "Admin",
-    position: "Developer",
-    avatar: "https://img.myloview.cz/nalepky/default-avatar-profile-in-trendy-style-for-social-media-user-icon-400-228654852.jpg",
-    campus: "Campus HCM"
+    name: localStorage.getItem("name") || "uknown",
+    email: localStorage.getItem("email") || "nN1xj@example.com",
+    role: localStorage.getItem("role") || "unknown",
+    position: localStorage.getItem("position") || "unknown",
+    avatar: localStorage.getItem("picture") || "https://img.myloview.cz/nalepky/default-avatar-profile-in-trendy-style-for-social-media-user-icon-400-228654852.jpg",
+    campus: localStorage.getItem("campus") || "uknown",
   },
   navMain: [
     {
