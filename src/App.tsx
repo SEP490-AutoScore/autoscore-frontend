@@ -1,6 +1,17 @@
 import './App.css'
 import Header from './components/Header';
 import Footer from './components/Footer';
+import { Routes, Route } from "react-router-dom";
+
+function RoutesWrapper() {
+  const routes = useRoutes(); // Now this is within RouteProvider
+
+  return (
+    <Routes>
+    </Routes>
+  );
+
+}
 
 function App() {
   return (
