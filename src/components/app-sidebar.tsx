@@ -1,173 +1,124 @@
-import * as React from "react"
+import * as React from "react";
 import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
   PieChart,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react"
+  UsersRound,
+  Shield,
+  BookOpen,
+  BadgeCheck,
+  Settings,
+} from "lucide-react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { NavMain } from "@/components/nav-main";
+// import { NavProjects } from "@/components/nav-projects";
+import { NavUser } from "@/components/nav-user";
+import { AutoScoreSwitcher } from "@/components/autoscore-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import { NavPermission } from "./nav-permission";
+import { NavGrading } from "./nav-grading";
 
 // This is sample data.
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "Võ Thanh Tuyền",
+    email: "tuyenvtse160607@fpt.edu.vn",
+    role: "Admin",
+    position: "Developer",
+    avatar: "https://img.myloview.cz/nalepky/default-avatar-profile-in-trendy-style-for-social-media-user-icon-400-228654852.jpg",
+    campus: "Campus HCM"
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
   navMain: [
     {
-      title: "Playground",
+      title: "Dashboard",
       url: "#",
-      icon: SquareTerminal,
+      icon: PieChart,
       isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
+      items: [],
     },
+  ],
+  navPermission: [
     {
-      title: "Models",
+      title: "Permissions",
       url: "#",
-      icon: Bot,
+      icon: Shield,
       items: [
         {
-          title: "Genesis",
+          title: "Roles",
           url: "#",
         },
         {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
+          title: "All Permissions",
           url: "#",
         },
       ],
     },
     {
-      title: "Documentation",
+      title: "Accounts",
+      url: "#",
+      icon: UsersRound,
+      items: [
+        {
+          title: "Add User",
+          url: "#",
+        },
+        {
+          title: "All Users",
+          url: "#",
+        },
+      ],
+    },
+  ],
+  navgrading: [
+    {
+      title: "Exams",
       url: "#",
       icon: BookOpen,
       items: [
         {
-          title: "Introduction",
+          title: "Add Exam",
           url: "#",
         },
         {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
+          title: "All Exams",
           url: "#",
         },
       ],
     },
     {
-      title: "Settings",
+      title: "Scores",
       url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
+      icon: BadgeCheck,
+      items: [],
+    },
+    {
+      title: "Setting",
+      url: "#",
+      icon: Settings,
+      items: [],
     },
   ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <AutoScoreSwitcher campus={data.user.campus.toString() || "FPT University"} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavMain items={data.navMain}/>
+        <NavPermission items={data.navPermission} />
+        <NavGrading items={data.navgrading} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }
