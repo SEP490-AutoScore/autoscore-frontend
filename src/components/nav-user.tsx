@@ -31,7 +31,11 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
-
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = "/login";
+  };
+  
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -85,7 +89,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
               <LogOut />
               Log out
             </DropdownMenuItem>
