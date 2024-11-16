@@ -32,18 +32,6 @@ async function getData(): Promise<Payment[]> {
       status: "success",
       email: "example@test.com",
     },
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: "829dh21a",
-      amount: 200,
-      status: "success",
-      email: "example@test.com",
-    },
 
     // ...
   ];
