@@ -1,0 +1,46 @@
+// import React, { useEffect, useState } from "react";
+// import { useParams } from "react-router-dom";
+
+// export default function ScoreDetailPage() {
+//   const { id } = useParams(); // Lấy id từ URL
+
+//   // Giả sử bạn có API để fetch dữ liệu chi tiết theo id
+//   const [details, setDetails] = React.useState(null);
+//   const [loading, setLoading] = useState<boolean>(true);
+
+//   React.useEffect(() => {
+//     const fetchDetails = async () => {
+//       // Thay thế bằng API thực tế của bạn
+//       const response = await fetch(`/api/scores/${id}`);
+//       const data = await response.json();
+//       setDetails(data);
+//     };
+
+//     fetchDetails();
+//   }, [id]);
+
+//   if (loading) {
+//     return <div>Loading...</div>;
+//   }
+
+//   return (
+//     <div className="p-4">
+//       <h1 className="text-2xl font-bold">Payment Details</h1>
+//       <p>
+//         <strong>ID:</strong> {details.id}
+//       </p>
+//       <p>
+//         <strong>Amount:</strong> {details.amount}
+//       </p>
+//       <p>
+//         <strong>Status:</strong> {details.status}
+//       </p>
+//       <p>
+//         <strong>Email:</strong> {details.email}
+//       </p>
+//       <Link to="/scores" className="text-blue-500 underline">
+//         Back to Scores
+//       </Link>
+//     </div>
+//   );
+// }

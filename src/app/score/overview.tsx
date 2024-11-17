@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Payment, columns } from "@/components/columns";
-import { DataTable } from "@/components/data-table";
+import { useEffect, useState } from "react";
+import { Subject, columns } from "../score/columns-overview";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { AppSidebar } from "@/components/app-sidebar";
@@ -16,21 +13,22 @@ import {
   SidebarInset,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { DataTableOverview } from "./data-table-overview";
 
-async function getData(): Promise<Payment[]> {
+async function getData(): Promise<Subject[]> {
   // Fetch data from your API here.
   return [
     {
-      id: "728ed52f",
-      amount: 100,
+      code: "PE_PRN231_FA24_006006",
+      semester: "FA24",
       status: "pending",
-      email: "m@example.com",
+      subject: "PRN231",
     },
     {
-      id: "829dh21a",
-      amount: 200,
+      code: "PE_PRN231_FA23_006005",
+      semester: "FA23",
       status: "success",
-      email: "example@test.com",
+      subject: "PRN231",
     },
 
     // ...
@@ -38,7 +36,7 @@ async function getData(): Promise<Payment[]> {
 }
 
 export default function ScorePage() {
-  const [data, setData] = useState<Payment[]>([]);
+  const [data, setData] = useState<Subject[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -66,18 +64,14 @@ export default function ScorePage() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">Scores</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>List scores</BreadcrumbPage>
+                  <BreadcrumbLink href="/scores-overview">Scores</BreadcrumbLink>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
         <div className="p-4 pt-0">
-          <DataTable columns={columns} data={data} />
+          <DataTableOverview columns={columns} data={data} />
         </div>
       </SidebarInset>
     </SidebarProvider>

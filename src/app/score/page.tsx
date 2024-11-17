@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Payment, columns } from "@/components/columns";
-import { DataTable } from "@/components/data-table";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -16,6 +15,7 @@ import {
   SidebarInset,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { DataTableOverview } from "./data-table-overview";
 
 async function getData(): Promise<Payment[]> {
   // Fetch data from your API here.
@@ -89,7 +89,7 @@ export default function ScorePage() {
           </div>
         </header>
         <div className="p-4 pt-0">
-          <DataTable columns={columns} data={data} />
+          <DataTableOverview columns={columns} data={data} />
         </div>
       </SidebarInset>
     </SidebarProvider>

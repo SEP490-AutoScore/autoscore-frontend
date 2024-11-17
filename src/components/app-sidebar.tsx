@@ -91,7 +91,7 @@ const data = {
     },
     {
       title: "Scores",
-      url: "/scores",
+      url: "/scores-overview",
       icon: BadgeCheck,
       items: [],
     },
