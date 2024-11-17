@@ -56,7 +56,6 @@ export function LoginForm() {
           window.location.href = "/dashboard";
         })
         .catch((error) => {
-          console.error("Error:", error.message);
 
           // Hiển thị toast dựa trên mã lỗi
           if (error.message.includes("401") || error.message.includes("404")) {
