@@ -3,8 +3,8 @@ import { SidebarInset } from "@/components/ui/sidebar";
 
 export default function Page() {
   const Header = useHeader({
-    breadcrumbLink: "/dashboard",
-    breadcrumbPage: "Dashboard",
+    breadcrumbLink: "/exams",
+    breadcrumbPage: "Exams",
   });
   return (
     <SidebarInset>
