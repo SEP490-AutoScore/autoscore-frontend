@@ -33,7 +33,7 @@ export function NavUser({
   const { isMobile } = useSidebar();
   const handleLogout = () => {
     localStorage.clear();
-    window.location.href = "/login";
+    window.location.href = "/";
   };
   
   return (

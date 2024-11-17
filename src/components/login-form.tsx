@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import Logo from "../assets/autoscore_logo.png";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
+import { useToastNotification } from "@/hooks/use-toast-notification";
 
 interface AuthResponse {
   email: string;
@@ -23,11 +24,10 @@ interface AuthResponse {
 
 export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const showToast = useToastNotification();
   const [searchParams] = useSearchParams();
   const email = searchParams.get("email");
   const picture = searchParams.get("picture");
-  console.log("Search Params:", Object.fromEntries(searchParams.entries()));
-  console.log("URL Params: Email =", email, "Picture =", picture);
   const handleLogin = () => {
     setIsLoading(true);
     window.location.href = `${BASE_URL}${API_ENDPOINTS.oauthGoogle}`;
@@ -35,8 +35,6 @@ export function LoginForm() {
 
   useEffect(() => {
     if (email && picture) {
-      console.log("Detected email and picture:", email, picture);
-
       // Lưu thông tin vào localStorage
       localStorage.setItem("email", email);
       localStorage.setItem("picture", picture);
@@ -44,28 +42,53 @@ export function LoginForm() {
       // Gọi API để hoàn tất xác thực
       fetch(`${BASE_URL}${API_ENDPOINTS.signInGoogle}?email=${email}`)
         .then(async (res) => {
-          console.log("API Response:", res.status); // Kiểm tra status của phản hồi
-          if (res.ok) {
-            const data: AuthResponse = await res.json();
-            console.log("Auth Data:", data); // Log dữ liệu từ API
-            // Lưu vào localStorage
-            Object.entries(data).forEach(([key, value]) =>
-              localStorage.setItem(key, value)
-            );
-
-            // Chuyển đến dashboard
-            window.location.href = "/dashboard";
-          } else {
-            throw new Error(`Failed to sign in: ${res.status}`);
+          if (!res.ok) {
+            // Nếu không thành công, ném lỗi
+            throw new Error(`HTTP Error: ${res.status}`);
           }
+          const data: AuthResponse = await res.json();
+          // Lưu vào localStorage
+          Object.entries(data).forEach(([key, value]) =>
+            localStorage.setItem(key, value)
+          );
+
+          // Chuyển đến dashboard
+          window.location.href = "/dashboard";
         })
         .catch((error) => {
-          console.error("Error during sign-in:", error); // Log lỗi
-          alert("An error occurred during authentication. Please try again.");
+          console.error("Error:", error.message);
+
+          // Hiển thị toast dựa trên mã lỗi
+          if (error.message.includes("401") || error.message.includes("404")) {
+            showToast({
+              title: "Authentication Failed.",
+              description: "You are not authorized to sign in.",
+              actionText: "Try Again",
+              variant: "destructive",
+            });
+          } else if (error.message.includes("400")) {
+            showToast({
+              title: "Bad Request.",
+              description: "There was a problem with your request.",
+              variant: "destructive",
+            });
+          } else if (error.message.includes("500")) {
+            showToast({
+              title: "Internal Server Error.",
+              description: "Something went wrong on the server.",
+              variant: "destructive",
+            });
+          } else {
+            showToast({
+              title: "Something went wrong.",
+              description: "There was a problem with your request.",
+              variant: "destructive",
+            });
+          }
           localStorage.clear();
         });
     }
-  }, [email, picture]);
+  }, [email, picture, showToast]);
 
   return (
     <Card className="mx-auto max-w-sm">

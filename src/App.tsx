@@ -1,24 +1,17 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Dashboard from "./app/dashboard/page";
-import Login from "./app/login/page";
-import ProtectedRoute from "./route/ProtectedRoute";
+import { BrowserRouter as Router } from "react-router-dom";
+import AppRoutes from "@/routes/routes";
+import { ToastProvider } from "@/components/ui/toast";
+import { Toaster } from "./components/ui/toaster";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </Router>
+    <ToastProvider>
+      <Router>
+        <AppRoutes />
+      </Router>
+      <Toaster />
+    </ToastProvider>
   );
 }
 
