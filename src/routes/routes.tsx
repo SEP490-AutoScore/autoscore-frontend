@@ -1,6 +1,8 @@
 import { Routes, Route } from "react-router-dom";
-import Dashboard from "@/app/dashboard/page";
 import Login from "@/app/login/page";
+import Dashboard from "@/app/dashboard/page";
+import Exams from "@/app/exams/page";
+import MainLayout from "@/layouts/layout-main";
 import ProtectedRoute from "./ProtectedRoute";
 import ScoresOverview from "@/app/score/overview";
 import ScoresPage from "@/app/score/page";
@@ -8,31 +10,21 @@ import ScoresPage from "@/app/score/page";
 const AppRoutes = () => {
   return (
     <Routes>
+      {/* Route không có sidebar */}
       <Route path="/" element={<Login />} />
+
+      {/* Routes có sidebar */}
       <Route
-        path="/dashboard"
+        path="/"
         element={
           <ProtectedRoute>
-            <Dashboard />
+            <MainLayout />
           </ProtectedRoute>
         }
-      />
-      <Route
-        path="/scores-overview"
-        element={
-          <ProtectedRoute>
-            <ScoresOverview />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/scores"
-        element={
-          <ProtectedRoute>
-            <ScoresPage />
-          </ProtectedRoute>
-        }
-      />
+      >
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="exams" element={<Exams />} />
+      </Route>
     </Routes>
   );
 };

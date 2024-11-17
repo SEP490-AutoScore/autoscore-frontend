@@ -1,7 +1,7 @@
 "use client";
 
 import { Bell, ChevronsUpDown, LogOut, UserCog } from "lucide-react";
-
+import { Link } from "react-router-dom";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -22,6 +22,8 @@ import { CommandShortcut } from "@/components/ui/command";
 
 export function NavUser({
   user,
+  selectedItem,
+  setSelectedItem,
 }: {
   user: {
     name: string;
@@ -29,13 +31,15 @@ export function NavUser({
     avatar: string;
     email: string;
   };
+  selectedItem: string | null;
+  setSelectedItem: React.Dispatch<React.SetStateAction<string | null>>;
 }) {
   const { isMobile } = useSidebar();
   const handleLogout = () => {
     localStorage.clear();
     window.location.href = "/";
   };
-  
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -74,19 +78,31 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem className="cursor-pointer">
-                <UserCog />
-                Profile
-              </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
-                <Bell />
-                Notifications
-                <CommandShortcut>
-                  <div className="flex aspect-square size-6 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-                    10
-                  </div>
-                </CommandShortcut>
-              </DropdownMenuItem>
+              <Link to="#@" className="sidebar-link" onClick={() => setSelectedItem("#@")}>
+                <DropdownMenuItem className={`sidebar-link cursor-pointer ${
+                      selectedItem === "#@"
+                        ? "bg-primary text-primary-foreground"
+                        : ""
+                    }`}>
+                  <UserCog />
+                  Profile
+                </DropdownMenuItem>
+              </Link>
+              <Link to="##@" className="sidebar-link" onClick={() => setSelectedItem("##@")}>
+                <DropdownMenuItem className={`sidebar-link cursor-pointer ${
+                      selectedItem === "##@"
+                        ? "bg-primary text-primary-foreground"
+                        : ""
+                    }`}>
+                  <Bell />
+                  Notifications
+                  <CommandShortcut>
+                    <div className="flex aspect-square size-6 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
+                      10
+                    </div>
+                  </CommandShortcut>
+                </DropdownMenuItem>
+              </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>

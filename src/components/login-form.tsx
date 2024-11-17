@@ -20,6 +20,7 @@ interface AuthResponse {
   campus: string;
   jwtToken: string;
   refreshToken: string;
+  permissions: string[];
 }
 
 export function LoginForm() {
