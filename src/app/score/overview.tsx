@@ -1,19 +1,10 @@
 import { useEffect, useState } from "react";
 import { Subject, columns } from "../score/columns-overview";
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
-import { AppSidebar } from "@/components/app-sidebar";
-import {
-  SidebarProvider,
   SidebarInset,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { DataTableOverview } from "./data-table-overview";
+import { useHeader } from "@/hooks/use-header";
 
 async function getData(): Promise<Subject[]> {
   // Fetch data from your API here.
@@ -35,7 +26,11 @@ async function getData(): Promise<Subject[]> {
   ];
 }
 
-export default function ScorePage() {
+export default function ScoreOverviewPage() {
+  const Header = useHeader({
+    breadcrumbLink: "/scoresOverview",
+    breadcrumbPage: "Score Overview",
+  });
   const [data, setData] = useState<Subject[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -54,26 +49,11 @@ export default function ScorePage() {
   }
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="/scores-overview">Scores</BreadcrumbLink>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </header>
+        {Header}
         <div className="p-4 pt-0">
           <DataTableOverview columns={columns} data={data} />
         </div>
       </SidebarInset>
-    </SidebarProvider>
   );
 }

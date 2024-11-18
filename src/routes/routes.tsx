@@ -24,6 +24,8 @@ const AppRoutes = () => {
       >
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="exams" element={<Exams />} />
+        <Route path="scores" element={<ScoresPage />} />
+        <Route path="scoresOverview" element={<ScoresOverview />}/>
       </Route>
     </Routes>
   );
