@@ -3,6 +3,7 @@ import { DataTable } from "@/app/exams/data-table";
 import { useState, useEffect } from "react";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { DataTableSkeleton } from "@/app/exams/data-table-skeleton";
+import { NoResultPage, ErrorPage } from '@/app/error/page';
 
 interface Exams {
   examId: number;
@@ -79,11 +80,15 @@ export default function Page() {
   }, []);
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <ErrorPage />
   }
 
   if (!data) {
     return <DataTableSkeleton />;
+  }
+
+  if (data.length === 0) {
+    return <NoResultPage />;
   }
 
   return (
