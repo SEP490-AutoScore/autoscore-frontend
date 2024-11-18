@@ -30,6 +30,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { Settings2 } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -65,20 +66,29 @@ export function DataTableOverview<TData, TValue>({
   });
 
   return (
-    <div>
+    <div className="w-full border border-gray-200 p-8 rounded-lg">
+      <div className="flex items-center justify-between space-y-2">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Scores</h2>
+          <p className="text-muted-foreground">
+            Here's a list of exam papers that has been graded!
+          </p>
+        </div>
+      </div>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter exam code..."
-          value={(table.getColumn("code")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter exam paper code..."
+          value={(table.getColumn("examPaperCode")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("code")?.setFilterValue(event.target.value)
+            table.getColumn("examPaperCode")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
-              Columns
+              <Settings2 className="h-4 w-4" />
+              View
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -152,7 +162,7 @@ export function DataTableOverview<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="flex items-center justify-end space-x-2 pt-4">
         <Button
           variant="outline"
           size="sm"
