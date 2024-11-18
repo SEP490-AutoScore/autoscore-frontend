@@ -14,6 +14,8 @@ interface Subject {
     subjectId: number
 }
 
+export type ExamTypeEnum = "ASSIGNMENT" | "EXAM";
+
 interface ExamInfoData {
     examId: number;
     examCode: string;
@@ -22,6 +24,8 @@ interface ExamInfoData {
     publishAt: string;
     semester: Semester;
     subject: Subject;
+    type: string;
+    status: boolean;
 }
 
 interface ExamInfoProps {
@@ -40,8 +44,22 @@ const ExamInfo: React.FC<ExamInfoProps> = ({ examId }) => {
                 setLoading(true);
                 setError(null);
 
+                // Lấy token từ local storage
+                const token = localStorage.getItem("jwtToken");
+                if (!token) {
+                    throw new Error("JWT Token không tồn tại. Vui lòng đăng nhập.");
+                }
+
                 // Thay thế đường dẫn bên dưới bằng endpoint thực tế của bạn
-                const response = await fetch(`${BASE_URL}${API_ENDPOINTS.getExamInfo}/${examId}}`);
+                const response = await fetch(`${BASE_URL}${API_ENDPOINTS.getExamInfo}/${examId}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(ExamInfo),
+                });
+
                 if (!response.ok) {
                     throw new Error("Failed to fetch exam info");
                 }
@@ -97,16 +115,26 @@ const ExamInfo: React.FC<ExamInfoProps> = ({ examId }) => {
     }
 
     return (
-        <div style={{ padding: "16px", border: "1px solid #ddd", borderRadius: "8px", marginTop: "16px" }}>
-            <h2>Exam Information</h2>
-            <p><strong>Exam ID:</strong> {examInfo.examId}</p>
-            <p><strong>Exam Code:</strong> {examInfo.examCode}</p>
-            <p><strong>Exam At:</strong> {new Date(examInfo.examAt).toLocaleString()}</p>
-            <p><strong>Grading At:</strong> {new Date(examInfo.gradingAt).toLocaleString()}</p>
-            <p><strong>Publish At:</strong> {new Date(examInfo.publishAt).toLocaleString()}</p>
-            <p><strong>Semester:</strong> {examInfo.semester.semesterName}</p>
-            <p><strong>Subject:</strong> {examInfo.subject.subjectName}</p>
+        <div style={{ margin: "15px 2%", padding: "16px", border: "1px solid #ddd", borderRadius: "8px", marginTop: "16px", minHeight: "100px"}}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: "16px" }}>
+                {/* Cột bên trái */}
+                <div style={{ flex: 1 }}>
+                    <p><strong>Code:</strong> {examInfo.examCode}</p>
+                    <p><strong>Semester:</strong> {examInfo.semester.semesterName}</p>
+                    <p><strong>Type:</strong> {examInfo.type}</p>
+                    <p><strong>Subject:</strong> {examInfo.subject.subjectName}</p>
+                </div>
+
+                {/* Cột bên phải */}
+                <div style={{ flex: 1 }}>
+                    <p><strong>Exam At:</strong> {new Date(examInfo.examAt).toLocaleString()}</p>
+                    <p><strong>Grading At:</strong> {new Date(examInfo.gradingAt).toLocaleString()}</p>
+                    <p><strong>Publish At:</strong> {new Date(examInfo.publishAt).toLocaleString()}</p>
+                    <p><strong>Status:</strong> {examInfo.status ? "Active" : "Inactive"}</p>
+                </div>
+            </div>
         </div>
+
     );
 };
 

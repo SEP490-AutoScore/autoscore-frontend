@@ -1,97 +1,70 @@
 import { useEffect, useState } from "react";
-import { Payment, columns } from "@/components/columns";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
-import { AppSidebar } from "@/components/app-sidebar";
-import {
-  SidebarProvider,
-  SidebarInset,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
-import { DataTableOverview } from "./data-table-overview";
 
-async function getData(): Promise<Payment[]> {
-  // Fetch data from your API here.
-  return [
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: "829dh21a",
-      amount: 200,
-      status: "success",
-      email: "example@test.com",
-    },
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: "829dh21a",
-      amount: 200,
-      status: "success",
-      email: "example@test.com",
-    },
+import { Score, columns } from "@/app/score/columns";
+import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
+import { SidebarInset } from "@/components/ui/sidebar";
+import { DataTable } from "@/app/score/data-table";
+import { useHeader } from "@/hooks/use-header";
 
-    // ...
-  ];
+async function getData(exampaperid: number) {
+  try {
+    const response = await fetch(
+      `${BASE_URL}${API_ENDPOINTS.score}?exampaperid=${exampaperid}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        console.error("Failed to fetch scores:", localStorage.getItem("jwtToken"));
+        return [];
+      }
+      throw new Error("Failed to fetch scores");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
 }
 
 export default function ScorePage() {
-  const [data, setData] = useState<Payment[]>([]);
+  const Header = useHeader({
+    breadcrumbLink: "/scores",
+    breadcrumbPage: "Score",
+  });
+  const [data, setData] = useState<Score[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [exampaperid, ] = useState<number>(1);
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getData();
+      setLoading(true);
+      const result = await getData(exampaperid);
       setData(result);
       setLoading(false);
     };
 
     fetchData();
-  }, []);
+  }, [exampaperid]);
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">Scores</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>List scores</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </header>
-        <div className="p-4 pt-0">
-          <DataTableOverview columns={columns} data={data} />
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+    <SidebarInset>
+      {Header}
+      <div className="p-4 pt-0">
+        <DataTable columns={columns} data={data} />
+      </div>
+    </SidebarInset>
   );
 }
