@@ -3,6 +3,8 @@ import Login from "@/app/login/page";
 import Dashboard from "@/app/dashboard/page";
 import Exams from "@/app/exams/page";
 import MainLayout from "@/layouts/layout-main";
+import ScoresPage from "@/app/score/page";
+import ScoresOverview from "@/app/score/overview";
 import ProtectedRoute from "./ProtectedRoute";
 import { NotFoundPage } from "@/app/error/page";
 

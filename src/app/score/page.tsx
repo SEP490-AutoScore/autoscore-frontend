@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
-import { Score, columns } from "@/components/columns";
+import { Score, columns } from "@/app/score/columns";
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 import { SidebarInset } from "@/components/ui/sidebar";
-import { DataTable } from "@/components/data-table";
+import { DataTable } from "@/app/score/data-table";
 import { useHeader } from "@/hooks/use-header";
 
 async function getData(exampaperid: number) {
