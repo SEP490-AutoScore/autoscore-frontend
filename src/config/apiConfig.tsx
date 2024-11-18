@@ -7,7 +7,7 @@ export const API_ENDPOINTS = {
   signInGoogle: "/api/auth/signingoogle",      // API lấy thông tin JWT
   refreshToken: "/api/auth/refresh-token",     // API refresh token
   getAllExams: "/api/exam/list",              // API lấy danh sách exams
-
+  score: "/api/score",                         // API lấy scores byExamPaperId
   // Exam Database 
   importDatabase: "/api/database/import",
   changeDatabase: "/api/database/update",
@@ -23,5 +23,5 @@ export const API_ENDPOINTS = {
   importPostman: "/api/exam-paper/import-postman-collections",
   exportPostman: "/api/exam-paper/export-postman/",
   generatePostman: "/api/postman-grading/generate/",
-  mergePostman: "/api/postman-grading/merge/"
+  mergePostman: "/api/postman-grading/merge/",
 };
