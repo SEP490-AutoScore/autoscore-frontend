@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Payment, columns } from "@/components/columns";
+import { Payment, columns } from "@/app/score/columns";
 import {
   Breadcrumb,
   BreadcrumbItem,

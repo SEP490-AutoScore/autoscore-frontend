@@ -4,8 +4,7 @@ import Dashboard from "@/app/dashboard/page";
 import Exams from "@/app/exams/page";
 import MainLayout from "@/layouts/layout-main";
 import ProtectedRoute from "./ProtectedRoute";
-import ScoresOverview from "@/app/score/overview";
-import ScoresPage from "@/app/score/page";
+import { NotFoundPage } from "@/app/error/page";
 
 const AppRoutes = () => {
   return (
@@ -25,6 +24,7 @@ const AppRoutes = () => {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="exams" element={<Exams />} />
       </Route>
+        <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 };

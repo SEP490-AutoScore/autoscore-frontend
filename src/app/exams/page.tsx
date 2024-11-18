@@ -1,6 +1,6 @@
 import { useHeader } from "@/hooks/use-header";
 import { SidebarInset } from "@/components/ui/sidebar";
-import Exams from "@/components/app-exam-overview";
+import Exams from "@/app/exams/app-exam-overview";
 
 export default function Page() {
   const Header = useHeader({
