@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import { Score, columns } from "@/components/columns";
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 import { SidebarInset } from "@/components/ui/sidebar";
