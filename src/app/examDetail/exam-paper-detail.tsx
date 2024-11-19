@@ -29,6 +29,8 @@ interface ExamPaperDetailProps {
     examPaperId: number;
 }
 
+
+
 const ExamPaperDetail: React.FC<ExamPaperDetailProps> = ({ examPaperId }) => {
     const [questions, setQuestions] = useState<Question[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -36,6 +38,9 @@ const ExamPaperDetail: React.FC<ExamPaperDetailProps> = ({ examPaperId }) => {
 
     // State lưu trữ các câu hỏi đang mở, mảng này chứa các examQuestionId
     const [openedQuestions, setOpenedQuestions] = useState<number[]>([]);
+
+    const [gherkinData, setGherkinData] = useState<string | null>(null);
+    const [currentGherkinId, setCurrentGherkinId] = useState<number | null>(null);
 
     // Hàm xử lý khi người dùng click vào một câu hỏi
     const toggleQuestionDetails = (questionId: number) => {
@@ -88,6 +93,63 @@ const ExamPaperDetail: React.FC<ExamPaperDetailProps> = ({ examPaperId }) => {
         fetchQuestions();
     }, [examPaperId]); // Mỗi khi examPaperId thay đổi, gọi lại API
 
+    // Hàm gọi API để lấy Gherkin
+    const fetchGherkinData = async (examQuestionId: number) => {
+        try {
+            const token = localStorage.getItem("jwtToken");
+            if (!token) throw new Error("JWT Token không tồn tại. Vui lòng đăng nhập.");
+
+            const response = await fetch(
+                `http://localhost:8080/api/gherkin_scenario/questionId?examQuestionId=${examQuestionId}`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            if (!response.ok) throw new Error("Failed to fetch Gherkin data");
+
+            const data = await response.json();
+            setGherkinData(data.map((item: any) => item.gherkinData).join("\n\n"));
+            setCurrentGherkinId(examQuestionId);
+        } catch (err: any) {
+            console.error(err.message || "An unknown error occurred.");
+            setGherkinData("Failed to fetch Gherkin data.");
+        }
+    };
+
+    const generateGherkin = async (examQuestionId: number) => {
+        try {
+            const token = localStorage.getItem("jwtToken");
+            if (!token) throw new Error("JWT Token không tồn tại. Vui lòng đăng nhập.");
+    
+            const response = await fetch(
+                `http://localhost:8080/api/gherkin_scenario/generate_gherkin_format`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ examQuestionIds: [examQuestionId] }),
+                }
+            );
+    
+            if (!response.ok) throw new Error("Failed to generate Gherkin data");
+    
+            const result = await response.json();
+            alert("Gherkin data generated successfully!");
+        } catch (err: any) {
+            console.error(err.message || "An unknown error occurred.");
+            alert("Gherkin data generated successfully!");
+        }
+    };
+
+    
+
     if (loading) {
         return <Ske />;
     }
@@ -134,6 +196,38 @@ const ExamPaperDetail: React.FC<ExamPaperDetailProps> = ({ examPaperId }) => {
                                                         Question {question.examQuestionId}: {question.questionContent}
                                                     </h4>
 
+                                                    <button
+                                                        style={{
+                                                            padding: "8px 12px",
+                                                            backgroundColor: "#007bff",
+                                                            color: "#fff",
+                                                            border: "none",
+                                                            borderRadius: "4px",
+                                                            cursor: "pointer",
+                                                            marginBottom: "10px",
+                                                        }}
+                                                        onClick={() => fetchGherkinData(question.examQuestionId)}
+                                                    >
+                                                        View Gherkin
+                                                    </button>
+
+                                                    <button
+    style={{
+        padding: "8px 12px",
+        backgroundColor: "#28a745",
+        color: "#fff",
+        border: "none",
+        borderRadius: "4px",
+        cursor: "pointer",
+        marginTop: "10px", // Khoảng cách giữa các nút
+    }}
+    onClick={() => generateGherkin(question.examQuestionId)}
+>
+    Generate Gherkin
+</button>
+
+
+
                                                     {/* Hiển thị thông tin chi tiết nếu câu hỏi đang được mở */}
                                                     {openedQuestions.includes(question.examQuestionId) && (
                                                         <div>
@@ -166,8 +260,58 @@ const ExamPaperDetail: React.FC<ExamPaperDetailProps> = ({ examPaperId }) => {
                                 </div>
                             </ResizablePanel>
                             <ResizableHandle />
-                            <ResizablePanel>Two</ResizablePanel>
+
+
+
+
+
+
+                            <ResizablePanel>
+    <div className="flex h-full items-center justify-center p-6">
+        {gherkinData && currentGherkinId ? (
+            <ResizablePanelGroup direction="vertical" style={{ height: "100%" }}>
+                <ResizablePanel defaultSize={300} minSize={100} maxSize={600}>
+                    <div
+                        style={{
+                            backgroundColor: "#fff",
+                            padding: "10px",
+                            border: "1px solid #ccc",
+                            borderRadius: "5px",
+                            boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+                            overflow: "auto", // Đảm bảo không bị tràn
+                            maxHeight: "100%", // Điều chỉnh nếu nội dung vượt quá kích thước
+                        }}
+                    >
+                        <pre
+                            style={{
+                                whiteSpace: "pre-wrap",
+                                wordWrap: "break-word",
+                                margin: 0,
+                            }}
+                        >
+                            {gherkinData}
+                        </pre>
+                    </div>
+                </ResizablePanel>
+            </ResizablePanelGroup>
+        ) : (
+            <span className="font-semibold">
+                Select a question to view its Gherkin
+            </span>
+        )}
+    </div>
+</ResizablePanel>
+
+
+
+
+
+
+
+
                         </ResizablePanelGroup>
+
+
                     </div>
                 </ResizablePanel>
                 <ResizableHandle />
