@@ -109,15 +109,14 @@ const Detail: React.FC<ExamPaperProps> = ({ examId }) => {
           </ul>
         </div>
       </ResizablePanel>
-      <ResizableHandle/>
+      <ResizableHandle />
       <ResizablePanel defaultSize={75}>
-        <div className="">
-          {selectedItem ? (
-            <ExamPaperDetail examPaperId={selectedItem.examPaperId} />
-          ) : (
-            <p>Please select an item from the list.</p>
-          )}
-        </div></ResizablePanel>
+        {selectedItem ? (
+          <ExamPaperDetail examPaperId={selectedItem.examPaperId} />
+        ) : (
+          <p>Please select an item from the list.</p>
+        )}
+      </ResizablePanel>
     </ResizablePanelGroup>
   );
 };

@@ -103,19 +103,14 @@ const ExamPaperDetail: React.FC<ExamPaperDetailProps> = ({ examPaperId }) => {
                 className="min-h-[200px] rounded-lg border md:min-w-[450px]"
             >
                 <ResizablePanel>
-                    <div className="flex h-[400px] items-center justify-center p-6 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-xl shadow-xl">
-                        <ResizablePanelGroup direction="horizontal" className="w-full max-w-4xl">
-                            <ResizablePanel className="p-4 bg-white border rounded-lg shadow-md flex items-center justify-center text-lg text-gray-700 hover:bg-gray-50 transition-all">
-                                One
-                            </ResizablePanel>
-                            <ResizableHandle className="w-1 bg-gray-300 rounded-md cursor-col-resize" />
-                            <ResizablePanel className="p-4 bg-white border rounded-lg shadow-md flex items-center justify-center text-lg text-gray-700 hover:bg-gray-50 transition-all">
-                                Two
-                            </ResizablePanel>
+                    <div className="flex h-full items-center justify-center p-6">
+                        <ResizablePanelGroup direction="horizontal">
+                            <ResizablePanel>One</ResizablePanel>
+                            <ResizableHandle />
+                            <ResizablePanel>Two</ResizablePanel>
                         </ResizablePanelGroup>
                     </div>
                 </ResizablePanel>
-
                 <ResizableHandle />
                 <ResizablePanel>
                     <div className="flex h-full items-center justify-center p-6">
@@ -124,10 +119,9 @@ const ExamPaperDetail: React.FC<ExamPaperDetailProps> = ({ examPaperId }) => {
                 </ResizablePanel>
                 <ResizableHandle />
                 <ResizablePanel>
-                    <div className="flex h-full items-center justify-center p-6 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg shadow-lg">
-                        <span className="text-white font-semibold text-xl">Content</span>
+                    <div className="flex h-full items-center justify-center p-6">
+                        <span className="font-semibold">Content</span>
                     </div>
-
                 </ResizablePanel>
             </ResizablePanelGroup>
         </>

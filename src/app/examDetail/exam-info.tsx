@@ -116,7 +116,7 @@ const ExamInfo: React.FC<ExamInfoProps> = ({ examId }) => {
     }
 
     return (
-        <div style={{ margin: "15px 4%", padding: "16px", border: "1px solid #ddd", borderRadius: "8px", marginTop: "16px", minHeight: "100px"}}>
+        <div className="w-full h-[150px] min-h-[100px] mx-[3%] my-[20px] p-4 border border-gray-300 rounded-lg">
             <div style={{ display: "flex", justifyContent: "space-between", gap: "16px" }}>
                 {/* Cột bên trái */}
                 <div style={{ flex: 1 }}>

@@ -36,7 +36,7 @@ export default function Page() {
         {Header}
         {/* Truyền ID kỳ thi để ExamInfo tự lấy thông tin */}
         <ExamInfo examId={Number(id)} />
-        <div style={{ margin: "15px 4%", padding: "16px", border: "1px solid #ddd", borderRadius: "8px", marginTop: "16px", minHeight: "100px" }}>
+        <div className="w-full h-screen mx-[3%] my-[20px] p-4 border border-gray-300 rounded-lg min-h-[100px]">
           <Detail examId={Number(id)} />
         </div>
       </SidebarInset>
