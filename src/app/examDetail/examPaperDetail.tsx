@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import Ske from "./skeleton-page"
+import { ErrorPage } from '@/app/error/page';
 
 // Định nghĩa kiểu dữ liệu cho câu hỏi
 interface Question {
@@ -81,11 +83,11 @@ const ExamPaperDetail: React.FC<ExamPaperDetailProps> = ({ examPaperId }) => {
     }, [examPaperId]); // Mỗi khi examPaperId thay đổi, gọi lại API
 
     if (loading) {
-        return <div>Loading questions...</div>;
+        return <Ske/>;
     }
 
     if (error) {
-        return <div>Error: {error}</div>;
+        return <ErrorPage/>;
     }
 
     return (
@@ -108,68 +110,59 @@ const ExamPaperDetail: React.FC<ExamPaperDetailProps> = ({ examPaperId }) => {
                 </h2>
                 {questions.length > 0 ? (
                     <div>
-                        {questions.length > 0 ? (
-                            <div>
-                                {questions.length > 0 ? (
-                                    <div>
-                                        {questions.map((question) => (
-                                            <div
-                                                key={question.examQuestionId}
-                                                style={{
-                                                    marginBottom: "20px",
-                                                    border: "1px solid #ddd",
-                                                    padding: "16px",
-                                                    borderRadius: "8px",
-                                                    backgroundColor: "#f9f9f9",
-                                                    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-                                                }}
-                                            >
-                                                {/* Tiêu đề câu hỏi (người dùng có thể nhấp vào để xem chi tiết) */}
-                                                <h4
-                                                    style={{
-                                                        color: "#333",
-                                                        marginBottom: "10px",
-                                                        fontSize: "18px",
-                                                        cursor: "pointer",
-                                                    }}
-                                                    onClick={() => toggleQuestionDetails(question.examQuestionId)}
-                                                >
-                                                    Question {question.examQuestionId}: {question.questionContent}
-                                                </h4>
+                        {questions.map((question) => (
+                            <div
+                                key={question.examQuestionId}
+                                style={{
+                                    marginBottom: "20px",
+                                    border: "1px solid #ddd",
+                                    padding: "16px",
+                                    borderRadius: "8px",
+                                    backgroundColor: "#f9f9f9",
+                                    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+                                }}
+                            >
+                                {/* Tiêu đề câu hỏi (người dùng có thể nhấp vào để xem chi tiết) */}
+                                <h4
+                                    style={{
+                                        color: "#333",
+                                        marginBottom: "10px",
+                                        fontSize: "18px",
+                                        cursor: "pointer",
+                                    }}
+                                    onClick={() => toggleQuestionDetails(question.examQuestionId)}
+                                >
+                                    Question {question.examQuestionId}: {question.questionContent}
+                                </h4>
 
-                                                {/* Hiển thị thông tin chi tiết nếu câu hỏi đang được mở */}
-                                                {openedQuestions.includes(question.examQuestionId) && (
-                                                    <div>
-                                                        <div style={{ display: "flex", flexWrap: "wrap" }}>
-                                                            <p style={{ marginRight: "20px", fontWeight: "bold" }}>
-                                                                <strong>Score:</strong> {question.examQuestionScore}
-                                                            </p>
-                                                            <p style={{ marginRight: "20px", fontWeight: "bold" }}>
-                                                                <strong>Endpoint:</strong> {question.endPoint}
-                                                            </p>
-                                                            <p style={{ marginRight: "20px", fontWeight: "bold" }}>
-                                                                <strong>HTTP Method:</strong> {question.httpMethod}
-                                                            </p>
-                                                        </div>
-                                                        <p><strong>Description:</strong> {question.description}</p>
-                                                        <div style={{ backgroundColor: "#f1f1f1", padding: "10px", borderRadius: "5px", marginBottom: "10px" }}>
-                                                            <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}><strong>Payload:</strong> {question.payload}</pre>
-                                                            <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}><strong>Success Response:</strong> {question.sucessResponse}</pre>
-                                                            <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}><strong>Error Response:</strong> {question.errorResponse}</pre>
-                                                        </div>
-                                                        <p><strong>Validation:</strong> {question.validation}</p>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ))}
+                                {/* Hiển thị thông tin chi tiết nếu câu hỏi đang được mở */}
+                                {openedQuestions.includes(question.examQuestionId) && (
+                                    <div>
+                                        <div style={{ display: "flex", flexWrap: "wrap" }}>
+                                            <p style={{ marginRight: "20px", fontWeight: "bold" }}>
+                                                <strong>Score:</strong> {question.examQuestionScore}
+                                            </p>
+                                            <p style={{ marginRight: "20px", fontWeight: "bold" }}>
+                                                <strong>Endpoint:</strong> {question.endPoint}
+                                            </p>
+                                            <p style={{ marginRight: "20px", fontWeight: "bold" }}>
+                                                <strong>HTTP Method:</strong> {question.httpMethod}
+                                            </p>
+                                        </div>
+                                        <p><strong>Description:</strong> {question.description}</p>
+                                        <div style={{ backgroundColor: "#f1f1f1", padding: "10px", borderRadius: "5px", marginBottom: "10px" }}>
+                                            <strong>Payload:</strong>
+                                            <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word", marginLeft: "30px" }}> {question.payload}</pre>
+                                            <strong>Success Response:</strong>
+                                            <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word", marginLeft: "30px"  }}> {question.sucessResponse}</pre>
+                                            <strong>Error Response:</strong>
+                                            <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word", marginLeft: "30px"  }}> {question.errorResponse}</pre>
+                                        </div>
+                                        <p><strong>Validation:</strong> {question.validation || "N/A"}</p>
                                     </div>
-                                ) : (
-                                    <p>No questions found for this exam paper.</p>
                                 )}
                             </div>
-                        ) : (
-                            <p>No questions found for this exam paper.</p>
-                        )}
+                        ))}
                     </div>
                 ) : (
                     <p>No questions found for this exam paper.</p>

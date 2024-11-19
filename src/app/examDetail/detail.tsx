@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import ExamPaperDetail from "./ExamPaperDetail";
+import ExamPaperDetail from "./examPaperDetail";
+import Ske from "./skeleton-page"
+import { ErrorPage } from '@/app/error/page';
 
 interface ExamPaper {
   examPaperId: number;
@@ -62,11 +64,11 @@ const Detail: React.FC<ExamPaperProps> = ({ examId }) => {
   }, [examId]);
 
   if (loading) {
-    return <div>Loading exam papers...</div>;
+    return <Ske/>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <ErrorPage/>;
   }
 
   if (examPapers.length === 0) {
@@ -82,7 +84,7 @@ const Detail: React.FC<ExamPaperProps> = ({ examId }) => {
     <div
       style={{
         display: "flex",
-        margin: "10px 2%",
+        margin: "10px 4%",
         padding: "16px",
         border: "1px solid #ddd",
         borderRadius: "8px",
