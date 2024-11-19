@@ -1,8 +1,9 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Link } from "lucide-react";
 import { MoreHorizontal } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 // import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import {
@@ -103,7 +104,7 @@ export const columns: ColumnDef<Exams>[] = [
     id: "actions",
     cell: ({ row }) => {
       const exam = row.original;
-
+      const navigate = useNavigate();
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -120,7 +121,11 @@ export const columns: ColumnDef<Exams>[] = [
               Copy Exam ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View Exam Details</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => navigate("/exams/detail", { state: { examId: exam.examId } })}
+            >
+              View Exam Details
+            </DropdownMenuItem>
             <DropdownMenuItem>Delete Exam</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

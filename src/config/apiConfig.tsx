@@ -9,6 +9,13 @@ export const API_ENDPOINTS = {
   getAllExams: "/api/exam/list",              // API lấy danh sách exams
   vertification: "/api/auth/verify",          // API kiểm tra token
 
+
+  //Exam
+  getExamInfo: "/api/exam",    //get exam info
+  getAllExams: "/api/exam/list",              // API lấy danh sách exams
+  scoreOverview: "/api/score/getAll",          // API lấy danh sách bài thi đã có điểm
+  score: "/api/score",                         // API lấy scores byExamPaperId
+  
   // Exam Database 
   importDatabase: "/api/database/import",
   changeDatabase: "/api/database/update",
@@ -24,5 +31,5 @@ export const API_ENDPOINTS = {
   importPostman: "/api/exam-paper/import-postman-collections",
   exportPostman: "/api/exam-paper/export-postman/",
   generatePostman: "/api/postman-grading/generate/",
-  mergePostman: "/api/postman-grading/merge/"
+  mergePostman: "/api/postman-grading/merge/",
 };

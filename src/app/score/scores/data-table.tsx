@@ -68,15 +68,19 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div>
-      <div className="flex-1 text-sm text-muted-foreground">
-        {table.getFilteredSelectedRowModel().rows.length} of{" "}
-        {table.getFilteredRowModel().rows.length} row(s) selected.
+    <div className="w-full border border-gray-200 p-8 rounded-lg">
+      <div className="flex items-center justify-between space-y-2">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Scores</h2>
+          <p className="text-muted-foreground">
+            Here's the list of students who took this exam!
+          </p>
+        </div>
       </div>
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("studentEmail")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("email")?.setFilterValue(event.target.value)
           }
@@ -159,7 +163,12 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      
+      <div className="flex items-center justify-end space-x-2 pt-4 py-0">
+      <div className="flex-1 text-sm text-muted-foreground">
+        {table.getFilteredSelectedRowModel().rows.length} of{" "}
+        {table.getFilteredRowModel().rows.length} row(s) selected.
+      </div>
         <Button
           variant="outline"
           size="sm"
