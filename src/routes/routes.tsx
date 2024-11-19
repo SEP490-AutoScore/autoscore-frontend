@@ -14,7 +14,6 @@ import { AuthProvider } from "@/context/AuthProvider";
 
 const AppRoutes = () => {
   return (
-
     <AuthProvider>
       <Routes>
         <Route path="/" element={<Login />} />
@@ -30,7 +29,7 @@ const AppRoutes = () => {
           <Route path="exams" element={<Exams />} />
           <Route path="exams/detail" element={<ExamDetail />} />
           <Route path="scores" element={<ScoresPage />} />
-          <Route path="scores-overview" element={<ScoresOverviewPage />}/>
+          <Route path="scores-overview" element={<ScoresOverviewPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

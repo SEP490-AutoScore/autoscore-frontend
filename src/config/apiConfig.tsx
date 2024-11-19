@@ -12,7 +12,6 @@ export const API_ENDPOINTS = {
 
   //Exam
   getExamInfo: "/api/exam",    //get exam info
-  getAllExams: "/api/exam/list",              // API lấy danh sách exams
   scoreOverview: "/api/score/getAll",          // API lấy danh sách bài thi đã có điểm
   score: "/api/score",                         // API lấy scores byExamPaperId
   
