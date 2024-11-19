@@ -107,7 +107,7 @@ const data = {
     },
     {
       title: "Scores",
-      url: "/scores",
+      url: "/scores-overview",
       allowedRoles: ["ADMIN"],
       icon: BadgeCheck,
       permission: "VIEW_SCORE",

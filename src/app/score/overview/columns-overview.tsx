@@ -12,36 +12,37 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Link } from "react-router-dom";
 
 // This type is used to define the shape of our data.
-export type Subject = {
-  code: string;
-  semester: string; // Adjusted to string to match FA24, SU24, etc.
-  status: "pending" | "processing" | "success" | "failed";
-  subject: string;
+export type ScoredExam = {
+  examPaperId: number;
+  examCode: string;
+  examPaperCode: string;
+  semesterName: string;
+  totalStudents: number;
 };
 
-export const columns: ColumnDef<Subject>[] = [
+export const columns: ColumnDef<ScoredExam>[] = [
   {
-    accessorKey: "subject",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Subject
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    accessorKey: "examCode",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Exam Code
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
   },
   {
-    accessorKey: "code",
-    header: "Code",
+    accessorKey: "examPaperCode",
+    header: "Exam Paper Code",
   },
   {
-    accessorKey: "semester",
+    accessorKey: "semesterName",
+    // header: "Semester Name",
     header: ({ column }) => {
       return (
         <Button
@@ -53,11 +54,11 @@ export const columns: ColumnDef<Subject>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div>{row.getValue("semester")}</div>,
+    cell: ({ row }) => <div>{row.getValue("semesterName")}</div>,
     sortingFn: (rowA, rowB) => {
-      const order: Record<string, number> = { SP: 1, SU: 2, FA: 3 };
-      const matchA = rowA.original.semester.match(/([A-Z]+)(\d+)/);
-      const matchB = rowB.original.semester.match(/([A-Z]+)(\d+)/);
+      const order: Record<string, number> = { Spring: 1, Summer: 2, Fall: 3 };
+      const matchA = rowA.original.semesterName.match(/([A-Z]+)(\d+)/);
+      const matchB = rowB.original.semesterName.match(/([A-Z]+)(\d+)/);
 
       if (!matchA || !matchB) return 0;
     
@@ -70,13 +71,13 @@ export const columns: ColumnDef<Subject>[] = [
     }
   },
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "totalStudents",
+    header: "Total Students",
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const subject = row.original;
+      const scoredExam = row.original;
 
       return (
         <DropdownMenu>
@@ -89,14 +90,17 @@ export const columns: ColumnDef<Subject>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(subject.code)}
+              onClick={() => navigator.clipboard.writeText(scoredExam.examCode)}
             >
-              Copy subject code
+              Copy Exam code
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View student</DropdownMenuItem>
-            <DropdownMenuItem>View score details</DropdownMenuItem>
-          </DropdownMenuContent>
+            <Link
+            to="/scores"
+            state={{ examPaperId: scoredExam.examPaperId }}
+          >
+            <DropdownMenuItem>View list score</DropdownMenuItem>
+            </Link></DropdownMenuContent>
         </DropdownMenu>
       );
     },
