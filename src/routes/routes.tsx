@@ -10,30 +10,31 @@ import ScoresPage from "@/app/score/scores/page";
 import ScoresOverviewPage from "@/app/score/overview/page";
 
 import { NotFoundPage } from "@/app/error/page";
+import { AuthProvider } from "@/context/AuthProvider";
 
 const AppRoutes = () => {
   return (
-    <Routes>
-      {/* Route không có sidebar */}
-      <Route path="/" element={<Login />} />
 
-      {/* Routes có sidebar */}
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <MainLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="exams" element={<Exams />} />
-        <Route path="exam/detail" element={<ExamDetail />} />
-        <Route path="scores" element={<ScoresPage />} />
-        <Route path="scores-overview" element={<ScoresOverviewPage />}/>
-      </Route>
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <MainLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="exams" element={<Exams />} />
+          <Route path="exams/detail" element={<ExamDetail />} />
+          <Route path="scores" element={<ScoresPage />} />
+          <Route path="scores-overview" element={<ScoresOverviewPage />}/>
+        </Route>
         <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+      </Routes>
+    </AuthProvider>
   );
 };
 

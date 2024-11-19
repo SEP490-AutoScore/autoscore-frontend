@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { useToastNotification } from "@/hooks/use-toast-notification";
+import { NoResultPage, ErrorPage } from '@/app/error/page';
 
 interface Semester {
     semesterId: number,
@@ -107,15 +108,15 @@ const ExamInfo: React.FC<ExamInfoProps> = ({ examId }) => {
     }
 
     if (error) {
-        return <div>Error: {error}</div>;
+        return <ErrorPage/>;
     }
 
     if (!examInfo) {
-        return <div>No exam information available</div>;
+        return <NoResultPage/>;
     }
 
     return (
-        <div style={{ margin: "15px 2%", padding: "16px", border: "1px solid #ddd", borderRadius: "8px", marginTop: "16px", minHeight: "100px"}}>
+        <div className="w-full h-[150px] min-h-[100px] mx-[3%] my-[20px] p-4 border border-gray-300 rounded-lg">
             <div style={{ display: "flex", justifyContent: "space-between", gap: "16px" }}>
                 {/* Cột bên trái */}
                 <div style={{ flex: 1 }}>
