@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Link } from "react-router-dom";
 
 export function useHeader({
   breadcrumbLink,
@@ -31,9 +32,9 @@ export function useHeader({
           <BreadcrumbList>
             <BreadcrumbItem className="hidden md:block">
               {breadcrumbPage_2 ? (
-                <BreadcrumbLink href={breadcrumbLink}>
-                  {breadcrumbPage}
-                </BreadcrumbLink>
+                <Link to={breadcrumbLink || ""}>
+                  <BreadcrumbLink>{breadcrumbPage}</BreadcrumbLink>
+                </Link>
               ) : (
                 <BreadcrumbPage>{breadcrumbPage}</BreadcrumbPage>
               )}
@@ -43,9 +44,9 @@ export function useHeader({
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem className="hidden md:block">
                   {breadcrumbPage_3 ? (
-                    <BreadcrumbLink href={breadcrumbLink_2}>
-                      {breadcrumbPage_2}
-                    </BreadcrumbLink>
+                    <Link to={breadcrumbLink_2 || ""}>
+                      <BreadcrumbLink>{breadcrumbPage_2}</BreadcrumbLink>
+                    </Link>
                   ) : (
                     <BreadcrumbPage>{breadcrumbPage_2}</BreadcrumbPage>
                   )}
