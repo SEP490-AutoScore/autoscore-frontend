@@ -11,6 +11,7 @@ import {
 import Logo from "@/assets/autoscore_logo.png";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { useToastNotification } from "@/hooks/use-toast-notification";
+import { useCookie } from "@/hooks/use-cookie";
 
 interface AuthResponse {
   email: string;
@@ -21,6 +22,7 @@ interface AuthResponse {
   jwtToken: string;
   refreshToken: string;
   permissions: string[];
+  exp: number;
 }
 
 export function LoginForm() {
@@ -29,6 +31,8 @@ export function LoginForm() {
   const [searchParams] = useSearchParams();
   const email = searchParams.get("email");
   const picture = searchParams.get("picture");
+  const { setCookie, deleteCookie } = useCookie();
+
   const handleLogin = () => {
     setIsLoading(true);
     window.location.href = `${BASE_URL}${API_ENDPOINTS.oauthGoogle}`;
@@ -49,9 +53,13 @@ export function LoginForm() {
           }
           const data: AuthResponse = await res.json();
           // Lưu vào localStorage
-          Object.entries(data).forEach(([key, value]) =>
-            localStorage.setItem(key, value)
-          );
+          Object.entries(data).forEach(([key, value]) =>{
+            if (key === "refreshToken") {
+              setCookie(key, value, data.exp);
+            } else {
+              localStorage.setItem(key, value)
+            }
+        });
 
           // Chuyển đến dashboard
           window.location.href = "/dashboard";
@@ -86,9 +94,10 @@ export function LoginForm() {
             });
           }
           localStorage.clear();
+          deleteCookie("refreshToken");
         });
     }
-  }, [email, picture, showToast]);
+  }, [email, picture, showToast, setCookie, deleteCookie]);
 
   return (
     <Card className="mx-auto max-w-sm">

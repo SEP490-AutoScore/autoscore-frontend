@@ -19,6 +19,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { CommandShortcut } from "@/components/ui/command";
+import { useCookie } from "@/hooks/use-cookie";
 
 export function NavUser({
   user,
@@ -35,8 +36,10 @@ export function NavUser({
   setSelectedItem: React.Dispatch<React.SetStateAction<string | null>>;
 }) {
   const { isMobile } = useSidebar();
+  const { deleteCookie } = useCookie();
   const handleLogout = () => {
     localStorage.clear();
+    deleteCookie("refreshToken");
     window.location.href = "/";
   };
 

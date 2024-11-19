@@ -3,15 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import { AuthContext } from "./AuthContext";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
+import { useCookie } from "@/hooks/use-cookie";
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const showToast = useToastNotification();
+  const { setCookie, getCookie, deleteCookie } = useCookie(); 
 
   const handle401 = useCallback(() => {
     const handleUnauthorized = async () => {
       try {
-        const refreshToken = localStorage.getItem("refreshToken");
+        const refreshToken = getCookie("refreshToken");
         if (!refreshToken) {
           // Không có Refresh Token, yêu cầu đăng nhập lại
           showToast({
@@ -35,8 +37,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         });
 
         if (response.ok) {
-          const jwtToken = await response.text();
-          localStorage.setItem("jwtToken", jwtToken);
+          const data = await response.json();
+          localStorage.setItem("jwtToken", data.accessToken);
+          setCookie("refreshToken", data.refreshToken, Number(localStorage.getItem("exp")));
           showToast({
             title: "Session Refreshed",
             description: "Your session has been renewed.",
@@ -49,6 +52,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             variant: "destructive",
           });
           localStorage.clear();
+          deleteCookie("refreshToken");
           navigate("/");
         }
       } catch (error) {
@@ -59,12 +63,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           variant: "destructive",
         });
         localStorage.clear();
+        deleteCookie("refreshToken");
         navigate("/");
       }
     };
 
     handleUnauthorized();
-  }, [navigate, showToast]);
+  }, [navigate, showToast, getCookie, setCookie, deleteCookie]);
 
   const handle403 = useCallback(() => {
     showToast({
@@ -73,8 +78,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       variant: "destructive",
     });
     localStorage.clear();
+    deleteCookie("refreshToken");
     navigate("/");
-  }, [navigate, showToast]);
+  }, [navigate, showToast, deleteCookie]);
 
   const value = { handle401, handle403 };
 
