@@ -7,6 +7,7 @@ export const API_ENDPOINTS = {
   signInGoogle: "/api/auth/signingoogle",      // API lấy thông tin JWT
   refreshToken: "/api/auth/refresh-token",     // API refresh token
   getAllExams: "/api/exam/list",              // API lấy danh sách exams
+  vertification: "/api/auth/verify",          // API kiểm tra token
 
   // Exam Database 
   importDatabase: "/api/database/import",
