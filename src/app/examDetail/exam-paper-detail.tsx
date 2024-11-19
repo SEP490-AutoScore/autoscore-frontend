@@ -105,7 +105,66 @@ const ExamPaperDetail: React.FC<ExamPaperDetailProps> = ({ examPaperId }) => {
                 <ResizablePanel>
                     <div className="flex h-full items-center justify-center p-6">
                         <ResizablePanelGroup direction="horizontal">
-                            <ResizablePanel>One</ResizablePanel>
+                            <ResizablePanel>
+                                <div>
+                                    {questions.length > 0 ? (
+                                        <div>
+                                            {questions.map((question) => (
+                                                <div
+                                                    key={question.examQuestionId}
+                                                    style={{
+                                                        marginBottom: "20px",
+                                                        border: "1px solid #ddd",
+                                                        padding: "16px",
+                                                        borderRadius: "8px",
+                                                        backgroundColor: "#f9f9f9",
+                                                        boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+                                                    }}
+                                                >
+                                                    {/* Tiêu đề câu hỏi (người dùng có thể nhấp vào để xem chi tiết) */}
+                                                    <h4
+                                                        style={{
+                                                            color: "#333",
+                                                            marginBottom: "10px",
+                                                            fontSize: "18px",
+                                                            cursor: "pointer",
+                                                        }}
+                                                        onClick={() => toggleQuestionDetails(question.examQuestionId)}
+                                                    >
+                                                        Question {question.examQuestionId}: {question.questionContent}
+                                                    </h4>
+
+                                                    {/* Hiển thị thông tin chi tiết nếu câu hỏi đang được mở */}
+                                                    {openedQuestions.includes(question.examQuestionId) && (
+                                                        <div>
+                                                            <div style={{ display: "flex", flexWrap: "wrap" }}>
+                                                                <p style={{ marginRight: "20px", fontWeight: "bold" }}>
+                                                                    <strong>Score:</strong> {question.examQuestionScore}
+                                                                </p>
+                                                                <p style={{ marginRight: "20px", fontWeight: "bold" }}>
+                                                                    <strong>Endpoint:</strong> {question.endPoint}
+                                                                </p>
+                                                                <p style={{ marginRight: "20px", fontWeight: "bold" }}>
+                                                                    <strong>HTTP Method:</strong> {question.httpMethod}
+                                                                </p>
+                                                            </div>
+                                                            <p><strong>Description:</strong> {question.description}</p>
+                                                            <div style={{ backgroundColor: "#f1f1f1", padding: "10px", borderRadius: "5px", marginBottom: "10px" }}>
+                                                                <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}><strong>Payload:</strong> {question.payload}</pre>
+                                                                <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}><strong>Success Response:</strong> {question.sucessResponse}</pre>
+                                                                <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}><strong>Error Response:</strong> {question.errorResponse}</pre>
+                                                            </div>
+                                                            <p><strong>Validation:</strong> {question.validation}</p>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p>No questions found for this exam paper.</p>
+                                    )}
+                                </div>
+                            </ResizablePanel>
                             <ResizableHandle />
                             <ResizablePanel>Two</ResizablePanel>
                         </ResizablePanelGroup>
