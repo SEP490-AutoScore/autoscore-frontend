@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
-import ExamPaperDetail from "./examPaperDetail";
+import ExamPaperDetail from "./exam-paper-detail";
 import Ske from "./skeleton-page"
 import { ErrorPage } from '@/app/error/page';
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable"
 
 interface ExamPaper {
   examPaperId: number;
@@ -64,11 +69,11 @@ const Detail: React.FC<ExamPaperProps> = ({ examId }) => {
   }, [examId]);
 
   if (loading) {
-    return <Ske/>;
+    return <Ske />;
   }
 
   if (error) {
-    return <ErrorPage/>;
+    return <ErrorPage />;
   }
 
   if (examPapers.length === 0) {
@@ -81,59 +86,39 @@ const Detail: React.FC<ExamPaperProps> = ({ examId }) => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        margin: "10px 4%",
-        padding: "16px",
-        border: "1px solid #ddd",
-        borderRadius: "8px",
-      }}
-    >
-      {/* Bên trái (Danh sách item) */}
-      <div
-        style={{
-          flex: 3,
-          borderRight: "1px solid #ddd",
-          paddingRight: "16px",
-        }}
-      >
-        <h3>Exam Paper List</h3>
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          {examPapers.map((examPaper) => (
-            <li
-              key={examPaper.examPaperId}
-              onClick={() => handleItemClick(examPaper)}
-              style={{
-                padding: "8px",
-                cursor: "pointer",
-                backgroundColor: selectedItem?.examPaperId === examPaper.examPaperId ? "#f0f0f0" : "white",
-                border: "1px solid #ddd",
-                marginBottom: "8px",
-                borderRadius: "4px",
-              }}
-            >
-              {examPaper.examPaperCode}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Bên phải (Thông tin chi tiết) */}
-      <div
-        style={{
-          flex: 7,
-          paddingLeft: "16px",
-        }}
-      >
-        <h3>Exam Paper Detail</h3>
-        {selectedItem ? (
-          <ExamPaperDetail examPaperId={selectedItem.examPaperId} />
-        ) : (
-          <p>Please select an item from the list.</p>
-        )}
-      </div>
-    </div>
+    <ResizablePanelGroup direction="horizontal">
+      <ResizablePanel defaultSize={25}>
+        <div>
+          <ul style={{ listStyle: "none", padding: 0 }}>
+            {examPapers.map((examPaper) => (
+              <li
+                key={examPaper.examPaperId}
+                onClick={() => handleItemClick(examPaper)}
+                style={{
+                  padding: "8px",
+                  cursor: "pointer",
+                  backgroundColor: selectedItem?.examPaperId === examPaper.examPaperId ? "#f0f0f0" : "white",
+                  border: "1px solid #ddd",
+                  marginBottom: "8px",
+                  borderRadius: "4px",
+                }}
+              >
+                {examPaper.examPaperCode}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </ResizablePanel>
+      <ResizableHandle/>
+      <ResizablePanel defaultSize={75}>
+        <div className="">
+          {selectedItem ? (
+            <ExamPaperDetail examPaperId={selectedItem.examPaperId} />
+          ) : (
+            <p>Please select an item from the list.</p>
+          )}
+        </div></ResizablePanel>
+    </ResizablePanelGroup>
   );
 };
 
