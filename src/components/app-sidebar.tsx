@@ -95,7 +95,7 @@ const data = {
       items: [
         {
           title: "Add Exam",
-          url: "###.",
+          url: "/exams/new-exam",
           permission: "CREATE_EXAM",
         },
         {

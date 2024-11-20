@@ -125,7 +125,7 @@ const ExamPaperDetail: React.FC<ExamPaperDetailProps> = ({ examPaperId }) => {
         try {
             const token = localStorage.getItem("jwtToken");
             if (!token) throw new Error("JWT Token không tồn tại. Vui lòng đăng nhập.");
-    
+
             const response = await fetch(
                 `http://localhost:8080/api/gherkin_scenario/generate_gherkin_format`,
                 {
@@ -137,9 +137,9 @@ const ExamPaperDetail: React.FC<ExamPaperDetailProps> = ({ examPaperId }) => {
                     body: JSON.stringify({ examQuestionIds: [examQuestionId] }),
                 }
             );
-    
+
             if (!response.ok) throw new Error("Failed to generate Gherkin data");
-    
+
             const result = await response.json();
             alert("Gherkin data generated successfully!");
         } catch (err: any) {
@@ -148,7 +148,7 @@ const ExamPaperDetail: React.FC<ExamPaperDetailProps> = ({ examPaperId }) => {
         }
     };
 
-    
+
 
     if (loading) {
         return <Ske />;
@@ -212,19 +212,19 @@ const ExamPaperDetail: React.FC<ExamPaperDetailProps> = ({ examPaperId }) => {
                                                     </button>
 
                                                     <button
-    style={{
-        padding: "8px 12px",
-        backgroundColor: "#28a745",
-        color: "#fff",
-        border: "none",
-        borderRadius: "4px",
-        cursor: "pointer",
-        marginTop: "10px", // Khoảng cách giữa các nút
-    }}
-    onClick={() => generateGherkin(question.examQuestionId)}
->
-    Generate Gherkin
-</button>
+                                                        style={{
+                                                            padding: "8px 12px",
+                                                            backgroundColor: "#28a745",
+                                                            color: "#fff",
+                                                            border: "none",
+                                                            borderRadius: "4px",
+                                                            cursor: "pointer",
+                                                            marginTop: "10px", // Khoảng cách giữa các nút
+                                                        }}
+                                                        onClick={() => generateGherkin(question.examQuestionId)}
+                                                    >
+                                                        Generate Gherkin
+                                                    </button>
 
 
 
@@ -267,51 +267,41 @@ const ExamPaperDetail: React.FC<ExamPaperDetailProps> = ({ examPaperId }) => {
 
 
                             <ResizablePanel>
-    <div className="flex h-full items-center justify-center p-6">
-        {gherkinData && currentGherkinId ? (
-            <ResizablePanelGroup direction="vertical" style={{ height: "100%" }}>
-                <ResizablePanel defaultSize={300} minSize={100} maxSize={600}>
-                    <div
-                        style={{
-                            backgroundColor: "#fff",
-                            padding: "10px",
-                            border: "1px solid #ccc",
-                            borderRadius: "5px",
-                            boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
-                            overflow: "auto", // Đảm bảo không bị tràn
-                            maxHeight: "100%", // Điều chỉnh nếu nội dung vượt quá kích thước
-                        }}
-                    >
-                        <pre
-                            style={{
-                                whiteSpace: "pre-wrap",
-                                wordWrap: "break-word",
-                                margin: 0,
-                            }}
-                        >
-                            {gherkinData}
-                        </pre>
-                    </div>
-                </ResizablePanel>
-            </ResizablePanelGroup>
-        ) : (
-            <span className="font-semibold">
-                Select a question to view its Gherkin
-            </span>
-        )}
-    </div>
-</ResizablePanel>
-
-
-
-
-
-
-
-
+                                <div className="flex h-full items-center justify-center p-6">
+                                    {gherkinData && currentGherkinId ? (
+                                        <ResizablePanelGroup direction="vertical" style={{ height: "100%" }}>
+                                            <ResizablePanel defaultSize={300} minSize={100} maxSize={600}>
+                                                <div
+                                                    style={{
+                                                        backgroundColor: "#fff",
+                                                        padding: "10px",
+                                                        border: "1px solid #ccc",
+                                                        borderRadius: "5px",
+                                                        boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+                                                        overflow: "auto", // Đảm bảo không bị tràn
+                                                        maxHeight: "100%", // Điều chỉnh nếu nội dung vượt quá kích thước
+                                                    }}
+                                                >
+                                                    <pre
+                                                        style={{
+                                                            whiteSpace: "pre-wrap",
+                                                            wordWrap: "break-word",
+                                                            margin: 0,
+                                                        }}
+                                                    >
+                                                        {gherkinData}
+                                                    </pre>
+                                                </div>
+                                            </ResizablePanel>
+                                        </ResizablePanelGroup>
+                                    ) : (
+                                        <span className="font-semibold">
+                                            Select a question to view its Gherkin
+                                        </span>
+                                    )}
+                                </div>
+                            </ResizablePanel>
                         </ResizablePanelGroup>
-
-
                     </div>
                 </ResizablePanel>
                 <ResizableHandle />
