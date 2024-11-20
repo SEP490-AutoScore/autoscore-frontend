@@ -1,17 +1,17 @@
 import { Routes, Route } from "react-router-dom";
+import { NotFoundPage } from "@/app/error/page";
+import { AuthProvider } from "@/context/AuthProvider";
+import MainLayout from "@/layouts/layout-main";
+import ProtectedRoute from "./ProtectedRoute";
+
 import Login from "@/app/login/page";
 import Dashboard from "@/app/dashboard/page";
 import Exams from "@/app/exams/page";
-import MainLayout from "@/layouts/layout-main";
-
-import ProtectedRoute from "./ProtectedRoute";
 import ExamDetail from "@/app/examDetail/page";
 import ScoresPage from "@/app/score/scores/page";
 import ScoresOverviewPage from "@/app/score/overview/page";
-
-import { NotFoundPage } from "@/app/error/page";
-import { AuthProvider } from "@/context/AuthProvider";
 import NewExam from "@/app/new-exam/page";
+import Permissions from "@/app/permission/permissions/page";
 
 const AppRoutes = () => {
   return (
@@ -32,6 +32,7 @@ const AppRoutes = () => {
           <Route path="scores" element={<ScoresPage />} />
           <Route path="scores-overview" element={<ScoresOverviewPage />} />
           <Route path="exams/new-exam" element={<NewExam />} />
+          <Route path="permissions" element={<Permissions />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

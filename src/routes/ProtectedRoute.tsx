@@ -24,7 +24,7 @@ function ProtectedRoute({ children }: { children: JSX.Element }) {
   useEffect(() => {
     const interval = setInterval(() => {
       checkAndRefreshToken();
-    }, 5 * 60 * 1000); // Kiểm tra mỗi 5 phút (milliseconds)
+    }, 1 * 60 * 1000); // Kiểm tra mỗi 5 phút (milliseconds)
 
     return () => clearInterval(interval); // Xóa interval khi component unmount
   }, [checkAndRefreshToken]);

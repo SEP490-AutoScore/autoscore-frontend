@@ -3,28 +3,28 @@ import { useToastNotification } from "@/hooks/use-toast-notification";
 import { useCookie } from "@/hooks/use-cookie";
 
 export const useTokenManager = () => {
-  const { setCookie, getCookie } = useCookie();
+  const { setCookie, getCookie, deleteCookie } = useCookie();
   const showToast = useToastNotification();
-
+  
   const checkAndRefreshToken = async () => {
     const jwtToken = localStorage.getItem("jwtToken");
     const exp = localStorage.getItem("exp"); // Thời gian hết hạn dạng milliseconds
+    const refreshToken = getCookie("refreshToken");
 
-    if (!jwtToken || !exp) {
+    if (!jwtToken || !exp || !refreshToken) {
       showToast({
         title: "Session Expired",
         description: "You are not logged in. Please log in again.",
         variant: "destructive",
       });
+      window.location.href = "/";
       return false;
     }
 
     const currentTime = Date.now(); // Thời gian hiện tại (milliseconds)
-    const threshold = 5 * 60 * 1000; // Ngưỡng kiểm tra: 5 phút trước khi hết hạn
+    const threshold = 1 * 60 * 1000; // Ngưỡng kiểm tra: 5 phút trước khi hết hạn
 
     if (currentTime >= Number(exp) - threshold) {
-      const refreshToken = getCookie("refreshToken");
-
       if (!refreshToken) {
         showToast({
           title: "Refresh Token Missing",
@@ -45,9 +45,11 @@ export const useTokenManager = () => {
         });
 
         if (response.ok) {
+          deleteCookie("refreshToken");
           const data = await response.json();
+          const expire = Date.now() + data.exp;
           localStorage.setItem("jwtToken", data.accessToken);
-          localStorage.setItem("exp", String(data.exp)); // Lưu `exp` dạng string để đồng bộ
+          localStorage.setItem("exp", String(expire)); // Lưu `exp` dạng string để đồng bộ
           setCookie("refreshToken", data.refreshToken, data.exp / (24 * 60 * 60 * 1000)); // Thời hạn bằng số ngày
 
           showToast({
@@ -63,7 +65,8 @@ export const useTokenManager = () => {
             variant: "destructive",
           });
           localStorage.clear();
-          setCookie("refreshToken", "", -1); // Xóa cookie
+          deleteCookie("refreshToken");
+          window.location.href = "/";
           return false;
         }
       } catch (error) {
