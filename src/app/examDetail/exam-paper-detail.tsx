@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Ske from "./skeleton-page"
 import { ErrorPage } from '@/app/error/page';
+import PostmanForGrading from '@/app/postmanForGrading/postman-for-grading';
+import ExamDatabase from '@/app/examDatabase/exam-database';
+import { useToastNotification } from "@/hooks/use-toast-notification";
+import { handleImport } from '@/app/postmanForGrading/import'; // Đường dẫn cần chính xác
+import { handleExport } from "@/app/postmanForGrading/export";
+
+
+
 import {
     ResizableHandle,
     ResizablePanel,
@@ -39,8 +47,103 @@ const ExamPaperDetail: React.FC<ExamPaperDetailProps> = ({ examPaperId }) => {
     // State lưu trữ các câu hỏi đang mở, mảng này chứa các examQuestionId
     const [openedQuestions, setOpenedQuestions] = useState<number[]>([]);
 
+    //gherkin
     const [gherkinData, setGherkinData] = useState<string | null>(null);
     const [currentGherkinId, setCurrentGherkinId] = useState<number | null>(null);
+
+    //database
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setSelectedFile(e.target.files[0]);
+        }
+    };
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setSelectedImage(e.target.files[0]);
+        }
+    };
+
+    //import database
+    const handleImportDatabase = async () => {
+        if (!selectedFile || !selectedImage) {
+            alert("Please select both a SQL file and an image.");
+            return;
+        }
+        const token = localStorage.getItem("jwtToken");
+        if (!token) {
+            throw new Error("JWT Token không tồn tại. Vui lòng đăng nhập.");
+        }
+
+
+        const formData = new FormData();
+        formData.append("file.sql", selectedFile);
+        formData.append("fileimage", selectedImage);
+        formData.append("examPaperId", String(examPaperId));
+
+        try {
+            const response = await fetch("http://localhost:8080/api/database/import", {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to import database");
+            }
+
+            const result = await response.text();
+            alert(result);
+        } catch (error: any) {
+            console.error(error);
+            alert("Error importing database: " + error.message);
+        }
+    };
+
+    // update database
+    const handleUpdateDatabase = async () => {
+        if (!selectedFile || !selectedImage) {
+            alert("Please select both a SQL file and an image.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file.sql", selectedFile);
+        formData.append("fileimage", selectedImage);
+        formData.append("examPaperId", String(examPaperId));
+        const token = localStorage.getItem("jwtToken");
+        if (!token) {
+            throw new Error("JWT Token không tồn tại. Vui lòng đăng nhập.");
+        }
+
+        try {
+            const response = await fetch("http://localhost:8080/api/database/update", {
+                method: "PUT",
+                headers: {
+
+                    Authorization: `Bearer ${token}`,
+                },
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to update database");
+            }
+
+            const result = await response.text();
+            alert(result);
+        } catch (error: any) {
+            console.error(error);
+            alert("Error updating database: " + error.message);
+        }
+    };
+
+
 
     // Hàm xử lý khi người dùng click vào một câu hỏi
     const toggleQuestionDetails = (questionId: number) => {
@@ -262,10 +365,6 @@ const ExamPaperDetail: React.FC<ExamPaperDetailProps> = ({ examPaperId }) => {
                             <ResizableHandle />
 
 
-
-
-
-
                             <ResizablePanel>
                                 <div className="flex h-full items-center justify-center p-6">
                                     {gherkinData && currentGherkinId ? (
@@ -301,21 +400,83 @@ const ExamPaperDetail: React.FC<ExamPaperDetailProps> = ({ examPaperId }) => {
                                     )}
                                 </div>
                             </ResizablePanel>
+
+
                         </ResizablePanelGroup>
                     </div>
                 </ResizablePanel>
+
                 <ResizableHandle />
+
+                {/* import and update database*/}
                 <ResizablePanel>
+                    <div className="p-4">
+                        <input
+                            type="file"
+                            accept=".sql"
+                            onChange={handleFileChange}
+                            className="block mb-2"
+                        />
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="block mb-4"
+                        />
+                        <button
+                            onClick={handleImportDatabase}
+                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-2"
+                        >
+                            Import Database
+                        </button>
+                        <button
+                            onClick={handleUpdateDatabase}
+                            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                        >
+                            Update Database
+                        </button>
+                    </div>
                     <div className="flex h-full items-center justify-center p-6">
-                        <span className="font-semibold">Content</span>
+                        <ExamDatabase examPaperId={examPaperId} />
                     </div>
                 </ResizablePanel>
+
+
                 <ResizableHandle />
+
+
                 <ResizablePanel>
-                    <div className="flex h-full items-center justify-center p-6">
-                        <span className="font-semibold">Content</span>
-                    </div>
-                </ResizablePanel>
+    <div className="flex h-full items-center justify-center p-6">
+        <div className="flex flex-col items-center">
+            <PostmanForGrading examPaperId={examPaperId} />
+            {/* Input chọn file */}
+            <input
+                type="file"
+                onChange={handleFileChange}
+                className="mt-2"
+            />
+            {/* Button Import */}
+            <button
+                onClick={() => handleImport(selectedFile, examPaperId)}
+                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
+            >
+                Import
+            </button>
+
+            {/* Button Export */}
+            <button
+                onClick={() => handleExport(examPaperId)}
+                className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none"
+            >
+                Export
+            </button>
+
+        </div>
+    </div>
+</ResizablePanel>
+
+
+
             </ResizablePanelGroup>
         </>
     );
