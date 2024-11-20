@@ -7,6 +7,8 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
+import { useNavigate } from "react-router-dom";
+ 
 
 interface ExamPaper {
   examPaperId: number;
@@ -22,9 +24,16 @@ const Detail: React.FC<ExamPaperProps> = ({ examId }) => {
   const [examPapers, setExamPapers] = useState<ExamPaper[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+ 
   // State lưu trữ thông tin mục được chọn
   const [selectedItem, setSelectedItem] = useState<ExamPaper | null>(null);
+
+   // Hàm xử lý nút chuyển hướng
+   const navigate = useNavigate();
+   const handleNavigate = (examPaperId: number) => {
+    navigate(`/gherkin-postman/${examPaperId}`); // Chuyển hướng tới đường dẫn gherkin-postman
+  };
+
 
   // Fetch danh sách exam papers
   useEffect(() => {
@@ -104,6 +113,23 @@ const Detail: React.FC<ExamPaperProps> = ({ examId }) => {
                 }}
               >
                 {examPaper.examPaperCode}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation(); // Ngăn sự kiện onClick của <li>
+                    handleNavigate(examPaper.examPaperId); // Chuyển hướng
+                  }}
+                  style={{
+                    marginLeft: "8px",
+                    padding: "4px 8px",
+                    backgroundColor: "#007bff",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                  }}
+                >
+                  View in Gherkin
+                </button>
               </li>
             ))}
           </ul>
