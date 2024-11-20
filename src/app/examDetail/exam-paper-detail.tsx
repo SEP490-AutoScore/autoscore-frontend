@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import Ske from "./skeleton-page"
 import { ErrorPage } from '@/app/error/page';
 import PostmanForGrading from '@/app/postmanForGrading/postman-for-grading';
+import ExamDatabase from '@/app/examDatabase/exam-database';
+import { useToastNotification } from "@/hooks/use-toast-notification";
+
 
 import {
     ResizableHandle,
@@ -136,7 +139,8 @@ const ExamPaperDetail: React.FC<ExamPaperDetailProps> = ({ examPaperId }) => {
             alert("Error updating database: " + error.message);
         }
     };
-
+      
+      
 
         // Hàm xử lý khi người dùng click vào một câu hỏi
         const toggleQuestionDetails = (questionId: number) => {
@@ -429,6 +433,9 @@ const ExamPaperDetail: React.FC<ExamPaperDetailProps> = ({ examPaperId }) => {
                                 Update Database
                             </button>
                         </div>
+                        <div className="flex h-full items-center justify-center p-6">
+            <ExamDatabase examPaperId={examPaperId} />
+          </div>
                     </ResizablePanel>
 
 
