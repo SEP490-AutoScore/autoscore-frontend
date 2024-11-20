@@ -12,6 +12,7 @@ import ScoresOverviewPage from "@/app/score/overview/page";
 import { NotFoundPage } from "@/app/error/page";
 import { AuthProvider } from "@/context/AuthProvider";
 import NewExam from "@/app/new-exam/page";
+import ExamPapers from "@/app/exam-papers/page";
 
 const AppRoutes = () => {
   return (
@@ -32,6 +33,7 @@ const AppRoutes = () => {
           <Route path="scores" element={<ScoresPage />} />
           <Route path="scores-overview" element={<ScoresOverviewPage />} />
           <Route path="exams/new-exam" element={<NewExam />} />
+          <Route path="exams/exam-papers" element={<ExamPapers />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
