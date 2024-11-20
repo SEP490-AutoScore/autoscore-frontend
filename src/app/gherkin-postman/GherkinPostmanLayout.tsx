@@ -60,7 +60,7 @@ const GherkinPostmanLayout: React.FC<LayoutProps> = ({ top, left, right }) => {
       </div>
 
       {/* Khung dưới phần cận giữa */}
-      <div className="flex justify-center">
+      <div className="flex justify-center mb-4">
         <div className="w-1/2 p-4 bg-white border border-gray-300 rounded-lg">
           <h2 className="text-lg font-semibold">Question</h2>
           <p>Nội dung Question.</p>
@@ -75,7 +75,7 @@ const GherkinPostmanLayout: React.FC<LayoutProps> = ({ top, left, right }) => {
         </div>
 
         {/* Thanh chia giữa */}
-        <div className="border-l border-gray-300 mb-4" /> {/* Thanh chia giữa */}
+        <div className="border-l border-gray-300 mt-2 mb-4" /> {/* Thanh chia giữa */}
 
         {/* Bên phải: Nội dung Postman */}
         <div className="flex-1 p-4 flex flex-col min-h-[200px] overflow-y-auto"> {/* Thêm overflow-y-auto */}
