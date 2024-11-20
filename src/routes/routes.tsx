@@ -14,6 +14,7 @@ import { AuthProvider } from "@/context/AuthProvider";
 import NewExam from "@/app/new-exam/page";
 import ExamPapers from "@/app/exam-papers/page";
 import GherkinPostman from "@/app/gherkin-postman/page";
+import PostmanForGrading from "@/app/postman-for-grading/page";
 
 const AppRoutes = () => {
   return (
@@ -36,6 +37,7 @@ const AppRoutes = () => {
           <Route path="exams/new-exam" element={<NewExam />} />
           <Route path="exams/exam-papers" element={<ExamPapers />} />
           <Route path="gherkin-postman/:id" element={<GherkinPostman />} />
+          <Route path="postman-for-grading/:id" element={<PostmanForGrading />} />
 
       
         </Route>

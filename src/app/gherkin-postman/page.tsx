@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import GherkinPostmanLayout from "./GherkinPostmanLayout";
 import GherkinItem from "./GherkinItem";
 import PostmanItem from "./PostmanItem";
+import { SidebarInset } from "@/components/ui/sidebar"; // Import SidebarInset
+import { useLocation } from "react-router-dom";
+import { useHeader } from "@/hooks/use-header"; // Giống trong examDetail
+import { ErrorPage } from "@/app/error/page";
 
 // Giả lập dữ liệu
 const mockData = [
@@ -19,6 +23,26 @@ const Page: React.FC = () => {
 
   const [gherkinContent, setGherkinContent] = useState<string>("");
   const [postmanContent, setPostmanContent] = useState<string>("");
+
+  const location = useLocation();
+  const id = location.state?.gherkinPostmanId; // Lấy ID từ state
+  const role = localStorage.getItem("role");
+
+  // if (!id) {
+  //   return <div>Error: GherkinPostman ID not provided</div>;
+  // }
+
+  // if (!role) {
+  //   return <ErrorPage />;
+  // }
+
+  const Header = useHeader({
+    breadcrumbLink: "/gherkin-postman",
+    breadcrumbLink_2: `/gherkin-postman/${id}`,
+    breadcrumbPage: "Gherkin Postman",
+    breadcrumbPage_2: `Postman ID ${id}`,
+  });
+
 
   const handleGherkinClick = (id: number) => {
     setSelectedGherkinIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
@@ -57,6 +81,8 @@ const Page: React.FC = () => {
   };
 
   return (
+    <SidebarInset>
+         {Header}
     <GherkinPostmanLayout
       top={{
         left: <div className="bg-white border border-gray-300 rounded-lg p-4"><h1 className="text-xl font-bold">Gherkin</h1></div>,
@@ -97,6 +123,7 @@ const Page: React.FC = () => {
         </div>
       }
     />
+    </SidebarInset>
   );
 };
 

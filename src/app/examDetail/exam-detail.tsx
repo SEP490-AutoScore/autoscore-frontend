@@ -33,6 +33,11 @@ const Detail: React.FC<ExamPaperProps> = ({ examId }) => {
    const handleNavigate = (examPaperId: number) => {
     navigate(`/gherkin-postman/${examPaperId}`); // Chuyển hướng tới đường dẫn gherkin-postman
   };
+    // Hàm xử lý nút chuyển hướng
+    const navigate2 = useNavigate();
+    const handleNavigate2 = (examPaperId: number) => {
+     navigate2(`/postman-for-grading/${examPaperId}`); // Chuyển hướng tới đường dẫn gherkin-postman
+   };
 
 
   // Fetch danh sách exam papers
@@ -128,7 +133,24 @@ const Detail: React.FC<ExamPaperProps> = ({ examId }) => {
                     cursor: "pointer",
                   }}
                 >
-                  View in Gherkin
+                  Gherkin-Postman
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation(); // Ngăn sự kiện onClick của <li>
+                    handleNavigate2(examPaper.examPaperId); // Chuyển hướng
+                  }}
+                  style={{
+                    marginLeft: "8px",
+                    padding: "4px 8px",
+                    backgroundColor: "#007bff",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Postman For Grading
                 </button>
               </li>
             ))}
