@@ -122,7 +122,7 @@ export const columns: ColumnDef<Exams>[] = [
               Copy Exam ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <Link to="/exams/detail" state={{ examId: exam.examId }}>
+            <Link to="/exams/exam-papers" state={{ examId: exam.examId }}>
               <DropdownMenuItem>View Exam Details</DropdownMenuItem>
             </Link>
             <DropdownMenuItem>Delete Exam</DropdownMenuItem>

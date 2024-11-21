@@ -56,7 +56,10 @@ export function LoginForm() {
           Object.entries(data).forEach(([key, value]) =>{
             if (key === "refreshToken") {
               setCookie(key, value, data.exp);
-            } else {
+            } else if (key === "exp") {
+              localStorage.setItem(key, data.exp.toString());
+            }
+             else {
               localStorage.setItem(key, value)
             }
         });

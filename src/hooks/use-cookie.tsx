@@ -2,10 +2,10 @@ import { useCallback } from "react";
 
 export const useCookie = () => {
   // Hàm lưu cookie
-  const setCookie = useCallback((name: string, value: string, days: number) => {
-    const date = new Date();
-    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000); // Chuyển đổi ngày thành mili giây
-    document.cookie = `${name}=${value};expires=${date.toUTCString()};path=/;Secure;SameSite=Strict`;
+  const setCookie = useCallback((name: string, value: string, date: number) => {
+    const newDate = new Date();
+    newDate.setTime(newDate.getTime() + date);
+    document.cookie = `${name}=${value};expires=${newDate.toUTCString()};path=/;Secure;SameSite=Strict`;
   }, []);
 
   // Hàm lấy giá trị cookie

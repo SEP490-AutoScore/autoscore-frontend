@@ -61,7 +61,7 @@ const data = {
         {
           title: "All Permissions",
           permission: "VIEW_PERMISSION",
-          url: "#..",
+          url: "/permissions",
         },
       ],
     },
@@ -95,7 +95,7 @@ const data = {
       items: [
         {
           title: "Add Exam",
-          url: "###.",
+          url: "/exams/new-exam",
           permission: "CREATE_EXAM",
         },
         {
