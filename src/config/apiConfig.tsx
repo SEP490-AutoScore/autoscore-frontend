@@ -22,6 +22,7 @@ export const API_ENDPOINTS = {
 
   // Exam Question
   getlistIdQuestion: "/api/exam-paper/questions",
+  getQuestions: "/api/exam-question/list",
 
   // Gherkin
   generateGherkin: "/api/gherkin_scenario/generate_gherkin_format",
@@ -39,4 +40,5 @@ export const API_ENDPOINTS = {
 
   //exam paper
   getExamPapers: "/api/exam-paper/list",
+  getExamPaperInfo: "/api/exam-paper",
 };

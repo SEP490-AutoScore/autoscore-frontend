@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate from React Router
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -29,6 +30,7 @@ export function ExamPaperList({ examId }: { examId: number }) {
     const [examPapers, setExamPapers] = useState<ExamPaper[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate(); // Initialize navigate hook
 
     const [formData, setFormData] = useState({
         examPaperCode: "",
@@ -40,7 +42,7 @@ export function ExamPaperList({ examId }: { examId: number }) {
 
     useEffect(() => {
         const token = localStorage.getItem("jwtToken"); // Retrieve the JWT token from localStorage
-    
+
         fetch(`${BASE_URL}/api/important?subjectId=1`, {
             method: "GET", // Assuming it's a GET request
             headers: {
@@ -249,7 +251,15 @@ export function ExamPaperList({ examId }: { examId: number }) {
                                     )}
                                 </ul>
                             </div>
-                            <Button variant="outline" className="mt-4">
+                            <Button
+                                variant="outline"
+                                className="mt-4"
+                                onClick={() =>
+                                    navigate("/exams/exam-papers/exam-questions", {
+                                        state: { examId, examPaperId: examPaper.examPaperId },
+                                    })
+                                }
+                            >
                                 View Paper Details
                             </Button>
                         </CardContent>
