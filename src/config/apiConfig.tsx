@@ -11,9 +11,10 @@ export const API_ENDPOINTS = {
   getAllPermisisons: "/api/permission/get-all", // API lấy danh sách permissions
 
   //Exam
-  getExamInfo: "/api/exam",    //get exam info
+  getExamInfo: "/api/exam",                    //get exam info
   scoreOverview: "/api/score/getAll",          // API lấy danh sách bài thi đã có điểm
   score: "/api/score",                         // API lấy scores byExamPaperId
+  exportScore: "/api/score/export",            // API export score byExamPaperId
   createExam: "/api/exam/",
   
   // Exam Database 
