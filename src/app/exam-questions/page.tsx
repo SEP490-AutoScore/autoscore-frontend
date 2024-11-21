@@ -30,8 +30,9 @@ export default function ExamPaperDetails() {
         breadcrumbPage: "Exams Overview",
         breadcrumbLink_2: `/exams/exam-papers`,
         breadcrumbPage_2: "Exam Details",
-        breadcrumbPage_3: "Exam Question"
-    });
+        breadcrumbPage_3: "Exam Question",
+        stateGive: { examId: examId }, // only pass if state is required
+      });
 
 
     useEffect(() => {
