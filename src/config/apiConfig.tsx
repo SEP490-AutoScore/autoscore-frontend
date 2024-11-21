@@ -14,13 +14,14 @@ export const API_ENDPOINTS = {
   getExamInfo: "/api/exam",    //get exam info
   scoreOverview: "/api/score/getAll",          // API lấy danh sách bài thi đã có điểm
   score: "/api/score",                         // API lấy scores byExamPaperId
+  createExam: "/api/exam/",
   
   // Exam Database 
   importDatabase: "/api/database/import",
   changeDatabase: "/api/database/update",
 
   // Exam Question
-  getlistIdQuestion: "/api/exam-paper//questions",
+  getlistIdQuestion: "/api/exam-paper/questions",
 
   // Gherkin
   generateGherkin: "/api/gherkin_scenario/generate_gherkin_format",
@@ -31,4 +32,11 @@ export const API_ENDPOINTS = {
   exportPostman: "/api/exam-paper/export-postman/",
   generatePostman: "/api/postman-grading/generate/",
   mergePostman: "/api/postman-grading/merge/",
+
+  //side
+  getSubject: "/api/subject",
+  getSemester: "/api/semester",
+
+  //exam paper
+  getExamPapers: "/api/exam-paper/list",
 };
