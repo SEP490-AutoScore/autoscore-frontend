@@ -3,12 +3,12 @@ import { useToastNotification } from "@/hooks/use-toast-notification";
 import { useCookie } from "@/hooks/use-cookie";
 
 export const useTokenManager = () => {
-  const { setCookie, getCookie } = useCookie();
+  const { setCookie, getCookie, deleteCookie } = useCookie();
   const showToast = useToastNotification();
-
+  
   const checkAndRefreshToken = async () => {
     const jwtToken = localStorage.getItem("jwtToken");
-    const exp = localStorage.getItem("exp"); // Thời gian hết hạn dạng milliseconds
+    const exp = localStorage.getItem("exp"); 
 
     if (!jwtToken || !exp) {
       showToast({
@@ -16,6 +16,7 @@ export const useTokenManager = () => {
         description: "You are not logged in. Please log in again.",
         variant: "destructive",
       });
+      window.location.href = "/";
       return false;
     }
 
@@ -24,7 +25,6 @@ export const useTokenManager = () => {
 
     if (currentTime >= Number(exp) - threshold) {
       const refreshToken = getCookie("refreshToken");
-
       if (!refreshToken) {
         showToast({
           title: "Refresh Token Missing",
@@ -45,10 +45,11 @@ export const useTokenManager = () => {
         });
 
         if (response.ok) {
+          deleteCookie("refreshToken");
           const data = await response.json();
           localStorage.setItem("jwtToken", data.accessToken);
-          localStorage.setItem("exp", String(data.exp)); // Lưu `exp` dạng string để đồng bộ
-          setCookie("refreshToken", data.refreshToken, data.exp / (24 * 60 * 60 * 1000)); // Thời hạn bằng số ngày
+          localStorage.setItem("exp", data.exp.toString());
+          setCookie("refreshToken", data.refreshToken, data.exp);
 
           showToast({
             title: "Session Refreshed",
@@ -63,7 +64,8 @@ export const useTokenManager = () => {
             variant: "destructive",
           });
           localStorage.clear();
-          setCookie("refreshToken", "", -1); // Xóa cookie
+          deleteCookie("refreshToken");
+          window.location.href = "/";
           return false;
         }
       } catch (error) {

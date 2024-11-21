@@ -8,7 +8,7 @@ export const API_ENDPOINTS = {
   refreshToken: "/api/auth/refresh-token",     // API refresh token
   getAllExams: "/api/exam/list",              // API lấy danh sách exams
   vertification: "/api/auth/verify",          // API kiểm tra token
-
+  getAllPermisisons: "/api/permission/get-all", // API lấy danh sách permissions
 
   //Exam
   getExamInfo: "/api/exam",    //get exam info

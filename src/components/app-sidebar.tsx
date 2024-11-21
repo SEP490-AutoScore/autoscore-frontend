@@ -61,7 +61,7 @@ const data = {
         {
           title: "All Permissions",
           permission: "VIEW_PERMISSION",
-          url: "#..",
+          url: "/permissions",
         },
       ],
     },
