@@ -9,11 +9,7 @@ const Page: React.FC = () => {
   const location = useLocation();
   const examPaperId = location.state?.examPaperId; // Hoặc lấy thông tin ID từ state
 
-  // // Xử lý trường hợp không có thông tin
-  // if (!examPaperId) {
-  //   return <div>Error: Exam Paper ID not provided</div>;
-  // }
-
+ 
   // Sử dụng Header từ hook (tùy chọn)
   const Header = useHeader({
     breadcrumbLink: "/exams",
