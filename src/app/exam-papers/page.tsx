@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom"; // Import useLocation để lấy state từ Link
 import { SidebarInset } from "@/components/ui/sidebar";
 import { useHeader } from "@/hooks/use-header";
 import { ExamDetailContent } from "./exam-header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
-import { ExamPaperList } from "./exam-papers-list"
-
-const examId = 1; // Static examId for now
+import { ExamPaperList } from "./exam-papers-list";
 
 export default function ExamDetailPage() {
+    const location = useLocation(); // Dùng useLocation để lấy state
+    const examId = location.state?.examId; // Lấy examId từ state nếu có
     const [examData, setExamData] = useState<any>(null); // To store fetched exam data
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -23,6 +24,12 @@ export default function ExamDetailPage() {
 
     // Fetch exam data
     useEffect(() => {
+        if (!examId) {
+            setError("Exam ID is required");
+            setLoading(false);
+            return;
+        }
+
         const token = localStorage.getItem("jwtToken");
 
         setLoading(true);
@@ -44,7 +51,7 @@ export default function ExamDetailPage() {
             .then((data) => setExamData(data))
             .catch((err) => setError(err.message))
             .finally(() => setLoading(false));
-    }, []);
+    }, [examId]);
 
     // Loading state
     if (loading) {
@@ -83,7 +90,7 @@ export default function ExamDetailPage() {
                 <ExamDetailContent examData={examData} />
             </div>
             <div className="p-6">
-                <ExamPaperList examId= {1} />
+                <ExamPaperList examId={examId} />
             </div>
         </SidebarInset>
     );
