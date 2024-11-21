@@ -5,7 +5,7 @@ import PostmanItem from "./PostmanItem";
 import { SidebarInset } from "@/components/ui/sidebar"; // Import SidebarInset
 import { useLocation } from "react-router-dom";
 import { useHeader } from "@/hooks/use-header"; // Giống trong examDetail
-import { ErrorPage } from "@/app/error/page";
+import { ErrorPage } from "@/app/authentication/error/page";
 
 // Giả lập dữ liệu
 const mockData = [

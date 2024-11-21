@@ -4,7 +4,7 @@ import { Score, columns } from "@/app/score/scores/columns";
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 import { DataTable } from "@/app/score/scores/data-table";
 import { useLocation } from "react-router-dom";
-import { ErrorPage } from "@/app/error/page";
+import { ErrorPage } from "@/app/authentication/error/page";
 import { DataTableSkeleton } from "../scores/data-table-skeleton";
 
 async function getData(exampaperid: number) {

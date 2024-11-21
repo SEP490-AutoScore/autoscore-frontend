@@ -4,7 +4,6 @@ import {
   UsersRound,
   Shield,
   BookOpen,
-  BadgeCheck,
   Settings,
 } from "lucide-react";
 
@@ -47,7 +46,26 @@ const data = {
   ],
   navPermission: [
     {
-      title: "Permissions",
+      title: "Accounts",
+      url: "##",
+      icon: UsersRound,
+      allowedRoles: ["ADMIN"],
+      permission: "VIEW_ACCOUNT",
+      items: [
+        // {
+        //   title: "Add User",
+        //   url: "##.",
+        //   permission: "CREATE_ACCOUNT",
+        // },
+        {
+          title: "Users",
+          url: "##..",
+          permission: "VIEW_ACCOUNT",
+        },
+      ],
+    },
+    {
+      title: "Access",
       url: "#",
       icon: Shield,
       allowedRoles: ["ADMIN"],
@@ -55,63 +73,41 @@ const data = {
       items: [
         {
           title: "Roles",
-          url: "#.",
+          url: "/roles",
           permission: "VIEW_ROLE",
         },
         {
-          title: "All Permissions",
+          title: "Permissions",
           permission: "VIEW_PERMISSION",
           url: "/permissions",
-        },
-      ],
-    },
-    {
-      title: "Accounts",
-      url: "##",
-      icon: UsersRound,
-      allowedRoles: ["ADMIN"],
-      permission: "VIEW_ACCOUNT",
-      items: [
-        {
-          title: "Add User",
-          url: "##.",
-          permission: "CREATE_ACCOUNT",
-        },
-        {
-          title: "All Users",
-          url: "##..",
-          permission: "VIEW_ACCOUNT",
         },
       ],
     },
   ],
   navgrading: [
     {
-      title: "Exams",
+      title: "Examination",
       url: "###",
       icon: BookOpen,
       allowedRoles: ["ADMIN"],
       permission: "VIEW_EXAM",
       items: [
         {
-          title: "Add Exam",
-          url: "/exams/new-exam",
-          permission: "CREATE_EXAM",
-        },
-        {
-          title: "All Exams",
+          title: "Exams",
           url: "/exams",
           permission: "VIEW_EXAM",
         },
+        {
+          title: "Exam Papers",
+          url: "##",
+          permission: "VIEW_EXAM",
+        },
+        {
+          title: "Scores",
+          url: "/scores-overview",
+          permission: "VIEW_SCORE",
+        },
       ],
-    },
-    {
-      title: "Scores",
-      url: "/scores-overview",
-      allowedRoles: ["ADMIN"],
-      icon: BadgeCheck,
-      permission: "VIEW_SCORE",
-      items: [],
     },
     {
       title: "Setting",

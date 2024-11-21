@@ -1,9 +1,9 @@
-import { columns } from "@/app/exams/columns";
-import { DataTable } from "@/app/exams/data-table";
+import { columns } from "@/app/exam/overview/columns";
+import { DataTable } from "@/app/exam/overview/data-table";
 import { useState, useEffect } from "react";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
-import { DataTableSkeleton } from "@/app/exams/data-table-skeleton";
-import { NoResultPage, ErrorPage } from '@/app/error/page';
+import { DataTableSkeleton } from "@/app/exam/overview/data-table-skeleton";
+import { NoResultPage, ErrorPage } from '@/app/authentication/error/page';
 
 interface Exams {
   examId: number;
