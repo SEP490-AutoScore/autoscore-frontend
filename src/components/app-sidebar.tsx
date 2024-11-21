@@ -55,7 +55,7 @@ const data = {
       items: [
         {
           title: "Roles",
-          url: "#.",
+          url: "/roles",
           permission: "VIEW_ROLE",
         },
         {

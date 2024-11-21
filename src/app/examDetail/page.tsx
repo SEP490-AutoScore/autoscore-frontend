@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { SidebarInset } from "@/components/ui/sidebar";
 import ExamInfo from "./exam-info"; // Đường dẫn đúng trong dự án của bạn
 import Detail from "./exam-detail";
-import { ErrorPage } from '@/app/error/page';
+import { ErrorPage } from '@/app/authentication/error/page';
 
 
 export default function Page() {

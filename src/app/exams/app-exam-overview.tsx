@@ -3,7 +3,7 @@ import { DataTable } from "@/app/exams/data-table";
 import { useState, useEffect } from "react";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { DataTableSkeleton } from "@/app/exams/data-table-skeleton";
-import { NoResultPage, ErrorPage } from '@/app/error/page';
+import { NoResultPage, ErrorPage } from '@/app/authentication/error/page';
 
 interface Exams {
   examId: number;

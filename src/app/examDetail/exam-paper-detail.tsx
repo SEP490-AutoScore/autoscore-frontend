@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Ske from "./skeleton-page"
-import { ErrorPage } from '@/app/error/page';
+import { ErrorPage } from '@/app/authentication/error/page';
 import PostmanForGrading from '@/app/postman-for-grading/postman-for-grading';
 import ExamDatabase from '@/app/examDatabase/exam-database';
 import { useToastNotification } from "@/hooks/use-toast-notification";

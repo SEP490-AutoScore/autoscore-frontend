@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ExamPaperDetail from "./exam-paper-detail";
 import Ske from "./skeleton-page"
-import { ErrorPage } from '@/app/error/page';
+import { ErrorPage } from '@/app/authentication/error/page';
 import {
   ResizableHandle,
   ResizablePanel,

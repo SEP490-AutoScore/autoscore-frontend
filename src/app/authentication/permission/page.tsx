@@ -1,6 +1,6 @@
 import { useHeader } from "@/hooks/use-header";
 import { SidebarInset } from "@/components/ui/sidebar";
-import Permisisons from "@/app/permission/permissions/app-permission";
+import Permisisons from "@/app/authentication/permission/app-permission";
 
 export default function Page() {
   const Header = useHeader({

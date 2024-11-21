@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { useToastNotification } from "@/hooks/use-toast-notification";
-import { NoResultPage, ErrorPage } from '@/app/error/page';
+import { NoResultPage, ErrorPage } from '@/app/authentication/error/page';
 
 interface Semester {
     semesterId: number,

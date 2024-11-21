@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import PermissionCategoryTable, {
   Permissions,
-} from "@/app/permission/permissions/data-table-permission-category";
-import { columns } from "@/app/permission/permissions/columns";
-import { DataTableSkeleton } from "@/app/exams/data-table-skeleton";
-import { NoResultPage, ErrorPage } from "@/app/error/page";
+} from "@/app/authentication/permission/data-table-permission-category";
+import { columns } from "@/app/authentication/permission/columns";
+import { DataTableSkeleton } from "@/app/authentication/permission/data-table-sekeleton";
+import { NoResultPage, ErrorPage } from "@/app/authentication/error/page";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";

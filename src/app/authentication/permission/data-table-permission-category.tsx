@@ -1,5 +1,5 @@
 import React from "react";
-import { DataTable } from "@/app/permission/permissions/data-table";
+import { DataTable } from "@/app/authentication/permission/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 
 export interface Permission {
