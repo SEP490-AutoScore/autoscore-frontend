@@ -15,6 +15,7 @@ import ExamPapers from "@/app/exam-papers/page";
 import GherkinPostman from "@/app/gherkin-postman/page";
 import PostmanForGrading from "@/app/postman-for-grading/page";
 import Permissions from "@/app/permission/permissions/page";
+import ExamQuestions from "@/app/exam-questions/page"
 
 const AppRoutes = () => {
   return (
@@ -39,6 +40,7 @@ const AppRoutes = () => {
           <Route path="gherkin-postman/:id" element={<GherkinPostman />} />
           <Route path="postman-for-grading/:id" element={<PostmanForGrading />} />
           <Route path="permissions" element={<Permissions />} />
+          <Route path="exams/exam-papers/exam-questions" element={<ExamQuestions />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
