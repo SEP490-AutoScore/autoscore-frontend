@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate from React Router
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
-import { Input } from "@/components/ui/input"; // Import Input component from ShadCN UI
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"; // Import Dialog components
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 interface Important {
     importantId: number;
@@ -30,24 +30,25 @@ export function ExamPaperList({ examId }: { examId: number }) {
     const [examPapers, setExamPapers] = useState<ExamPaper[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const navigate = useNavigate(); // Initialize navigate hook
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         examPaperCode: "",
         instruction: "",
-        importantIdList: [] as number[], // This will store selected importantId values
+        importantIdList: [] as number[], // Selected importantId values
     });
 
-    const [importants, setImportants] = useState<Important[]>([]); // State to store the important items
+    const [importants, setImportants] = useState<Important[]>([]);
 
+    // Fetch important items
     useEffect(() => {
-        const token = localStorage.getItem("jwtToken"); // Retrieve the JWT token from localStorage
+        const token = localStorage.getItem("jwtToken");
 
         fetch(`${BASE_URL}/api/important?subjectId=1`, {
-            method: "GET", // Assuming it's a GET request
+            method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`, // Set the token in the Authorization header
+                Authorization: `Bearer ${token}`,
             },
         })
             .then((response) => {
@@ -57,8 +58,8 @@ export function ExamPaperList({ examId }: { examId: number }) {
                 return response.json();
             })
             .then((data) => setImportants(data))
-            .catch((err) => setError(err.message)) // Updated to handle the error message directly
-            .finally(() => setLoading(false)); // Ensure loading is set to false when the request is complete
+            .catch((err) => setError(err.message))
+            .finally(() => setLoading(false));
     }, []);
 
     // Fetch exam papers
@@ -74,11 +75,13 @@ export function ExamPaperList({ examId }: { examId: number }) {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ examId }), // Sending the examId in the body
+            body: JSON.stringify({ examId }),
         })
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Failed to fetch exam papers");
+                }if(response.status === 204  ){
+                    return [];
                 }
                 return response.json();
             })
@@ -90,6 +93,12 @@ export function ExamPaperList({ examId }: { examId: number }) {
     const handleFormSubmit = () => {
         const token = localStorage.getItem("jwtToken");
 
+        // Check for required fields
+        if (!formData.examPaperCode || formData.importantIdList.length === 0) {
+            setError("Please fill all fields.");
+            return;
+        }
+
         fetch(`${BASE_URL}/api/exam-paper`, {
             method: "POST",
             headers: {
@@ -98,7 +107,7 @@ export function ExamPaperList({ examId }: { examId: number }) {
             },
             body: JSON.stringify({
                 examPaperCode: formData.examPaperCode,
-                examId: examId,
+                examId,
                 instruction: formData.instruction,
                 importantIdList: formData.importantIdList,
             }),
@@ -109,33 +118,14 @@ export function ExamPaperList({ examId }: { examId: number }) {
                 }
                 return response.json();
             })
-            .then(() => {
-                // Reload exam papers after successful creation
+            .then((data) => {
+                // Add the newly created exam paper to the list
+                setExamPapers((prevPapers) => [...prevPapers, data]);
                 setFormData({
                     examPaperCode: "",
                     instruction: "",
                     importantIdList: [],
                 });
-                // Trigger refetching of the exam papers
-                setLoading(true);
-                setError(null);
-                fetch(`${BASE_URL}${API_ENDPOINTS.getExamPapers}`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({ examId }),
-                })
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error("Failed to fetch exam papers");
-                        }
-                        return response.json();
-                    })
-                    .then((data) => setExamPapers(data))
-                    .catch((err) => setError(err.message))
-                    .finally(() => setLoading(false));
             })
             .catch((err) => setError(err.message));
     };
@@ -198,7 +188,7 @@ export function ExamPaperList({ examId }: { examId: number }) {
                                                     type="checkbox"
                                                     value={important.importantId}
                                                     onChange={(e) => {
-                                                        const id = Number(e.target.value); // Ensure this is a number
+                                                        const id = Number(e.target.value);
                                                         setFormData((prevData) => {
                                                             const updatedList = e.target.checked
                                                                 ? [...prevData.importantIdList, id]
@@ -238,11 +228,7 @@ export function ExamPaperList({ examId }: { examId: number }) {
                                             const importantDetails = important.importantName || important.importantScrip || important.subject.subjectName;
                                             return (
                                                 <li key={index} className="list-disc pl-5">
-                                                    {importantDetails ? (
-                                                        importantDetails
-                                                    ) : (
-                                                        <span className="italic text-gray-500">No important details available.</span>
-                                                    )}
+                                                    {importantDetails ? importantDetails : <span className="italic text-gray-500">No important details available.</span>}
                                                 </li>
                                             );
                                         })
