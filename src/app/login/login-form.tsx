@@ -57,8 +57,7 @@ export function LoginForm() {
             if (key === "refreshToken") {
               setCookie(key, value, data.exp);
             } else if (key === "exp") {
-              const expire = Date.now() + data.exp;
-              localStorage.setItem(key, String(expire));
+              localStorage.setItem(key, data.exp.toString());
             }
              else {
               localStorage.setItem(key, value)
