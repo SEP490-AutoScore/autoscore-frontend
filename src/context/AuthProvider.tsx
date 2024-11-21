@@ -39,7 +39,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (response.ok) {
           const data = await response.json();
           localStorage.setItem("jwtToken", data.accessToken);
-          setCookie("refreshToken", data.refreshToken, Number(localStorage.getItem("exp")));
+          localStorage.setItem("exp",  data.exp.toString());
+          setCookie("refreshToken", data.refreshToken, data.exp);
           showToast({
             title: "Session Refreshed",
             description: "Your session has been renewed.",

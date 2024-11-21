@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Ske from "./skeleton-page"
 import { ErrorPage } from '@/app/error/page';
-import PostmanForGrading from '@/app/postmanForGrading/postman-for-grading';
+import PostmanForGrading from '@/app/postman-for-grading/postman-for-grading';
 import ExamDatabase from '@/app/examDatabase/exam-database';
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import { handleImport } from '@/app/postmanForGrading/import'; // Đường dẫn cần chính xác
@@ -448,7 +448,7 @@ const ExamPaperDetail: React.FC<ExamPaperDetailProps> = ({ examPaperId }) => {
                 <ResizablePanel>
     <div className="flex h-full items-center justify-center p-6">
         <div className="flex flex-col items-center">
-            <PostmanForGrading examPaperId={examPaperId} />
+            {/* <PostmanForGrading examPaperId={examPaperId} /> */}
             {/* Input chọn file */}
             <input
                 type="file"
