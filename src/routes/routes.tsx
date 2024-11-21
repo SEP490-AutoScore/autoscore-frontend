@@ -6,16 +6,15 @@ import ProtectedRoute from "./ProtectedRoute";
 
 import Login from "@/app/authentication/login/page";
 import Dashboard from "@/app/dashboard/page";
-import Exams from "@/app/exams/page";
-import ExamDetail from "@/app/examDetail/page";
+import Exams from "@/app/exam/overview/page";
 import ScoresPage from "@/app/score/scores/page";
 import ScoresOverviewPage from "@/app/score/overview/page";
-import NewExam from "@/app/new-exam/page";
-import ExamPapers from "@/app/exam-papers/page";
-import GherkinPostman from "@/app/gherkin-postman/page";
-import PostmanForGrading from "@/app/postman-for-grading/page";
+import NewExam from "@/app/exam/new-exam/page";
+import ExamPapers from "@/app/exam/exam-papers/page";
+import GherkinPostman from "@/app/exam/gherkin-postman/page";
+import PostmanForGrading from "@/app/exam/postman-for-grading/page";
 import Permissions from "@/app/authentication/permission/page";
-import ExamQuestions from "@/app/exam-questions/page"
+import ExamQuestions from "@/app/exam/exam-questions/page";
 import Roles from "@/app/authentication/role/page";
 
 const AppRoutes = () => {
@@ -33,7 +32,6 @@ const AppRoutes = () => {
         >
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="exams" element={<Exams />} />
-          <Route path="exams/detail" element={<ExamDetail />} />
           <Route path="scores" element={<ScoresPage />} />
           <Route path="scores-overview" element={<ScoresOverviewPage />} />
           <Route path="exams/new-exam" element={<NewExam />} />
