@@ -27,9 +27,9 @@ export function useHeader({
           <BreadcrumbList>
             <BreadcrumbItem className="hidden md:block">
               {breadcrumbPage_2 ? (
-                <Link to={breadcrumbLink || ""}>
-                  <BreadcrumbLink>{breadcrumbPage}</BreadcrumbLink>
-                </Link>
+                <BreadcrumbLink asChild>
+                  <Link to={breadcrumbLink || ""}>{breadcrumbPage}</Link>
+                </BreadcrumbLink>
               ) : (
                 <BreadcrumbPage>{breadcrumbPage}</BreadcrumbPage>
               )}
@@ -39,9 +39,9 @@ export function useHeader({
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem className="hidden md:block">
                   {breadcrumbPage_3 ? (
-                    <Link to={breadcrumbLink_2 || ""} state={stateGive}>
-                      <BreadcrumbLink>{breadcrumbPage_2}</BreadcrumbLink>
-                    </Link>
+                    <BreadcrumbLink asChild>
+                      <Link to={breadcrumbLink_2 || ""} state={stateGive}>{breadcrumbPage_2}</Link>
+                    </BreadcrumbLink>
                   ) : (
                     <BreadcrumbPage>{breadcrumbPage_2}</BreadcrumbPage>
                   )}
