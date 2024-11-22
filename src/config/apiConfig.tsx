@@ -25,7 +25,7 @@ export const API_ENDPOINTS = {
   changeDatabase: "/api/database/update",
 
   // Exam Question
-  getlistIdQuestion: "/api/exam-paper/questions",
+  getlistIdQuestion: "/api/exam-paper/",
   getQuestions: "/api/exam-question/list",
 
   // Gherkin

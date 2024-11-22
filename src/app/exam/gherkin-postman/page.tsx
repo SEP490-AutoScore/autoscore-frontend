@@ -11,6 +11,7 @@ import GherkinPostmanLayout from "./gherkin-postman-layout";
 const GherkinPostmanPage: React.FC = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [questions, setQuestions] = useState<any[]>([]);
   const token = localStorage.getItem("jwtToken");
 
   const location = useLocation();
@@ -26,6 +27,7 @@ const GherkinPostmanPage: React.FC = () => {
     stateGive: { examId: examId },
   });
 
+
   useEffect(() => {
     const fetchData = async () => {
       if (!token) {
@@ -35,31 +37,40 @@ const GherkinPostmanPage: React.FC = () => {
 
       try {
         setLoading(true);
-        const response = await fetch(
-          `${BASE_URL}${API_ENDPOINTS.gherkinScenarioPairs}${examPaperId}`, // Chèn trực tiếp examPaperId
-          {
+
+        const [dataResponse, questionsResponse] = await Promise.all([
+          fetch(`${BASE_URL}${API_ENDPOINTS.gherkinScenarioPairs}${examPaperId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
-        );
+          }),
+          fetch(`${BASE_URL}${API_ENDPOINTS.getlistIdQuestion}${examPaperId}/questions`, {
+         
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+        ]);
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        if (!dataResponse.ok || !questionsResponse.ok) {
+          throw new Error("Lỗi khi gọi API");
         }
 
-        const result = await response.json();
-        setData(result);
+        const Data = await dataResponse.json();
+        const questionsData = await questionsResponse.json();
+
+        setData(Data);
+        setQuestions(questionsData);
       } catch (error) {
         console.error("Lỗi khi gọi API:", error);
       } finally {
-        setLoading(false); // Kết thúc loading
+        setLoading(false);
       }
-
     };
 
     fetchData();
   }, [token, examPaperId]);
+
 
   if (!examPaperId) {
     return (
@@ -121,21 +132,81 @@ const GherkinPostmanPage: React.FC = () => {
     </div>
   );
 
+  const questionDropdown = (
+    <select className="w-1/2 p-2 border border-gray-300 rounded-lg">
+      <option>Choose Question</option>
+      {questions.map((questionId) => (
+        <option key={questionId} value={questionId}>
+          Question ID {questionId}
+        </option>
+      ))}
+    </select>
+  );
 
   return (
+
     <SidebarInset>
       {Header}
-      <GherkinPostmanLayout
+      <div className="w-full border border-gray-200  rounded-lg">
 
-        top={{
-          left: "Gherkin Tool",
-          right: "Postman Tool",
-        }}
-        left={gherkinContent}
-        right={postmanContent}
-      />
+        <GherkinPostmanLayout
+
+          top={{
+            left: (
+              <>
+                <div className="text-2xl font-bold tracking-tight">Gherkins</div>
+                <p className="text-muted-foreground">
+                  Here's a list of gherkin scenario of this question!
+                </p>
+                <div className="mt-2">
+                  <select className="w-full p-2 border border-gray-300 rounded-lg">
+                    <option>Gherkin Action</option>
+                    <option>Generate Gherkin</option>
+                    <option>Create</option>
+                    <option>Create more</option>
+                  </select>
+                </div>
+              </>
+            ),
+            right: (
+              <>
+                <div className="text-2xl font-bold tracking-tight">Postmans</div>
+                <p className="text-muted-foreground">
+                  Here's a list of postman script of this question!
+                </p>
+                <div className="mt-2">
+                  <select className="w-full p-2 border border-gray-300 rounded-lg">
+                    <option>Postman Action</option>
+                    <option>Delete</option>
+                    <option>Create</option>
+                    <option>Create more</option>
+                  </select>
+                </div>
+              </>
+            ),
+          }}
+        
+          middle={
+            <>
+            
+            <div className="flex justify-center p-4 mb-4">{questionDropdown}</div>
+              <div className="flex justify-center mb-4">
+                <div className="w-1/2 p-4 bg-white border border-gray-300 rounded-lg">
+                  <h2 className="text-lg font-semibold">Question Details</h2>
+                  <p>Choose a question to view its details.</p>
+                </div>
+              </div>
+            </>
+          }
+          left={gherkinContent}
+       
+          right={postmanContent}
+        />
+      </div>
     </SidebarInset>
+
   );
+
 };
 
 export default GherkinPostmanPage;
