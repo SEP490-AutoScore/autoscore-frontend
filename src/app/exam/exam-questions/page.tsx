@@ -6,6 +6,7 @@ import { ExamPaperInfo } from "././exam-paper-info";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { useHeader } from "@/hooks/use-header";
 import ExamQuestionsList from "./exam-questions";
+import InfoComponent from "./instruction";
 
 interface Subject {
     subjectId: number;
@@ -14,10 +15,10 @@ interface Subject {
 }
 
 interface Semester {
+    semesterId: number;
     semesterName: string;
     semesterCode: string;
 }
-
 
 interface ExamPaper {
     examPaperId: number;
@@ -34,8 +35,8 @@ interface ExamPaper {
 export default function ExamPaperDetails() {
     const location = useLocation();
     const { examId, examPaperId } = location.state || {};
-
     const [examPaper, setExamPaper] = useState<ExamPaper | null>(null);
+    const [, setExamData] = useState<any>(null); // To store exam data
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -46,9 +47,56 @@ export default function ExamPaperDetails() {
         breadcrumbPage_2: "Exam Details",
         breadcrumbPage_3: "Exam Question",
         stateGive: { examId: examId }, // only pass if state is required
-      });
+    });
 
+    // Fetch exam data by examId
+    useEffect(() => {
+        if (!examId) {
+            setError("Exam ID is required");
+            setLoading(false);
+            return;
+        }
 
+        const token = localStorage.getItem("jwtToken");
+
+        setLoading(true);
+        setError(null);
+
+        fetch(`${BASE_URL}${API_ENDPOINTS.getExamInfo}/${examId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch exam details");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                setExamData(data);
+
+                // Set examPaper with exam data, including subject and semester
+                setExamPaper((prevState) => ({
+                    ...prevState,
+                    examPaperId: data.examPaperId,
+                    examPaperCode: data.examPaperCode,
+                    importants: data.importants,
+                    isUsed: data.isUsed,
+                    status: data.status,
+                    instruction: data.instruction,
+                    duration: data.duration,
+                    subject: data.subject || null,
+                    semester: data.semester || null,
+                }));
+            })
+            .catch((err) => setError(err.message))
+            .finally(() => setLoading(false));
+    }, [examId]);
+
+    // Fetch exam paper details by examPaperId
     useEffect(() => {
         if (!examPaperId) return;
 
@@ -65,11 +113,18 @@ export default function ExamPaperDetails() {
                 }
                 return response.json();
             })
-            .then((data) => setExamPaper(data))
+            .then((data) => {
+                // Merge fetched exam paper details into the existing state
+                setExamPaper((prevExamPaper) => ({
+                    ...prevExamPaper,
+                    ...data, // Merge the exam paper details
+                }));
+            })
             .catch((err) => setError(err.message))
             .finally(() => setLoading(false));
     }, [examPaperId]);
 
+    // Handle loading and errors
     if (!examId || !examPaperId) {
         return (
             <Alert variant="destructive">
@@ -103,6 +158,9 @@ export default function ExamPaperDetails() {
             {Header}
             <div className="space-y-6 p-6">
                 {examPaper && <ExamPaperInfo examPaper={examPaper} />}
+            </div>
+            <div className="space-y-6 p-6">
+                <InfoComponent examPaperId={examPaperId} />
             </div>
             <div className="space-y-6 p-6">
                 <ExamQuestionsList examPaperId={examPaperId} />

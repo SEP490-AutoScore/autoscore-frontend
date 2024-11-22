@@ -23,7 +23,7 @@ export function ExamPaperInfo({ examPaper }: { examPaper: ExamPaper }) {
     return (
         <Card className="border shadow-md">
             <CardHeader>
-                <CardTitle>{examPaper.examPaperCode || "N/A"}</CardTitle>
+                <CardTitle>Exam Paper</CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
