@@ -7,6 +7,18 @@ import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { useHeader } from "@/hooks/use-header";
 import ExamQuestionsList from "./exam-questions";
 
+interface Subject {
+    subjectId: number;
+    subjectName: string;
+    subjectCode: string;
+}
+
+interface Semester {
+    semesterName: string;
+    semesterCode: string;
+}
+
+
 interface ExamPaper {
     examPaperId: number;
     examPaperCode: string;
@@ -15,6 +27,8 @@ interface ExamPaper {
     status: string;
     instruction: string;
     duration: number;
+    subject: Subject | null; // Subject can be null
+    semester: Semester | null; // Semester can be null
 }
 
 export default function ExamPaperDetails() {
