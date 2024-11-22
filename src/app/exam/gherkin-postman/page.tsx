@@ -1,130 +1,99 @@
-import React, { useState } from "react";
-import GherkinPostmanLayout from "./GherkinPostmanLayout";
-import GherkinItem from "./GherkinItem";
-import PostmanItem from "./PostmanItem";
-import { SidebarInset } from "@/components/ui/sidebar"; // Import SidebarInset
-import { useLocation } from "react-router-dom";
-import { useHeader } from "@/hooks/use-header"; // Giống trong examDetail
-import { ErrorPage } from "@/app/authentication/error/page";
+import React, { useState, useEffect } from "react";
+import GherkinPostmanLayout from "./gherkin-postman-layout";
 
-// Giả lập dữ liệu
-const mockData = [
-  { id: 1, gherkin: "Given I am a user\nWhen I click on 'start'\nThen I should see the homepageGiven I am a user\nWhen I click on 'start'\nThen I should see the homepageGiven I am a user\nWhen I click on 'start'\nThen I should see the homepage", postman: "POST /api/v1/start - { 'userId': 123 }" },
-  { id: 2, gherkin: "Given I am on the homepage\nWhen I click 'Login'\nThen I should see the login page", postman: "GET /api/v1/login " },
-  { id: 3, gherkin: "Given I have logged in\nWhen I navigate to the dashboard\nThen I should see my profile", postman: "GET /api/v1/dashboard" },
-];
+const GherkinPostmanPage: React.FC = () => {
+  const [data, setData] = useState([]);
+  const token = localStorage.getItem("jwtToken");
 
-const Page: React.FC = () => {
-  const [selectedGherkinIds, setSelectedGherkinIds] = useState<number[]>([]);
-  const [selectedPostmanIds, setSelectedPostmanIds] = useState<number[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!token) {
+        console.error("JWT Token không tồn tại. Vui lòng đăng nhập.");
+        return;
+      }
 
-  const [editingGherkinId, setEditingGherkinId] = useState<number | null>(null);
-  const [editingPostmanId, setEditingPostmanId] = useState<number | null>(null);
+      try {
+        const response = await fetch(
+          "http://localhost:8080/api/gherkin_scenario/pairs?examPaperId=1",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-  const [gherkinContent, setGherkinContent] = useState<string>("");
-  const [postmanContent, setPostmanContent] = useState<string>("");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-  const location = useLocation();
-  const id = location.state?.gherkinPostmanId; // Lấy ID từ state
-  const role = localStorage.getItem("role");
+        const result = await response.json();
+        setData(result);
+      } catch (error) {
+        console.error("Lỗi khi gọi API:", error);
+      }
+    };
 
-  // if (!id) {
-  //   return <div>Error: GherkinPostman ID not provided</div>;
-  // }
+    fetchData();
+  }, [token]);
 
-  // if (!role) {
-  //   return <ErrorPage />;
-  // }
+  const gherkinContent = (
+    <div>
+      {data.map((item: any, index) => (
+        <div
+          key={index}
+          className="mb-4 p-4 border rounded-lg bg-gray-100 shadow-sm resize-y overflow-auto h-64" 
+    
+   
+        >
+          <h3 className="font-semibold text-lg">
+            Scenario #{item.gherkin?.gherkinScenarioId}
+          </h3>
+          <pre className="text-sm whitespace-pre-wrap">
+            {item.gherkin?.gherkinData}
+          </pre>
+        </div>
+      ))}
+    </div>
+  );
 
-  const Header = useHeader({
-    breadcrumbLink: "/gherkin-postman",
-    breadcrumbLink_2: `/gherkin-postman/${id}`,
-    breadcrumbPage: "Gherkin Postman",
-    breadcrumbPage_2: `Postman ID ${id}`,
-  });
+  const postmanContent = (
+    <div>
+      {data.map((item: any, index) => (
+        <div
+          key={index}
+          className="mb-4 p-4 border rounded-lg bg-gray-100 shadow-sm resize-y overflow-auto h-64" 
+        >
+          {item.postman ? (
+            <>
+              <h3 className="font-semibold text-lg">
+                Postman Function: {item.postman.postmanFunctionName}
+              </h3>
+              <p className="text-sm">Total PM Tests: {item.postman.totalPmTest}</p>
+         
+              <pre className="text-sm whitespace-pre-wrap bg-gray-200 p-2 rounded">
+                {atob(item.postman.fileCollectionPostman)}
+              </pre>
 
-
-  const handleGherkinClick = (id: number) => {
-    setSelectedGherkinIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
-  };
-
-  const handlePostmanClick = (id: number) => {
-    setSelectedPostmanIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
-  };
-
-  const handleDoubleClickGherkin = (item: any) => {
-    setEditingGherkinId(item.id);
-    setGherkinContent(item.gherkin);
-  };
-
-  const handleDoubleClickPostman = (item: any) => {
-    setEditingPostmanId(item.id);
-    setPostmanContent(item.postman);
-  };
-
-  const handleSaveGherkin = (id: number) => {
-    mockData.find(item => item.id === id)!.gherkin = gherkinContent;
-    setEditingGherkinId(null);
-  };
-
-  const handleSavePostman = (id: number) => {
-    mockData.find(item => item.id === id)!.postman = postmanContent;
-    setEditingPostmanId(null);
-  };
-
-  const handleCancelGherkin = () => {
-    setEditingGherkinId(null);
-  };
-
-  const handleCancelPostman = () => {
-    setEditingPostmanId(null);
-  };
+              <p className="text-sm">Status: {item.postman.status ? "Active" : "Inactive"}</p>
+            </>
+          ) : (
+            <p className="italic text-gray-500">No Postman data available.</p>
+          )}
+        </div>
+      ))}
+    </div>
+  );
 
   return (
-    <SidebarInset>
-         {Header}
     <GherkinPostmanLayout
       top={{
-        left: <div className="bg-white border border-gray-300 rounded-lg p-4"><h1 className="text-xl font-bold">Gherkin</h1></div>,
-        right: <div className="bg-white border border-gray-300 rounded-lg p-4"><h1 className="text-xl font-bold">Postman</h1></div>,
+        left: "Gherkin Tool",
+        right: "Postman Tool",
       }}
-      left={
-        <div className="flex flex-col h-full">
-          {mockData.map(item => (
-            <GherkinItem
-              key={item.id}
-              id={item.id}
-              gherkin={item.gherkin}
-              onClick={handleGherkinClick}
-              onDoubleClick={handleDoubleClickGherkin}
-              editingId={editingGherkinId}
-              onSave={handleSaveGherkin}
-              onCancel={handleCancelGherkin}
-              isSelected={selectedGherkinIds.includes(item.id)}  // Truyền isSelected vào đây
-            />
-          ))}
-        </div>
-      }
-      right={
-        <div className="flex flex-col h-full">
-          {mockData.map(item => (
-            <PostmanItem
-              key={item.id}
-              id={item.id}
-              postman={item.postman}
-              onClick={handlePostmanClick}
-              onDoubleClick={handleDoubleClickPostman}
-              editingId={editingPostmanId}
-              onSave={handleSavePostman}
-              onCancel={handleCancelPostman}
-              isSelected={selectedPostmanIds.includes(item.id)}  // Truyền isSelected vào đây
-            />
-          ))}
-        </div>
-      }
+      left={gherkinContent}
+      right={postmanContent}
     />
-    </SidebarInset>
   );
 };
 
-export default Page;
+export default GherkinPostmanPage;
