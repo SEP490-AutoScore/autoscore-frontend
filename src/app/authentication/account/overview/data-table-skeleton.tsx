@@ -1,4 +1,11 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export function DataTableSkeleton() {
   return (
@@ -31,11 +38,30 @@ export function DataTableSkeleton() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {[...Array(10)].map((_, rowIndex) => (
-              <TableRow key={rowIndex}>
+            {[...Array(7)].map((_, rowIndex) => (
+              <TableRow key={rowIndex} className="border-0">
                 {[...Array(6)].map((_, cellIndex) => (
                   <TableCell key={cellIndex}>
-                    <div className="h-4 bg-muted w-full rounded-md animate-pulse"></div>
+                    {cellIndex === 0 ? (
+                      <div className="flex items-center space-x-2 py-1">
+                        <div className="bg-muted w-10 h-10 rounded-full animate-pulse"></div>
+                        <div>
+                          <div className="h-4 bg-muted w-20 rounded-md animate-pulse mb-2"></div>
+                          <div className="h-3 bg-muted w-36 rounded-md animate-pulse"></div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex justify-center w-24">
+                        {cellIndex === 5 ? (
+                          <div className="h-4 w-8 bg-muted rounded-md animate-pulse"></div>
+                        ) : (
+                          <div>
+                            <div className="h-3 bg-muted w-28 rounded-md animate-pulse mb-2"></div>
+                            <div className="h-3 bg-muted w-20 rounded-md animate-pulse"></div>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </TableCell>
                 ))}
               </TableRow>
