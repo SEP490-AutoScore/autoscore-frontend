@@ -47,6 +47,9 @@ export function ExamPaperList({ examId }: { examId: number }) {
                 if (!response.ok) {
                     throw new Error("Failed to fetch important items");
                 }
+                if (response.status === 204) {
+                    return [];
+                }
                 return response.json();
             })
             .then((data) => setImportants(data))
