@@ -9,6 +9,7 @@ export const API_ENDPOINTS = {
   getAllExams: "/api/exam/list",              // API lấy danh sách exams
   vertification: "/api/auth/verify",          // API kiểm tra token
   getAllPermisisons: "/api/permission/get-all", // API lấy danh sách permissions
+  getAllRoles: "/api/role",                   // API lấy danh sách roles
 
   //Exam
   getExamInfo: "/api/exam",                    //get exam info

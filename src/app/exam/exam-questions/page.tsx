@@ -7,6 +7,18 @@ import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { useHeader } from "@/hooks/use-header";
 import ExamQuestionsList from "./exam-questions";
 
+interface Subject {
+    subjectId: number;
+    subjectName: string;
+    subjectCode: string;
+}
+
+interface Semester {
+    semesterName: string;
+    semesterCode: string;
+}
+
+
 interface ExamPaper {
     examPaperId: number;
     examPaperCode: string;
@@ -15,6 +27,8 @@ interface ExamPaper {
     status: string;
     instruction: string;
     duration: number;
+    subject: Subject | null; // Subject can be null
+    semester: Semester | null; // Semester can be null
 }
 
 export default function ExamPaperDetails() {
@@ -30,8 +44,9 @@ export default function ExamPaperDetails() {
         breadcrumbPage: "Exams Overview",
         breadcrumbLink_2: `/exams/exam-papers`,
         breadcrumbPage_2: "Exam Details",
-        breadcrumbPage_3: "Exam Question"
-    });
+        breadcrumbPage_3: "Exam Question",
+        stateGive: { examId: examId }, // only pass if state is required
+      });
 
 
     useEffect(() => {

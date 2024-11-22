@@ -1,11 +1,4 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
@@ -16,12 +9,14 @@ export function useHeader({
   breadcrumbLink_2,
   breadcrumbPage_2,
   breadcrumbPage_3,
+  stateGive, // Optional state parameter
 }: {
   breadcrumbLink?: string;
   breadcrumbPage: string;
   breadcrumbLink_2?: string;
   breadcrumbPage_2?: string;
   breadcrumbPage_3?: string;
+  stateGive?: any; // Optional state type (can be anything, adjust as necessary)
 }) {
   return (
     <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 sticky top-0 z-10 bg-background">
@@ -32,9 +27,9 @@ export function useHeader({
           <BreadcrumbList>
             <BreadcrumbItem className="hidden md:block">
               {breadcrumbPage_2 ? (
-                <Link to={breadcrumbLink || ""}>
-                  <BreadcrumbLink>{breadcrumbPage}</BreadcrumbLink>
-                </Link>
+                <BreadcrumbLink asChild>
+                  <Link to={breadcrumbLink || ""}>{breadcrumbPage}</Link>
+                </BreadcrumbLink>
               ) : (
                 <BreadcrumbPage>{breadcrumbPage}</BreadcrumbPage>
               )}
@@ -44,9 +39,9 @@ export function useHeader({
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem className="hidden md:block">
                   {breadcrumbPage_3 ? (
-                    <Link to={breadcrumbLink_2 || ""}>
-                      <BreadcrumbLink>{breadcrumbPage_2}</BreadcrumbLink>
-                    </Link>
+                    <BreadcrumbLink asChild>
+                      <Link to={breadcrumbLink_2 || ""} state={stateGive}>{breadcrumbPage_2}</Link>
+                    </BreadcrumbLink>
                   ) : (
                     <BreadcrumbPage>{breadcrumbPage_2}</BreadcrumbPage>
                   )}
