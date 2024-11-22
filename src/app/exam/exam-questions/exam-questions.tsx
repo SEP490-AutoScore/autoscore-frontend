@@ -79,7 +79,7 @@ const ExamQuestionsList: React.FC<ExamQuestionsListProps> = ({ examPaperId }) =>
             .then((data) => {
                 setQuestions(prevQuestions => [...prevQuestions, data]);
                 setSuccessMessage("Question created successfully!");
-                setShowCreateForm(false);
+                setShowCreateForm(false); // Close modal on success
             })
             .catch((err) => setError(err.message));
     };
@@ -102,11 +102,26 @@ const ExamQuestionsList: React.FC<ExamQuestionsListProps> = ({ examPaperId }) =>
     );
 
     const renderNoQuestionsState = () => (
-        <>
-            <Button onClick={toggleFormVisibility} className="w-full">
-                {showCreateForm ? "Cancel" : "Create New Question"}
-            </Button>
-            {showCreateForm && <CreateQuestionForm onCreate={handleCreateQuestion} />}
+        <div className="space-y-4">
+            <div className="flex justify-end">
+                <Button
+                    onClick={toggleFormVisibility}
+                    size="sm"
+                    className="w-auto border border-gray-300 text-black bg-white hover:bg-orange-500 hover:text-white transition-colors duration-200"
+                >
+                    {showCreateForm ? "Cancel" : "Create New Question"}
+                </Button>
+            </div>
+            {showCreateForm && (
+                <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-10">
+                    <div className="bg-white p-6 rounded-md w-full sm:w-96">
+                        <CreateQuestionForm
+                            onCreate={handleCreateQuestion}
+                            onClose={() => setShowCreateForm(false)} // Pass onClose to close modal
+                        />
+                    </div>
+                </div>
+            )}
             {successMessage && (
                 <Alert variant="default">
                     <AlertTitle>Success</AlertTitle>
@@ -117,30 +132,47 @@ const ExamQuestionsList: React.FC<ExamQuestionsListProps> = ({ examPaperId }) =>
                 <AlertTitle>No Questions Found</AlertTitle>
                 <AlertDescription>This exam paper has no questions.</AlertDescription>
             </Alert>
-        </>
+        </div>
     );
 
     const renderQuestionsList = () => (
         <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Questions</h2>
-            <Button onClick={toggleFormVisibility} className="w-full">
-                {showCreateForm ? "Cancel" : "Create New Question"}
-            </Button>
-            {showCreateForm && <CreateQuestionForm onCreate={handleCreateQuestion} />}
-            {successMessage && (
-                <Alert variant="default">
-                    <AlertTitle>Success</AlertTitle>
-                    <AlertDescription>{successMessage}</AlertDescription>
-                </Alert>
-            )}
-            {questions.map((question) => (
-                <ExamQuestionItem
-                    key={question.examQuestionId}
-                    question={question}
-                    isExpanded={expandedQuestionId === question.examQuestionId}
-                    onToggle={() => toggleExpand(question.examQuestionId)}
-                />
-            ))}
+            <div className="space-y-4 border p-4 rounded-md"> {/* Wrapper for questions */}
+                <div className="flex justify-end">
+                    <Button
+                        onClick={toggleFormVisibility}
+                        size="sm"
+                        className="w-auto border border-gray-300 text-black bg-white hover:bg-orange-500 hover:text-white transition-colors duration-200"
+                    >
+                        {showCreateForm ? "Cancel" : "Create New Question"}
+                    </Button>
+                </div>
+                {showCreateForm && (
+                    <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-10">
+                        <div className="bg-white p-6 rounded-md w-full sm:w-96">
+                            <CreateQuestionForm
+                                onCreate={handleCreateQuestion}
+                                onClose={() => setShowCreateForm(false)} // Pass onClose to close modal
+                            />
+                        </div>
+                    </div>
+                )}
+                {successMessage && (
+                    <Alert variant="default">
+                        <AlertTitle>Success</AlertTitle>
+                        <AlertDescription>{successMessage}</AlertDescription>
+                    </Alert>
+                )}
+                {questions.map((question) => (
+                    <div key={question.examQuestionId} className="border-b pb-4">
+                        <ExamQuestionItem
+                            question={question}
+                            isExpanded={expandedQuestionId === question.examQuestionId}
+                            onToggle={() => toggleExpand(question.examQuestionId)}
+                        />
+                    </div>
+                ))}
+            </div>
         </div>
     );
 

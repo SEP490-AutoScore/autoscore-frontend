@@ -1,59 +1,56 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-interface Important {
-    importantId: number;
-    importantName: string;
-    importantCode: string;
-    importantScrip: string | null;
-    subject: {
-        subjectId: number;
-        subjectName: string;
-        subjectCode: string;
-    };
+interface Subject {
+    subjectId: number;
+    subjectName: string;
+    subjectCode: string;
+}
+
+interface Semester {
+    semesterName: string;
+    semesterCode: string;
 }
 
 interface ExamPaper {
     examPaperId: number;
     examPaperCode: string;
-    importants: Important[];
-    isUsed: boolean;
-    status: string;
-    instruction: string;
-    duration: number;
+    subject: Subject | null; // Subject can be null
+    semester: Semester | null; // Semester can be null
+    duration: number | null; // Duration can be null
 }
 
 export function ExamPaperInfo({ examPaper }: { examPaper: ExamPaper }) {
     return (
         <Card className="border shadow-md">
             <CardHeader>
-                <CardTitle>{examPaper.examPaperCode}</CardTitle>
+                <CardTitle>Exam Paper</CardTitle>
             </CardHeader>
             <CardContent>
-                <p>
-                    <strong>Instruction:</strong> {examPaper.instruction || "No instructions available"}
-                </p>
-                <p>
-                    <strong>Duration:</strong> {examPaper.duration} minutes
-                </p>
-                <p>
-                    <strong>Status:</strong> {examPaper.status}
-                </p>
-                <p>
-                    <strong>Is Used:</strong> {examPaper.isUsed ? "Yes" : "No"}
-                </p>
-                <div className="mt-4">
-                    <strong>Important Notes:</strong>
-                    {examPaper.importants.length > 0 ? (
-                        <ul className="list-disc pl-6">
-                            {examPaper.importants.map((important) => (
-                                <li key={important.importantId}>
-                                    <strong>{important.importantName}</strong>
-                                </li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p className="text-gray-500 italic">No important found</p>
-                    )}
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    <div>
+                        <p className="font-semibold">Exam Code:</p>
+                        <p>{examPaper.examPaperCode || "N/A"}</p>
+                    </div>
+                    <div>
+                        <p className="font-semibold">Subject:</p>
+                        <p>
+                            {examPaper.subject
+                                ? `${examPaper.subject.subjectName || "N/A"} (${examPaper.subject.subjectCode || "N/A"})`
+                                : "N/A"}
+                        </p>
+                    </div>
+                    <div>
+                        <p className="font-semibold">Semester:</p>
+                        <p>
+                            {examPaper.semester
+                                ? `${examPaper.semester.semesterName || "N/A"} (${examPaper.semester.semesterCode || "N/A"})`
+                                : "N/A"}
+                        </p>
+                    </div>
+                    <div>
+                        <p className="font-semibold">Duration:</p>
+                        <p>{examPaper.duration !== null && examPaper.duration >= 0 ? `${examPaper.duration} minutes` : "N/A"}</p>
+                    </div>
                 </div>
             </CardContent>
         </Card>

@@ -41,23 +41,23 @@ const ExamQuestionItem: React.FC<ExamQuestionItemProps> = ({ question, isExpande
                         <strong>Score:</strong> {question.examQuestionScore}
                     </p>
                     <p>
-                        <strong>Endpoint:</strong> {question.endPoint}
-                    </p>
-                    <p>
-                        <strong>Role Allow:</strong> {question.roleAllow}
-                    </p>
-                    <p>
-                        <strong>HTTP Method:</strong> {question.httpMethod}
-                    </p>
-                    <p>
                         <strong>Description:</strong> {question.description}
                     </p>
-                    {question.validation && (
-                        <div>
-                            <strong>Validation:</strong>
-                            <pre className="bg-gray-100 p-2 rounded">{question.validation}</pre>
+                    {/* Card-like Layout for Endpoint, Role Allow, and HTTP Method */}
+                    <div className="flex space-x-4">
+                        <div className="flex-1 p-4 rounded-lg">
+                            <strong>Endpoint</strong>
+                            <p>{question.endPoint}</p>
                         </div>
-                    )}
+                        <div className="flex-1 p-4 rounded-lg">
+                            <strong>Role Allow</strong>
+                            <p>{question.roleAllow}</p>
+                        </div>
+                        <div className="flex-1 p-4 rounded-lg">
+                            <strong>HTTP Method</strong>
+                            <p>{question.httpMethod}</p>
+                        </div>
+                    </div>
                     {question.payload && (
                         <div>
                             <strong>Payload:</strong>
