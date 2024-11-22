@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { DataTableSkeleton } from "@/app/authentication/permission/data-table-sekeleton";
 import { NoResultPage, ErrorPage } from "@/app/authentication/error/page";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { CardRole } from "./card-role";
+import { CardRoleSkeleton } from "./card-role-sekeleton";
 
 interface RoleProps {
   roleId: number;
@@ -63,7 +63,7 @@ export default function Page() {
   }, []);
 
   if (error) return <ErrorPage />;
-  if (!data) return <DataTableSkeleton />;
+  if (!data) return <CardRoleSkeleton />;
   if (data.length === 0) return <NoResultPage />;
 
   return (

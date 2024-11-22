@@ -72,9 +72,8 @@ export function DataTable<TData, TValue>({
   });
 
   const formatColumnId = (id: string) => {
-    // Remove everything after the underscore
     const cleanId = id.split("_")[0];
-    // Split camelCase or PascalCase into separate words and capitalize them
+    if (cleanId === "employeeCode") return "ID";
     return cleanId
       .replace(/([a-z])([A-Z])/g, "$1 $2")
       .replace(/^./, (str) => str.toUpperCase());
@@ -84,9 +83,9 @@ export function DataTable<TData, TValue>({
     <div className="w-full border border-gray-200 p-8 rounded-lg">
       <div className="flex items-center justify-between space-y-2">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Exams</h2>
+          <h2 className="text-2xl font-bold tracking-tight">Accounts</h2>
           <p className="text-muted-foreground">
-            Here's a list of exams for this campus!
+            Here's a list of accounts for this campus!
           </p>
         </div>
       </div>
@@ -140,10 +139,10 @@ export function DataTable<TData, TValue>({
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="h-16">
+              <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className={`${header.index === 0 ? "px-6" : ""} h-16 font-semibold`}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -162,7 +161,7 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="py-3 border-0 hover:bg-primary hover:text-primary-foreground"
+                  className="border-0 hover:bg-primary hover:text-primary-foreground"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
