@@ -59,7 +59,7 @@ const data = {
         // },
         {
           title: "Users",
-          url: "##..",
+          url: "/accounts",
           permission: "VIEW_ACCOUNT",
         },
       ],
@@ -99,7 +99,7 @@ const data = {
         },
         {
           title: "Exam Papers",
-          url: "##",
+          url: "###.",
           permission: "VIEW_EXAM",
         },
         {

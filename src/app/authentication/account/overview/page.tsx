@@ -1,17 +1,17 @@
 import { useHeader } from "@/hooks/use-header";
 import { SidebarInset } from "@/components/ui/sidebar";
-import Roles from "@/app/authentication/role/app-role";
+import Accounts from "@/app/authentication/account/overview/app-account";
 
 export default function Page() {
   const Header = useHeader({
-    breadcrumbLink: "/permissions",
-    breadcrumbPage: "Permissions Overview",
+    breadcrumbLink: "/accounts",
+    breadcrumbPage: "Accounts Overview",
   });
   return (
     <SidebarInset>
       {Header}
       <div className="flex p-4 pt-0">
-        <Roles />
+        <Accounts />
       </div>
     </SidebarInset>
   );

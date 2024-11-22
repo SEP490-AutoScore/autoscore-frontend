@@ -3,13 +3,15 @@ export const BASE_URL = "http://localhost:8080";
 
 // Các endpoint API
 export const API_ENDPOINTS = {
-  oauthGoogle: "/oauth2/authorization/google", // Đăng nhập Google OAuth
-  signInGoogle: "/api/auth/signingoogle",      // API lấy thông tin JWT
-  refreshToken: "/api/auth/refresh-token",     // API refresh token
-  getAllExams: "/api/exam/list",              // API lấy danh sách exams
-  vertification: "/api/auth/verify",          // API kiểm tra token
-  getAllPermisisons: "/api/permission/get-all", // API lấy danh sách permissions
-  getAllRoles: "/api/role",                   // API lấy danh sách roles
+  oauthGoogle: "/oauth2/authorization/google",   // Đăng nhập Google OAuth
+  signInGoogle: "/api/auth/signingoogle",        // API lấy thông tin JWT
+  refreshToken: "/api/auth/refresh-token",       // API refresh token
+  getAllExams: "/api/exam/list",                 // API lấy danh sách exams
+  vertification: "/api/auth/verify",             // API kiểm tra token
+  getAllPermisisons: "/api/permission/get-all",  // API lấy danh sách permissions
+  getAllRoles: "/api/role",                      // API lấy danh sách roles
+  getRoleDetail: "/api/role-permission/",        // API lấy danh sách permissions by role
+  getAllAccounts: "/api/account/",                // API lấy danh sách account
 
   //Exam
   getExamInfo: "/api/exam",                    //get exam info

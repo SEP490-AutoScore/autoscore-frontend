@@ -63,7 +63,7 @@ export function DataTable<TData, TValue>({
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
               key={headerGroup.id}
-              className="grid grid-cols-4" // Áp dụng grid với 4 phần
+              className="grid grid-cols-6" 
             >
               {headerGroup.headers.map((header, index) => {
                 return (
@@ -71,7 +71,7 @@ export function DataTable<TData, TValue>({
                     key={header.id}
                     className={`
                      font-semibold h-16 py-4
-                    ${index === 2 ? "col-span-2" : "col-span-1"} 
+                    ${index === 2 ? "col-span-3" : "col-span-1"} 
                     ${index === 0 ? "" : "px-4 py-6"}
                   `}
                   >
@@ -93,14 +93,14 @@ export function DataTable<TData, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
-                className="grid grid-cols-4 border-0 hover:bg-primary hover:text-primary-foreground" // Áp dụng grid với 4 phần
+                className="grid grid-cols-6 border-0 hover:bg-primary hover:text-primary-foreground group" 
               >
                 {row.getVisibleCells().map((cell, index) => (
                   <TableCell
                     key={cell.id}
                     className={`
                     px-4 py-3
-                    ${index === 2 ? "col-span-2" : "col-span-1"} 
+                    ${index === 2 ? "col-span-3" : "col-span-1"} 
                   `}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

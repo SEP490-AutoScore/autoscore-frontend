@@ -1,21 +1,20 @@
 import { useState, useEffect } from "react";
 import PermissionCategoryTable, {
-  Permissions,
-} from "@/app/authentication/permission/data-table-permission-category";
-import { columns } from "@/app/authentication/permission/columns";
-import { DataTableSkeleton } from "@/app/authentication/permission/data-table-skeleton";
+  Role
+} from "@/app/authentication/role/detail/data-table-permission-category";
+import { columns } from "@/app/authentication/role/detail/columns";
+import { DataTableSkeleton } from "@/app/authentication/role/detail/data-table-skeleton";
 import { NoResultPage, ErrorPage } from "@/app/authentication/error/page";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
-async function getData(): Promise<Permissions[]> {
+async function getData(id: number): Promise<Role> {
   const token = localStorage.getItem("jwtToken");
   if (!token) {
     throw new Error("JWT Token không tồn tại. Vui lòng đăng nhập.");
   }
 
-  const res = await fetch(`${BASE_URL}${API_ENDPOINTS.getAllPermisisons}`, {
+  const res = await fetch(`${BASE_URL}${API_ENDPOINTS.getRoleDetail}${id}`, {
     method: "GET",
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -28,35 +27,36 @@ async function getData(): Promise<Permissions[]> {
 }
 
 export default function Page() {
-  const [data, setData] = useState<Permissions[] | null>(null);
+  const [data, setData] = useState<Role | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const location = useLocation();
+  const { id } = location.state || {};
 
   useEffect(() => {
-    getData()
-      .then(setData)
+    if (!id) {
+      setError("Role ID is required");
+      return;
+    }
+    getData(id)
+      .then((response) => {
+        setData(response);
+      })
       .catch((err) => setError(err.message));
-  }, []);
+  }, [id]);
 
   if (error) return <ErrorPage />;
   if (!data) return <DataTableSkeleton />;
-  if (data.length === 0) return <NoResultPage />;
+  if (data === null) return <NoResultPage />;
 
   return (
     <div className="container mx-auto w-full border border-gray-200 p-8 rounded-lg">
       <div className="flex items-center justify-between space-y-2">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Permissions</h2>
-          <p className="text-muted-foreground">
-            Here's a list of permissions in the system!
-          </p>
+          <h2 className="text-2xl font-bold tracking-tight">{data.roleName}</h2>
+          <p className="text-muted-foreground">{data.description}</p>
         </div>
-        <Link to="#">
-          <Button variant="outline" className="ml-auto text-primary border-primary rounded-full px-6">
-            Add New
-          </Button>
-        </Link>
       </div>
-      {data.map((category) => (
+      {data.permissionsCategory.map((category) => (
         <PermissionCategoryTable
           key={category.permissionCategoryId}
           category={category}
