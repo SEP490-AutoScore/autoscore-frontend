@@ -1,69 +1,81 @@
 import React, { useState } from "react";
+import { TreeNode } from "./treeUtils"; // Ensure the correct import
+import { buildTree } from "./treeUtils";
 
-// Định nghĩa giao diện cho dữ liệu node
-interface TreeNode {
-  id: number;
-  name: string;
-  parentId: number | null;
-  children: TreeNode[];
-}
-
-// Hàm xây dựng cấu trúc cây lồng ghép
-function buildTree(data: TreeNode[], parentId: number | null = null): TreeNode[] {
-  return data
-    .filter(item => item.parentId === parentId)
-    .map(item => ({
-      ...item,
-      children: buildTree(data, item.id),
-    }));
-}
-
-// Component hiển thị cây cha-con
-const FunctionTree: React.FC<{ tree: TreeNode[]; onUpdateTree: (newTree: TreeNode[]) => void }> = ({ tree, onUpdateTree }) => {
+// The FunctionTree component
+const FunctionTree: React.FC<{
+  tree: TreeNode[];  // Expecting the tree to be an array of TreeNode
+  onUpdateTree: (newTree: TreeNode[]) => void;  // Callback for updating the tree
+}> = ({ tree, onUpdateTree }) => {
   const [draggedNodeId, setDraggedNodeId] = useState<number | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<number | null>(null);
 
-  // Hàm tìm và cập nhật parentId khi di chuyển node
-  const updateParentId = (data: TreeNode[], draggedId: number, newParentId: number | null): TreeNode[] => {
+  // Function to update the parentId of a node when it's dragged and dropped
+  const updateParentId = (data: TreeNode[], draggedId: number, newParentId: number): TreeNode[] => {
+    return data.map(node => {
+      if (node.id === draggedId) {
+        // Update the parentId of the dragged node
+        return { ...node, parentId: newParentId };
+      }
+      // If the node has children, recurse through them to update their parentId
+      if (node.children) {
+        node.children = updateParentId(node.children, draggedId, newParentId);
+      }
+      return node;
+    });
+  };
+
+  // Function to update the score of a specific node
+  const updateScore = (data: TreeNode[], nodeId: number, newScore: number): TreeNode[] => {
     return data.map(node => ({
       ...node,
-      parentId: node.id === draggedId ? newParentId : node.parentId,
+      score: node.id === nodeId ? newScore : node.score,
+      children: updateScore(node.children, nodeId, newScore),  // Recurse for children
     }));
   };
 
-  // Hàm xử lý khi bắt đầu kéo
+  // Handle the start of a drag event
   const handleDragStart = (id: number) => {
     setDraggedNodeId(id);
   };
 
-  // Hàm xử lý khi kéo kết thúc
-  const handleDrop = (targetId: number | null) => {
+  // Handle the drop event on a target node
+  const handleDrop = (targetId: number) => {
     if (draggedNodeId !== null && draggedNodeId !== targetId) {
-      const flatTree = flattenTree(tree); // Chuyển đổi cây hiện tại thành danh sách phẳng
-      const updatedTree = updateParentId(flatTree, draggedNodeId, targetId);
-      onUpdateTree(buildTree(updatedTree)); // Xây dựng lại cây từ danh sách phẳng đã cập nhật
+      const flatTree = flattenTree(tree); // Flatten the tree for easier updates
+      const updatedFlatTree = updateParentId(flatTree, draggedNodeId, targetId);
+      onUpdateTree(buildTree(updatedFlatTree, 0)); // Rebuild the tree after update
     }
     setDraggedNodeId(null);
   };
 
-  // Chuyển đổi cây lồng ghép thành danh sách phẳng
-  const flattenTree = (nodes: TreeNode[], parentId: number | null = null): TreeNode[] => {
+  // Flatten the tree into a flat list for easier manipulation
+  const flattenTree = (nodes: TreeNode[]): TreeNode[] => {
     return nodes.reduce(
       (acc, node) => [
         ...acc,
-        { ...node, children: [], parentId },
-        ...flattenTree(node.children, node.id),
+        { 
+          ...node, 
+          children: [],  // Remove children references in the flat list, but keep other properties like `functionName`
+        },
+        ...flattenTree(node.children),  // Flatten the children as well
       ],
-      [] as TreeNode[]
+      [] as TreeNode[] // Type assertion to ensure we return an array of TreeNode[]
     );
   };
 
-  // Hàm xử lý khi click chọn node
-  const handleSelect = (id: number) => {
-    setSelectedNodeId(id === selectedNodeId ? null : id); // Bỏ chọn nếu click lại node đã chọn
+  // Handle score change for a specific node
+  const handleScoreChange = (nodeId: number, newScore: number) => {
+    const updatedTree = updateScore(tree, nodeId, newScore);
+    onUpdateTree(updatedTree);
   };
 
-  // Render động cây cha-con
+  // Handle selection of a node
+  const handleSelect = (id: number) => {
+    setSelectedNodeId(id === selectedNodeId ? null : id);  // Toggle selection
+  };
+
+  // Render the tree structure recursively
   const renderTree = (nodes: TreeNode[]) => {
     return (
       <ul className="ml-4 list-disc">
@@ -78,27 +90,28 @@ const FunctionTree: React.FC<{ tree: TreeNode[]; onUpdateTree: (newTree: TreeNod
                   : "border-gray-300"
               }`}
               draggable
-              onClick={() => handleSelect(node.id)} // Xử lý khi click vào node
-              onDragStart={() => handleDragStart(node.id)}
-              onDragOver={e => e.preventDefault()} // Cho phép thả vào
-              onDrop={() => handleDrop(node.id)} // Khi thả vào node hiện tại
+              onClick={() => handleSelect(node.id)}  // Select the node on click
+              onDragStart={() => handleDragStart(node.id)}  // Start dragging the node
+              onDragOver={e => e.preventDefault()}  // Allow drop over the node
+              onDrop={() => handleDrop(node.id)}  // Handle drop event
             >
-              <span className="font-semibold">{node.name}</span>
+              <span className="font-semibold">{node.functionName}</span> {/* Changed from `name` to `functionName */}
+              <span className="ml-2 text-sm text-gray-600">({node.totalTestCase} test cases)</span> {/* Show totalTestCase */}
+              <span className="ml-2 text-sm text-gray-600"> (Parent ID: {node.parentId})</span> {/* Show Parent ID */}
+              <span className="ml-2 text-sm text-gray-600"> (ID: {node.id})</span> {/* Show the Node ID */}
+              <div className="mt-2 flex items-center">
+                {/* Editable score input */}
+                <input
+                  type="number"
+                  value={node.score}
+                  className="ml-4 p-1 border rounded w-16"
+                  onChange={(e) => handleScoreChange(node.id, parseFloat(e.target.value))}  // Update score
+                />
+              </div>
             </div>
-            {node.children.length > 0 && renderTree(node.children)}
+            {node.children.length > 0 && renderTree(node.children)}  {/* Recursively render children */}
           </li>
         ))}
-        {nodes.length === 0 && (
-          <li>
-            <div
-              className="p-2 rounded-lg cursor-pointer border-dashed border-2 border-gray-300"
-              onDragOver={e => e.preventDefault()}
-              onDrop={() => handleDrop(null)} // Thả vào danh sách rỗng
-            >
-              Drop here to make this a root node
-            </div>
-          </li>
-        )}
       </ul>
     );
   };
