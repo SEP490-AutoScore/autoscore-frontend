@@ -9,6 +9,7 @@ export function useHeader({
   breadcrumbLink_2,
   breadcrumbPage_2,
   breadcrumbPage_3,
+  breadcrumbLink_3, 
   stateGive, // Optional state parameter
 }: {
   breadcrumbLink?: string;
@@ -16,6 +17,7 @@ export function useHeader({
   breadcrumbLink_2?: string;
   breadcrumbPage_2?: string;
   breadcrumbPage_3?: string;
+  breadcrumbLink_3?: string;
   stateGive?: any; // Optional state type (can be anything, adjust as necessary)
 }) {
   return (

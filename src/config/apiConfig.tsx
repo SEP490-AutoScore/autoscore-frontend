@@ -31,6 +31,7 @@ export const API_ENDPOINTS = {
   // Gherkin
   generateGherkin: "/api/gherkin_scenario/generate_gherkin_format",
   getlistIdGherkin: "/api/exam-paper//gherkin-scenarios",
+  gherkinScenarioPairs: "/api/gherkin_scenario/pairs?examPaperId=",
 
   // Postman
   importPostman: "/api/exam-paper/import-postman-collections",

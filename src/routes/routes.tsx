@@ -38,8 +38,8 @@ const AppRoutes = () => {
           <Route path="scores-overview" element={<ScoresOverviewPage />} />
           <Route path="exams/new-exam" element={<NewExam />} />
           <Route path="exams/exam-papers" element={<ExamPapers />} />
-          <Route path="exams/gherkin-postman" element={<GherkinPostman />} />
-          <Route path="exams/postman-for-grading" element={<PostmanForGrading />} />
+          <Route path="exams/exam-papers/gherkin-postman" element={<GherkinPostman />} />
+          <Route path="exams/exam-papers/postman-for-grading" element={<PostmanForGrading />} />
           <Route path="permissions" element={<Permissions />} />
           <Route path="exams/exam-papers/exam-questions" element={<ExamQuestions />} />
           <Route path="roles" element={<Roles />} />
