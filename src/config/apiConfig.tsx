@@ -32,11 +32,13 @@ export const API_ENDPOINTS = {
   generateGherkin: "/api/gherkin_scenario/generate_gherkin_format",
   getlistIdGherkin: "/api/exam-paper//gherkin-scenarios",
   gherkinScenarioPairs: "/api/gherkin_scenario/pairs?examPaperId=",
+  gherkinScenarioPairsByQuestion: "/api/gherkin_scenario/pairs/by-question",
+  
 
   // Postman
   importPostman: "/api/exam-paper/import-postman-collections",
   exportPostman: "/api/exam-paper/export-postman/",
-  generatePostman: "/api/postman-grading/generate/",
+  generatePostman: "/api/postman-grading/generate",
   mergePostman: "/api/postman-grading/merge/",
 
   //side
