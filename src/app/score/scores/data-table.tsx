@@ -85,7 +85,7 @@ export function DataTable<TData, TValue>({
             (table.getColumn("studentEmail")?.getFilterValue() as string) ?? ""
           }
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("studentEmail")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -125,10 +125,10 @@ export function DataTable<TData, TValue>({
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="h-16">
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className="px-4">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -147,9 +147,9 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                >
+                className="py-4 border-0 hover:bg-primary hover:text-primary-foreground">
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="p-3">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -173,10 +173,6 @@ export function DataTable<TData, TValue>({
       </div>
 
       <div className="flex items-center justify-end space-x-2 pt-4 py-0">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
         <Button
           variant="outline"
           size="sm"
