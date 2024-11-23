@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
 
-// This type is used to define the shape of our data.
 export type ScoredExam = {
   examPaperId: number;
   examCode: string;
@@ -71,7 +70,6 @@ export const columns: ColumnDef<ScoredExam>[] = [
   },
   {
     accessorKey: "semesterName",
-    // header: "Semester Name",
     header: ({ column }) => {
       return (
         <Button
