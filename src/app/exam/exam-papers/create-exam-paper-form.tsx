@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea"; // Import Textarea component
-import { BASE_URL } from "@/config/apiConfig";
+import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { Alert } from "@/components/ui/alert";
 
 interface Important {
@@ -52,7 +52,7 @@ export function CreateExamPaperForm({
             return;
         }
 
-        fetch(`${BASE_URL}/api/exam-paper`, {
+        fetch(`${BASE_URL}${API_ENDPOINTS.getExamPaperInfo}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

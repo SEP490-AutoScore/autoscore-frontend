@@ -18,6 +18,8 @@ import ExamQuestions from "@/app/exam/exam-questions/page";
 import Roles from "@/app/authentication/role/overview/page";
 import RoleDetail from "@/app/authentication/role/detail/page";
 import Accounts from "@/app/authentication/account/overview/page";
+import ExamPapersOverview from "@/app/exam/exam-paper-overview/page";
+import ExamPaperDetail from "@/app/exam/exam-paper-overview/exam-paper-detail";
 
 const AppRoutes = () => {
   return (
@@ -38,13 +40,15 @@ const AppRoutes = () => {
           <Route path="scores-overview" element={<ScoresOverviewPage />} />
           <Route path="exams/new-exam" element={<NewExam />} />
           <Route path="exams/exam-papers" element={<ExamPapers />} />
-          <Route path="exams/gherkin-postman" element={<GherkinPostman />} />
-          <Route path="exams/postman-for-grading" element={<PostmanForGrading />} />
+          <Route path="exams/exam-papers/gherkin-postman" element={<GherkinPostman />} />
+          <Route path="exams/exam-papers/postman-for-grading" element={<PostmanForGrading />} />
           <Route path="permissions" element={<Permissions />} />
           <Route path="exams/exam-papers/exam-questions" element={<ExamQuestions />} />
           <Route path="roles" element={<Roles />} />
           <Route path="roles/detail" element={<RoleDetail />} />
           <Route path="accounts" element={<Accounts />} />
+          <Route path="exam-papers" element={<ExamPapersOverview />} />
+          <Route path="exam-papers/exam-questions" element={<ExamPaperDetail />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

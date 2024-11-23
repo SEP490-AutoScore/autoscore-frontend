@@ -23,19 +23,24 @@ export const API_ENDPOINTS = {
   // Exam Database 
   importDatabase: "/api/database/import",
   changeDatabase: "/api/database/update",
+  getDatabase: "/api/database/getbyExamPaperId",
 
   // Exam Question
-  getlistIdQuestion: "/api/exam-paper/questions",
+  getlistIdQuestion: "/api/exam-paper/",
   getQuestions: "/api/exam-question/list",
+  getQuestion: "/api/exam-question",
 
   // Gherkin
   generateGherkin: "/api/gherkin_scenario/generate_gherkin_format",
   getlistIdGherkin: "/api/exam-paper//gherkin-scenarios",
+  gherkinScenarioPairs: "/api/gherkin_scenario/pairs?examPaperId=",
+  gherkinScenarioPairsByQuestion: "/api/gherkin_scenario/pairs/by-question",
+  
 
   // Postman
   importPostman: "/api/exam-paper/import-postman-collections",
   exportPostman: "/api/exam-paper/export-postman/",
-  generatePostman: "/api/postman-grading/generate/",
+  generatePostman: "/api/postman-grading/generate",
   mergePostman: "/api/postman-grading/merge/",
 
   //side
@@ -45,4 +50,10 @@ export const API_ENDPOINTS = {
   //exam paper
   getExamPapers: "/api/exam-paper/list",
   getExamPaperInfo: "/api/exam-paper",
+  getListExamPaper: "/api/exam-paper/all",
+
+  //important
+  getImportant : "/api/important",
+
+  exportWord: "/api/document/generate-word",
 };

@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
-import PostmanForGradingLayout from "./postman-for-grading-layout";
+import { useLocation } from "react-router-dom";
+import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SidebarInset } from "@/components/ui/sidebar";
+import { useHeader } from "@/hooks/use-header";
 import { useToastNotification } from "@/hooks/use-toast-notification";
+import PostmanForGradingLayout from "./postman-for-grading-layout";
+
 
 const Page: React.FC = () => {
   const [postmanData, setPostmanData] = useState<any[]>([]);
@@ -9,7 +17,17 @@ const Page: React.FC = () => {
   const [selectedAction, setSelectedAction] = useState<string>(""); // Action được chọn
   const notify = useToastNotification(); 
 
+  const location = useLocation();
+  const { examId, examPaperId } = location.state || {};
 
+  const Header = useHeader({
+    breadcrumbLink: "/exams",
+    breadcrumbPage: "Exams Overview",
+    breadcrumbPage_2: "Exam Details",
+    breadcrumbLink_2: "/exams/exam-papers",
+    breadcrumbPage_3: "Postman For Grading",
+    stateGive: { examId: examId },
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -272,11 +290,21 @@ const Page: React.FC = () => {
   };
 
   return (
+    <SidebarInset>
+       {Header}
+       <div className="w-full border border-gray-200  rounded-lg">
     <PostmanForGradingLayout
-      top={<h1 className="text-xl font-bold">Postman For Grading</h1>}
+       top={
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Postman For Grading</h1>
+          <p className="text-sm text-muted-foreground">Here's tree!</p>
+         
+        </div>
+            
+      }
       left={
         <div className="space-y-4">
-          <div className="text-lg">Action</div>
+     
           <select
             className="border border-gray-300 rounded-md p-2"
             value={selectedAction}
@@ -295,6 +323,8 @@ const Page: React.FC = () => {
         </div>
       }
     />
+    </div>
+     </SidebarInset>
   );
 };
 

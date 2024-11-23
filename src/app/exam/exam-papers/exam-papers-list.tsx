@@ -36,7 +36,7 @@ export function ExamPaperList({ examId }: { examId: number }) {
     useEffect(() => {
         const token = localStorage.getItem("jwtToken");
 
-        fetch(`${BASE_URL}/api/important?subjectId=1`, {
+        fetch(`${BASE_URL}${API_ENDPOINTS.getImportant}?subjectId=1`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -46,6 +46,9 @@ export function ExamPaperList({ examId }: { examId: number }) {
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Failed to fetch important items");
+                }
+                if (response.status === 204) {
+                    return [];
                 }
                 return response.json();
             })

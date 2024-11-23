@@ -7,7 +7,7 @@ import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { useHeader } from "@/hooks/use-header";
 import ExamQuestionsList from "./exam-questions";
 import InfoComponent from "./instruction";
-
+import Database from "./exam-database";
 interface Subject {
     subjectId: number;
     subjectName: string;
@@ -45,7 +45,7 @@ export default function ExamPaperDetails() {
         breadcrumbPage: "Exams Overview",
         breadcrumbLink_2: `/exams/exam-papers`,
         breadcrumbPage_2: "Exam Details",
-        breadcrumbPage_3: "Exam Question",
+        breadcrumbPage_3: "Exam Papper detail",
         stateGive: { examId: examId }, // only pass if state is required
     });
 
@@ -161,6 +161,9 @@ export default function ExamPaperDetails() {
             </div>
             <div className="space-y-6 p-6">
                 <InfoComponent examPaperId={examPaperId} />
+            </div>
+            <div className="space-y-6 p-6">
+                <Database examPaperId={examPaperId} />
             </div>
             <div className="space-y-6 p-6">
                 <ExamQuestionsList examPaperId={examPaperId} />
