@@ -52,7 +52,7 @@ export function CreateExamPaperForm({
             return;
         }
 
-        fetch(`${BASE_URL}${API_ENDPOINTS.getExamPapers}`, {
+        fetch(`${BASE_URL}${API_ENDPOINTS.getExamPaperInfo}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

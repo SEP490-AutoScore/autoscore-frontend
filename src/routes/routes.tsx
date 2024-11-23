@@ -20,6 +20,8 @@ import Roles from "@/app/authentication/role/overview/page";
 import RoleDetail from "@/app/authentication/role/detail/page";
 import Accounts from "@/app/authentication/account/overview/page";
 import AIApiKeysPage from "@/app/ai-api-key/page";
+import ExamPapersOverview from "@/app/exam/exam-paper-overview/page";
+import ExamPaperDetail from "@/app/exam/exam-paper-overview/exam-paper-detail";
 
 const AppRoutes = () => {
   return (
@@ -48,6 +50,8 @@ const AppRoutes = () => {
           <Route path="roles" element={<Roles />} />
           <Route path="roles/detail" element={<RoleDetail />} />
           <Route path="accounts" element={<Accounts />} />
+          <Route path="exam-papers" element={<ExamPapersOverview />} />
+          <Route path="exam-papers/exam-questions" element={<ExamPaperDetail />} />
           <Route path="ai-api-keys" element={<AIApiKeysPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
