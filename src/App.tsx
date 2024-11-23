@@ -1,18 +1,18 @@
-import './App.css'
-import Header from './components/Header';
-import Footer from './components/Footer';
+import "./App.css";
+import { BrowserRouter as Router } from "react-router-dom";
+import AppRoutes from "@/routes/routes";
+import { ToastProvider } from "@/components/ui/toast";
+import { Toaster } from "./components/ui/toaster";
 
 function App() {
   return (
-    <div className="App">
-      <Header />
-      <main>
-        {/* Main content goes here */}
-        <h1>Welcome to the Application</h1>
-      </main>
-      <Footer />
-    </div>
+    <ToastProvider>
+      <Router>
+        <AppRoutes />
+      </Router>
+      <Toaster />
+    </ToastProvider>
   );
 }
 
-export default App
+export default App;
