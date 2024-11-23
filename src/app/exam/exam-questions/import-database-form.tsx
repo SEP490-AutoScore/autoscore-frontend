@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from '@/components/ui/dialog';
 import { Button } from "@/components/ui/button";
+import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 
 interface AddDatabaseFormProps {
   examPaperId: number;
@@ -34,7 +35,7 @@ const AddDatabaseForm: React.FC<AddDatabaseFormProps> = ({ examPaperId, onAddSuc
     formData.append('databaseDescription', description);
 
     try {
-      const response = await fetch(`http://localhost:8080/api/database/import?examPaperId=${examPaperId}&databaseNote=${note}&databaseDescription=${description}`, {
+      const response = await fetch(`${BASE_URL}${API_ENDPOINTS.importDatabase}?examPaperId=${examPaperId}&databaseNote=${note}&databaseDescription=${description}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

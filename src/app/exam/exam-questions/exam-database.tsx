@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import AddDatabaseForm from './import-database-form';
+import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 
 interface DatabaseResponse {
     examDatabaseId: number;
@@ -31,7 +32,7 @@ const DatabaseInfoComponent: FC<DatabaseInfoProps> = ({ examPaperId }) => {
 
     const fetchDatabase = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/api/database/getbyExamPaperId?examPaperId=${examPaperId}`, {
+            const response = await fetch(`${BASE_URL}${API_ENDPOINTS.getDatabase}?examPaperId=${examPaperId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

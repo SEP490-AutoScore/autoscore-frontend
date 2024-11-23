@@ -1,7 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { EllipsisVertical } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Important {
     importantId: number;
@@ -22,7 +27,13 @@ interface ExamPaper {
     importants: Important[];
 }
 
-export function ExamPaperCard({ examPaper, examId }: { examPaper: ExamPaper; examId: number }) {
+export function ExamPaperCard({
+    examPaper,
+    examId,
+}: {
+    examPaper: ExamPaper;
+    examId: number;
+}) {
     const navigate = useNavigate();
 
     return (
@@ -31,44 +42,59 @@ export function ExamPaperCard({ examPaper, examId }: { examPaper: ExamPaper; exa
             className="w-full border shadow-md hover:shadow-lg"
         >
             <CardHeader>
-                <CardTitle>{examPaper.examPaperCode}</CardTitle>
+                <div className="flex items-center justify-between">
+                    <CardTitle>{examPaper.examPaperCode}</CardTitle>
+                    <div className="relative">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <div
+                                    className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-orange-500 hover:text-white transition-colors duration-200 cursor-pointer"
+                                    title="More actions"
+                                >
+                                    <EllipsisVertical className="h-4 w-4" />
+                                </div>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                                className="absolute right-0 top-[-50px] w-48 bg-white shadow-lg border rounded-md"
+                            >
+                                <DropdownMenuItem
+                                    onClick={() =>
+                                        navigate("/exams/exam-papers/exam-questions", {
+                                            state: { examId, examPaperId: examPaper.examPaperId },
+                                        })
+                                    }
+                                >
+                                    View Paper Details
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onClick={() =>
+                                        navigate("/exams/exam-papers/gherkin-postman", {
+                                            state: { examId, examPaperId: examPaper.examPaperId },
+                                        })
+                                    }
+                                >
+                                    View Gherkin-Postman
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onClick={() =>
+                                        navigate("/exams/exam-papers/postman-for-grading", {
+                                            state: { examId, examPaperId: examPaper.examPaperId },
+                                        })
+                                    }
+                                >
+                                    View Postman-For-Grading
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+                </div>
+
             </CardHeader>
             <CardContent>
                 <div className="mb-4">
                     <strong>Duration:</strong> {examPaper.duration}
                 </div>
-                <div className="flex space-x-4">
-                <Button
-                    variant="outline"
-                    onClick={() =>
-                        navigate("/exams/exam-papers/exam-questions", {
-                            state: { examId, examPaperId: examPaper.examPaperId },
-                        })
-                    }
-                >
-                    View Paper Details
-                </Button>
-                <Button
-                    variant="outline"
-                    onClick={() =>
-                        navigate("/exams/exam-papers/gherkin-postman", {
-                            state: { examId, examPaperId: examPaper.examPaperId },
-                        })
-                    }
-                >
-                    View Gherkin-Postman
-                </Button>
-                <Button
-                    variant="outline"
-                    onClick={() =>
-                        navigate("/exams/exam-papers/postman-for-grading", {
-                            state: { examId, examPaperId: examPaper.examPaperId },
-                        })
-                    }
-                >
-                    View Postman-For-Grading
-                </Button>
-                </div>
+
             </CardContent>
         </Card>
     );

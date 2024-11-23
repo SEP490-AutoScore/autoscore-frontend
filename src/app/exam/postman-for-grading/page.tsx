@@ -292,11 +292,19 @@ const Page: React.FC = () => {
   return (
     <SidebarInset>
        {Header}
+       <div className="w-full border border-gray-200  rounded-lg">
     <PostmanForGradingLayout
-      top={<h1 className="text-xl font-bold">Postman For Grading</h1>}
+       top={
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Postman For Grading</h1>
+          <p className="text-sm text-muted-foreground">Here's tree!</p>
+         
+        </div>
+            
+      }
       left={
         <div className="space-y-4">
-          <div className="text-lg">Action</div>
+     
           <select
             className="border border-gray-300 rounded-md p-2"
             value={selectedAction}
@@ -315,6 +323,7 @@ const Page: React.FC = () => {
         </div>
       }
     />
+    </div>
      </SidebarInset>
   );
 };
