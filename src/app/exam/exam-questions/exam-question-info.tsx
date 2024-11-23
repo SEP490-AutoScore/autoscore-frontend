@@ -58,16 +58,22 @@ const ExamQuestionItem: React.FC<ExamQuestionItemProps> = ({ question, isExpande
                             <p>{question.httpMethod}</p>
                         </div>
                     </div>
+                    {question.validation && (
+                        <div>
+                            <strong>Validation:</strong>
+                            <pre className="p-2 rounded">{question.validation}</pre>
+                        </div>
+                    )}
                     {question.payload && (
                         <div>
                             <strong>Payload:</strong>
-                            <pre className="bg-gray-100 p-2 rounded">{question.payload}</pre>
+                            <pre className="p-2 rounded">{question.payload}</pre>
                         </div>
                     )}
                     {question.sucessResponse && (
                         <div>
                             <strong>Success Response:</strong>
-                            <pre className="bg-gray-100 p-2 rounded">
+                            <pre className="p-2 rounded">
                                 {question.sucessResponse}
                             </pre>
                         </div>
@@ -75,7 +81,7 @@ const ExamQuestionItem: React.FC<ExamQuestionItemProps> = ({ question, isExpande
                     {question.errorResponse && (
                         <div>
                             <strong>Error Response:</strong>
-                            <pre className="bg-gray-100 p-2 rounded">
+                            <pre className="p-2 rounded">
                                 {question.errorResponse}
                             </pre>
                         </div>
