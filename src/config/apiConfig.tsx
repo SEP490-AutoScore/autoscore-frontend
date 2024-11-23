@@ -23,10 +23,12 @@ export const API_ENDPOINTS = {
   // Exam Database 
   importDatabase: "/api/database/import",
   changeDatabase: "/api/database/update",
+  getDatabase: "/api/database/getbyExamPaperId",
 
   // Exam Question
   getlistIdQuestion: "/api/exam-paper/",
   getQuestions: "/api/exam-question/list",
+  getQuestion: "/api/exam-question",
 
   // Gherkin
   generateGherkin: "/api/gherkin_scenario/generate_gherkin_format",
@@ -48,4 +50,7 @@ export const API_ENDPOINTS = {
   //exam paper
   getExamPapers: "/api/exam-paper/list",
   getExamPaperInfo: "/api/exam-paper",
+
+  //important
+  getImportant : "/api/important",
 };

@@ -64,7 +64,7 @@ const ExamQuestionsList: React.FC<ExamQuestionsListProps> = ({ examPaperId }) =>
 
         const requestBody = { ...newQuestionData, examPaperId };
 
-        fetch(`${BASE_URL}/api/exam-question`, {
+        fetch(`${BASE_URL}${API_ENDPOINTS.getQuestion}}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
