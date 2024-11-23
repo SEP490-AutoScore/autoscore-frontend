@@ -99,7 +99,7 @@ const data = {
         },
         {
           title: "Exam Papers",
-          url: "###.",
+          url: "/exam-papers",
           permission: "VIEW_EXAM",
         },
         {

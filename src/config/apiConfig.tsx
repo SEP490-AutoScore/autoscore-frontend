@@ -50,7 +50,10 @@ export const API_ENDPOINTS = {
   //exam paper
   getExamPapers: "/api/exam-paper/list",
   getExamPaperInfo: "/api/exam-paper",
+  getListExamPaper: "/api/exam-paper/all",
 
   //important
   getImportant : "/api/important",
+
+  exportWord: "/api/document/generate-word",
 };
