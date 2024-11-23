@@ -9,6 +9,7 @@ import Dashboard from "@/app/dashboard/page";
 import Exams from "@/app/exam/overview/page";
 import ScoresPage from "@/app/score/scores/page";
 import ScoresOverviewPage from "@/app/score/overview/page";
+import ScoreDetailPage from "@/app/score/score-details/page";
 import NewExam from "@/app/exam/new-exam/page";
 import ExamPapers from "@/app/exam/exam-papers/page";
 import GherkinPostman from "@/app/exam/gherkin-postman/page";
@@ -18,6 +19,7 @@ import ExamQuestions from "@/app/exam/exam-questions/page";
 import Roles from "@/app/authentication/role/overview/page";
 import RoleDetail from "@/app/authentication/role/detail/page";
 import Accounts from "@/app/authentication/account/overview/page";
+import AIApiKeysPage from "@/app/ai-api-key/page";
 import ExamPapersOverview from "@/app/exam/exam-paper-overview/page";
 import ExamPaperDetail from "@/app/exam/exam-paper-overview/exam-paper-detail";
 
@@ -38,6 +40,7 @@ const AppRoutes = () => {
           <Route path="exams" element={<Exams />} />
           <Route path="scores" element={<ScoresPage />} />
           <Route path="scores-overview" element={<ScoresOverviewPage />} />
+          <Route path="score-details" element={<ScoreDetailPage />} />
           <Route path="exams/new-exam" element={<NewExam />} />
           <Route path="exams/exam-papers" element={<ExamPapers />} />
           <Route path="exams/exam-papers/gherkin-postman" element={<GherkinPostman />} />
@@ -49,6 +52,7 @@ const AppRoutes = () => {
           <Route path="accounts" element={<Accounts />} />
           <Route path="exam-papers" element={<ExamPapersOverview />} />
           <Route path="exam-papers/exam-questions" element={<ExamPaperDetail />} />
+          <Route path="ai-api-keys" element={<AIApiKeysPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

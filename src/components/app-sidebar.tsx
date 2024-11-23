@@ -111,7 +111,7 @@ const data = {
     },
     {
       title: "Setting",
-      url: "####",
+      url: "/ai-api-keys",
       allowedRoles: ["ADMIN", "EXAMNINER"],
       icon: Settings,
       items: [],
