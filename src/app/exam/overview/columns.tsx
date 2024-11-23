@@ -115,18 +115,18 @@ export const columns: ColumnDef<Exams>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() =>
-                navigator.clipboard.writeText(exam.examId.toString())
-              }
-            >
-              Copy Exam ID
-            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <Link to="/exams/students" state={{ examId: exam.examId }}>
+              <DropdownMenuItem className="cursor-pointer">View Students</DropdownMenuItem>
+            </Link>
+            <Link to="/exams/students" state={{ examId: exam.examId }}>
+              <DropdownMenuItem className="cursor-pointer">Import Students</DropdownMenuItem>
+            </Link>
             <DropdownMenuSeparator />
             <Link to="/exams/exam-papers" state={{ examId: exam.examId }}>
-              <DropdownMenuItem>View Exam Details</DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">View Exam Details</DropdownMenuItem>
             </Link>
-            <DropdownMenuItem>Delete Exam</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">Delete Exam</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

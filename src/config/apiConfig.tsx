@@ -11,7 +11,8 @@ export const API_ENDPOINTS = {
   getAllPermisisons: "/api/permission/get-all",  // API lấy danh sách permissions
   getAllRoles: "/api/role",                      // API lấy danh sách roles
   getRoleDetail: "/api/role-permission/",        // API lấy danh sách permissions by role
-  getAllAccounts: "/api/account/",                // API lấy danh sách account
+  getAllAccounts: "/api/account/",               // API lấy danh sách account
+  getAllStudents: "/api/students/getall",        // API lấy danh sách sinh viên
 
   //Exam
   getExamInfo: "/api/exam",                    //get exam info
