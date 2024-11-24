@@ -4,17 +4,17 @@ import { AIApiKey, createColumns, updateSelectedKey } from "@/app/ai-api-key/col
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 import { AIApiKeysSkeleton } from "@/app/ai-api-key/ai-api-key-skeleton";
 
-// interface AIApiKey {
-//   aiApiKeyId: number;
-//   aiName: string;
-//   aiApiKey: string;
-//   accountId: number;
-//   status: boolean;
-//   createdAt: string;
-//   updatedAt: string;
-//   selected: boolean;
-//   shared: boolean;
-// }
+interface AIApiKey {
+  aiApiKeyId: number;
+  aiName: string;
+  aiApiKey: string;
+  accountId: number;
+  status: boolean;
+  createdAt: string;
+  updatedAt: string;
+  selected: boolean;
+  shared: boolean;
+}
 
 export async function getAIApiKeys(): Promise<AIApiKey[]> {
   const token = localStorage.getItem("jwtToken");
@@ -72,11 +72,11 @@ export default function AIApiKeysPage() {
   const handleSelectKey = useCallback(async (aiApiKeyId: number) => {
     try {
       await updateSelectedKey(aiApiKeyId, true);
-      // setData((prevData) =>
-      //   prevData.map((key) =>
-      //     key.aiApiKeyId === aiApiKeyId ? { ...key, selected: true } : { ...key, selected: false }
-      //   )
-      // );
+      setData((prevData) =>
+        prevData.map((key) =>
+          key.aiApiKeyId === aiApiKeyId ? { ...key, selected: true } : { ...key, selected: false }
+        )
+      );
     } catch (error) {
       console.error("Error selecting key:", error);
       fetchData();
