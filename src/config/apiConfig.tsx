@@ -56,4 +56,6 @@ export const API_ENDPOINTS = {
   getImportant : "/api/important",
 
   exportWord: "/api/document/generate-word",
+  getSources: "/api/source",
+  getStudent: "/api/students"
 };

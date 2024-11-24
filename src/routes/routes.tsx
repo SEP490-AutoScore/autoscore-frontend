@@ -20,6 +20,8 @@ import RoleDetail from "@/app/authentication/role/detail/page";
 import Accounts from "@/app/authentication/account/overview/page";
 import ExamPapersOverview from "@/app/exam/exam-paper-overview/page";
 import ExamPaperDetail from "@/app/exam/exam-paper-overview/exam-paper-detail";
+import Grading from "@/app/score/grading-process/page";
+import Students from "@/app/students/grading-list/page";
 
 const AppRoutes = () => {
   return (
@@ -49,6 +51,8 @@ const AppRoutes = () => {
           <Route path="accounts" element={<Accounts />} />
           <Route path="exam-papers" element={<ExamPapersOverview />} />
           <Route path="exam-papers/exam-questions" element={<ExamPaperDetail />} />
+          <Route path="grading" element={<Grading />} />
+          <Route path="grading/students" element={<Students />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
