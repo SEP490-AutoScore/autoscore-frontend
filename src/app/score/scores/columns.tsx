@@ -69,8 +69,9 @@ export const columns: ColumnDef<Score>[] = [
               Copy student code
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View student</DropdownMenuItem>
-            <Link to="/score-details" state={{ examPaperId: score.id }}>
+            <Link to="/scores-overview/scores/plagiarism" state={{ scoreId: score.id }}>
+            <DropdownMenuItem>View plagiarism</DropdownMenuItem></Link>
+            <Link to="/scores-overview/scores/score-details" state={{ scoreId: score.id }}>
               <DropdownMenuItem>View score details</DropdownMenuItem>
             </Link>
           </DropdownMenuContent>

@@ -1,20 +1,22 @@
 import { useHeader } from "@/hooks/use-header";
-// import ScoreDetailsTable from "@/app/score/score-details/score-details-table";
 import { SidebarInset } from "@/components/ui/sidebar";
+import ScoreDetails from "@/app/score/score-details/app-score-details";
 
-const ScoreDetailPage = () => {
+export default function Page() {
   const Header = useHeader({
-    breadcrumbLink: "/score-details",
-    breadcrumbPage: "Score Details",
+    breadcrumbLink: "/scores-overview",
+    breadcrumbPage: "Scores Overview",
+    breadcrumbLink_2: "/scores-overview/scores",
+    breadcrumbPage_2: "Scores",
+    breadcrumbLink_3: "/score-details",
+    breadcrumbPage_3: "Score Details",
   });
   return (
     <SidebarInset>
       {Header}
       <div className="flex p-4 pt-0">
-        
+        <ScoreDetails />
       </div>
     </SidebarInset>
   );
-};
-
-export default ScoreDetailPage;
+}

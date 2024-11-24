@@ -18,6 +18,7 @@ export const API_ENDPOINTS = {
   scoreOverview: "/api/score/getAll",          // API lấy danh sách bài thi đã có điểm
   score: "/api/score",                         // API lấy scores byExamPaperId
   scoreDetail: "/api/score-details/details",
+  plagiarism: "/api/score/code-plagiarism",
   exportScore: "/api/score/export",            // API export score byExamPaperId
   createExam: "/api/exam/",
   
