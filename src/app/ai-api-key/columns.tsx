@@ -1,8 +1,7 @@
-"use client"
-
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from 'lucide-react'
 import { Button } from "@/components/ui/button"
+import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,14 +15,56 @@ export type AIApiKey = {
   aiApiKeyId: number
   aiName: string
   aiApiKey: string
-  createBy: string
+  accountId: number
   status: boolean
   createAt: string
   updateAt: string
-  isShared: boolean
+  shared: boolean
+  selected: boolean
 }
 
+
+const token = localStorage.getItem("jwtToken");
+  if (!token) {
+    throw new Error("JWT token not found.");
+  }
+
+  const updateSelectedKey = async (aiApiKeyId: number, selected: boolean) => {
+    const token = localStorage.getItem("jwtToken");
+    if (!token) {
+      throw new Error("JWT token not found.");
+    }
+  
+    const url = `${BASE_URL}${API_ENDPOINTS.updateSelectedKey}?aiApiKeyId=${aiApiKeyId}`;
+  
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+  
+    // Kiểm tra mã trạng thái phản hồi
+    if (!response.ok) {
+      const errorText = await response.text();  // Đọc phản hồi dưới dạng văn bản
+          throw new Error(`Error updating selected status: ${errorText}`);
+    }
+  
+    try {
+      const data = await response.json();
+      return data;
+    } catch (error) {
+  
+      throw new Error("Failed to parse response as JSON");
+    }
+  };
+  
+  
+
 export const columns: ColumnDef<AIApiKey>[] = [
+ 
+
   {
     accessorKey: "aiName",
     header: "AI Name",
@@ -44,6 +85,8 @@ export const columns: ColumnDef<AIApiKey>[] = [
       return <div>{status ? "Active" : "Inactive"}</div>
     },
   },
+ 
+
   {
     accessorKey: "createAt",
     header: "Create At",
@@ -61,21 +104,52 @@ export const columns: ColumnDef<AIApiKey>[] = [
     },
   },
   {
-    accessorKey: "createBy",
-    header: "Create by",
-  },
+    accessorKey: "accountId",
+    header: "Account",
+    cell: ({ row }) => {
+      const accountId = row.getValue("accountId") as number;
+      return <div>{accountId}</div>;
+    },
+  }, 
+  
   {
-    accessorKey: "isShared",
+    accessorKey: "shared",
     header: "Shared",
     cell: ({ row }) => {
-      const isShared = row.getValue("isShared") as boolean
-      return <div>{isShared ? "Yes" : "No"}</div>
+      const shared = row.getValue("shared") as boolean
+      return <div>{shared ? "Yes" : "No"}</div>
+    },
+  },
+  {
+    accessorKey: "selected",
+    header: "Selected",
+    cell: ({ row }) => {
+      const selected = row.getValue("selected") as boolean
+      return <div>{selected ? "Selected" : "No Select"}</div>
     },
   },
   {
     id: "actions",
     cell: ({ row }) => {
       const aiApiKey = row.original
+
+      const handleSelectKey = async (aiApiKeyId: number) => {
+        try {
+          // Gọi API để cập nhật trạng thái selected của key
+          await updateSelectedKey(aiApiKeyId, true);
+      
+          // Cập nhật lại dữ liệu trong bảng
+          setData((prevData) =>
+            prevData.map((key) =>
+              key.aiApiKeyId === aiApiKeyId ? { ...key, selected: true } : key
+            )
+          );
+        } catch (error) {
+      
+        }
+      };
+      
+      
 
       return (
         <DropdownMenu>
@@ -95,6 +169,10 @@ export const columns: ColumnDef<AIApiKey>[] = [
             <DropdownMenuSeparator />
             <DropdownMenuItem>Edit</DropdownMenuItem>
             <DropdownMenuItem>Delete</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleSelectKey(aiApiKey.aiApiKeyId)}>
+  Select this key
+</DropdownMenuItem>
+
           </DropdownMenuContent>
         </DropdownMenu>
       )
