@@ -23,6 +23,7 @@ import Accounts from "@/app/authentication/account/overview/page";
 import AIApiKeysPage from "@/app/ai-api-key/page";
 import ExamPapersOverview from "@/app/exam/exam-paper-overview/page";
 import ExamPaperDetail from "@/app/exam/exam-paper-overview/exam-paper-detail";
+import Students from "@/app/exam/students/page";
 
 const AppRoutes = () => {
   return (
@@ -55,6 +56,7 @@ const AppRoutes = () => {
           <Route path="exam-papers" element={<ExamPapersOverview />} />
           <Route path="exam-papers/exam-questions" element={<ExamPaperDetail />} />
           <Route path="ai-api-keys" element={<AIApiKeysPage />} />
+          <Route path="/exams/students" element={<Students />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
