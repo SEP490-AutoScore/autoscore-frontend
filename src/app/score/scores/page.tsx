@@ -4,8 +4,10 @@ import ScorePage from "@/app/score/scores/scores";
 
 export default function Page() {
   const Header = useHeader({
-    breadcrumbLink: "/scores",
-    breadcrumbPage: "Scores",
+    breadcrumbLink: "/scores-overview",
+    breadcrumbPage: "Scores Overview",
+    breadcrumbLink_2: "/scores",
+    breadcrumbPage_2: "Scores",
   });
   return (
     <SidebarInset>
