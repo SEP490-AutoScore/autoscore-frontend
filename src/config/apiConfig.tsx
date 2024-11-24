@@ -33,7 +33,9 @@ export const API_ENDPOINTS = {
   getQuestion: "/api/exam-question",
 
   // API Key
-  aiAPIKeys: "",                                        // Thêm api ở đây
+  updateSelectedKey: "/api/ai_api_keys/update-selected-key",
+  aiApiKeys: "/api/ai_api_keys",
+  
   // Gherkin
   generateGherkin: "/api/gherkin_scenario/generate_gherkin_format",
   getlistIdGherkin: "/api/exam-paper//gherkin-scenarios",
