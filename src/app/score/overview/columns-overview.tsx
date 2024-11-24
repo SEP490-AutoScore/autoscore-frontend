@@ -22,7 +22,7 @@ export type ScoredExam = {
   semesterName: string;
   totalStudents: number;
 };
-async function exportListScore(examPaperId: number) {
+async function exportListScore(examPaperId: number, examPaperCode: string) {
   try {
     const response = await fetch(
       `${BASE_URL}${API_ENDPOINTS.exportScore}?exampaperid=${examPaperId}`,
@@ -42,7 +42,7 @@ async function exportListScore(examPaperId: number) {
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `scores_exam_${examPaperId}.xlsx`;
+    link.download = `${examPaperCode}_score.xlsx`;
     link.click();
     window.URL.revokeObjectURL(url);
   } catch (error) {
@@ -126,7 +126,7 @@ export const columns: ColumnDef<ScoredExam>[] = [
               <DropdownMenuItem>View list score</DropdownMenuItem>
             </Link>
             <DropdownMenuItem
-              onClick={() => exportListScore(scoredExam.examPaperId)}
+              onClick={() => exportListScore(scoredExam.examPaperId, scoredExam.examPaperCode)}
             >
               Export List Score
             </DropdownMenuItem>
