@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToastNotification } from "@/hooks/use-toast-notification";
+import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 
 interface ImpostFilePostmanPopupProps {
   onClose: () => void;
@@ -54,7 +55,7 @@ const ImpostFilePostmanPopup: React.FC<ImpostFilePostmanPopupProps> = ({
       formData.append("examPaperId", examPaperId.toString());
 
       const response = await fetch(
-        "http://localhost:8080/api/exam-paper/import-postman-collections",
+        `${BASE_URL}${API_ENDPOINTS.importPostmanCollections}`,
         {
           method: "POST",
           headers: {

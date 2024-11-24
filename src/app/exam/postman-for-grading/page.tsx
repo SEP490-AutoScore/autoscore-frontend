@@ -34,7 +34,7 @@ const Page: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/postman-grading?examPaperId=1", {
+        const response = await fetch( `${BASE_URL}${API_ENDPOINTS.postmanGrading}?examPaperId=${examPaperId}`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -333,7 +333,7 @@ const Page: React.FC = () => {
     {showPopup && (
         <ImpostFilePostmanPopup
           onClose={() => setShowPopup(false)}
-          examPaperId={examPaperId} // Đảm bảo examPaperId luôn là số
+          examPaperId={examPaperId} 
         />
       )}
      </SidebarInset>
