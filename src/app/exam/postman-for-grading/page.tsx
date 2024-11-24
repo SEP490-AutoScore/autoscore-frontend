@@ -61,7 +61,56 @@ const Page: React.FC = () => {
     fetchData();
   }, [token]);
 
+  const importPostman = async (file: File, examPaperId: string) => {
+    try {
+      const formData = new FormData();
+      formData.append("files", file);
+      formData.append("examPaperId", examPaperId);
 
+      const response = await fetch("http://localhost:8080/api/exam-paper/import-postman-collections", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (response.ok) {
+        const result = await response.text();
+
+        if (result === "Files imported and validated successfully.") {
+          notify({
+            title: "Success",
+            description: "Files imported and validated successfully.!",
+            variant: "default",
+          });
+          // Có thể cập nhật lại dữ liệu sau khi import thành công
+          // fetchData();
+        } else {
+          notify({
+            title: "Warning",
+            description: `Unexpected response: ${result}`,
+            variant: "warning",
+          });
+        }
+      } else {
+        const errorText = await response.text();
+        notify({
+          title: "Failed",
+          description: `Failed to import Postman collections: ${errorText}`,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error importing Postman collections:", error);
+      notify({
+        title: "API Error",
+        description: "Đã xảy ra lỗi khi tạo Gherkin.",
+        variant: "destructive",
+      });
+    }
+  };
+  
   const getChildrenNodes = (parentId: number, allNodes: any[]) => {
     return allNodes
       .slice(1) // Bỏ qua phần tử đầu tiên trong danh sách
@@ -134,6 +183,20 @@ const Page: React.FC = () => {
 
     if (action === "updateData") {
       await updateDataToServer();
+    }
+    else if (action === "impostPostman") {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = ".json"; // Chỉ cho phép chọn file JSON
+      input.onchange = async () => {
+        const file = input.files?.[0];
+        if (file && examPaperId) {
+          await importPostman(file, examPaperId);
+        } else {
+          // notify.error("File or Exam Paper ID is missing.");
+        }
+      };
+      input.click();
     }
   };
 
@@ -312,7 +375,7 @@ const Page: React.FC = () => {
           >
             <option value="">Select an action</option>
             <option value="updateData">Update list functions</option>
-
+            <option value="impostPostman">Import postman</option>
             {/* Thêm các tùy chọn khác ở đây */}
           </select>
         </div>
