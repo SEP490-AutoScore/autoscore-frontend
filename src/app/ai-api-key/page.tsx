@@ -11,7 +11,7 @@ export default function Page() {
     <SidebarInset>
       {Header}
       <div className="flex p-4 pt-0">
-        <AIApiKeyPage />
+        {/* <AIApiKeyPage /> */}
       </div>
     </SidebarInset>
   );

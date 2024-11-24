@@ -15,6 +15,8 @@ export const API_ENDPOINTS = {
   getAllStudents: "/api/students/getall",        // API lấy danh sách sinh viên
   uploadStudents: "/api/students/import" ,       // API upload danh sách sinh viên
   uploadProcess: "/api/students/upload-progress",// API lấy tiền trình upload
+  uploadStudentSources: "/api/upload/import",    // API upload code student
+  uploadStudentSourceProcess: "/api/upload/progress",// API lấy tiến trình upload code
 
   //Exam
   getExamInfo: "/api/exam",                    //get exam info
