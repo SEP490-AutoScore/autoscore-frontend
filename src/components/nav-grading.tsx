@@ -88,7 +88,7 @@ export function NavGrading({
               (item.allowedRoles?.includes(role) || !item.allowedRoles) &&
               (!item.permission || permissions.includes(item.permission))
           )
-          .map((item) => (
+          .map((item) => item.items && item.items.length > 0 ? (
             <Collapsible
               key={item.title}
               asChild
@@ -97,13 +97,13 @@ export function NavGrading({
             >
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
-                  <Link
+                  {/* <Link
                     to={item.url}
                     onClick={() => {
                       setSelectedItem(item.url);
                       handleToggle(item.url);
                     }}
-                  >
+                  > */}
                     <SidebarMenuButton
                       tooltip={item.title}
                       className={`sidebar-link ${
@@ -111,6 +111,12 @@ export function NavGrading({
                           ? "bg-primary text-primary-foreground"
                           : ""
                       }`}
+                      onClick={() => {
+                        if (item.url) {
+                          setSelectedItem(item.url);
+                          handleToggle(item.title);
+                        }
+                      }}
                     >
                       {item.icon && <item.icon />}
                       <span>{item.title}</span>
@@ -118,7 +124,7 @@ export function NavGrading({
                         <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                       )}
                     </SidebarMenuButton>
-                  </Link>
+                  {/* </Link> */}
                 </CollapsibleTrigger>
                 {item.items && item.items.length > 0 && (
                   <CollapsibleContent>
@@ -147,7 +153,24 @@ export function NavGrading({
                 )}
               </SidebarMenuItem>
             </Collapsible>
-          ))}
+          ) :(<SidebarMenuItem key={item.title}>
+            <Link
+              to={item.url || "#"}
+              onClick={() => setSelectedItem(item.url || null)}
+            >
+              <SidebarMenuButton
+                tooltip={item.title}
+                className={`sidebar-link ${
+                  selectedItem === item.url
+                    ? "bg-primary text-primary-foreground"
+                    : ""
+                }`}
+              >
+                {item.icon && <item.icon />}
+                <span>{item.title}</span>
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenuItem>))}
       </SidebarMenu>
     </SidebarGroup>
   );
