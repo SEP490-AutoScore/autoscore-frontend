@@ -1,14 +1,19 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { EllipsisVertical } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Download,
+  NotebookText,
+  SquareChartGantt,
+  Target,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 interface Important {
   importantId: number;
@@ -66,74 +71,76 @@ export function ExamPaperCard({
       link.click();
       link.remove();
     } catch (error) {
-        showToast({
-            title: "Error.",
-            description: "Exam paper are not complete to export. Please add Database, Question, Instruction, Important to export.",
-            actionText: "OK",
-            variant: "destructive",
-          });
+      showToast({
+        title: "Error.",
+        description:
+          "Exam paper are not complete to export. Please add Database, Question, Instruction, Important to export.",
+        actionText: "OK",
+        variant: "destructive",
+      });
     }
   };
 
   return (
-    <Card
-      key={examPaper.examPaperId}
-      className="w-full border shadow-md hover:shadow-lg"
-    >
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle>{examPaper.examPaperCode}</CardTitle>
-          <div className="relative">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <div
-                  className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-orange-500 hover:text-white transition-colors duration-200 cursor-pointer"
-                  title="More actions"
-                >
-                  <EllipsisVertical className="h-4 w-4" />
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="absolute right-0 top-[-50px] w-48 bg-white shadow-lg border rounded-md"
-              >
-                <DropdownMenuItem
-                  onClick={() =>
-                    navigate("/exams/exam-papers/exam-questions", {
-                      state: { examId, examPaperId: examPaper.examPaperId },
-                    })
-                  }
-                >
-                  View Paper Details
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() =>
-                    navigate("/exams/exam-papers/gherkin-postman", {
-                      state: { examId, examPaperId: examPaper.examPaperId },
-                    })
-                  }
-                >
-                  View Gherkin Postman
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() =>
-                    navigate("/exams/exam-papers/postman-for-grading", {
-                      state: { examId, examPaperId: examPaper.examPaperId },
-                    })
-                  }
-                >
-                  View Postman Grading
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleDownloadWord}>
-                  Export
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+    <Card key={examPaper.examPaperId}>
+      <CardContent className="p-4 w-full">
+        <div className="flex justify-between items-center">
+          <div className="flex justify-between w-1/3">
+            <div>
+              <CardTitle className="text-md font-semibold">
+                Exam Paper Code
+              </CardTitle>
+              <CardDescription>{examPaper.examPaperCode}</CardDescription>
+            </div>
+            <div>
+              <CardTitle className="text-md font-semibold">Subject</CardTitle>
+              <CardDescription>
+                {examPaper.importants[0].subject.subjectName ? `${examPaper.importants[0].subject.subjectName} (${examPaper.importants[0].subject.subjectCode})` : "N/A"}
+              </CardDescription>
+            </div>
           </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="mb-4">
-          <strong>Duration:</strong> {examPaper.duration}
+          <div className="flex gap-2">
+            <Button
+              className="p-4 h-10 w-10 border rounded-full border-primary text-primary bg-white hover:bg-primary hover:text-white transition-colors duration-200"
+              title="View Paper Details"
+              onClick={() =>
+                navigate("/exams/exam-papers/exam-questions", {
+                  state: { examId, examPaperId: examPaper.examPaperId },
+                })
+              }
+            >
+              <NotebookText />
+            </Button>
+            <Button
+              className="p-4 h-10 w-10 border rounded-full border-primary text-primary bg-white hover:bg-primary hover:text-white transition-colors duration-200"
+              title="View Gherkin Postman"
+              onClick={() =>
+                navigate("/exams/exam-papers/gherkin-postman", {
+                  state: { examId, examPaperId: examPaper.examPaperId },
+                })
+              }
+            >
+              <SquareChartGantt />
+            </Button>
+            <Button
+              className="p-4 h-10 w-10 border rounded-full border-primary text-primary bg-white hover:bg-primary hover:text-white transition-colors duration-200"
+              title="View Postman Grading"
+              onClick={() =>
+                navigate("/exams/exam-papers/postman-for-grading", {
+                  state: { examId, examPaperId: examPaper.examPaperId },
+                })
+              }
+            >
+              <Target />
+            </Button>
+            <Button
+              className="p-4 h-10 w-10 border rounded-full border-primary text-primary bg-white hover:bg-primary hover:text-white transition-colors duration-200"
+              title="Export Word"
+              onClick={handleDownloadWord}
+            >
+              <Download />
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

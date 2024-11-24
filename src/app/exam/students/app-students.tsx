@@ -3,7 +3,7 @@ import { DataTable } from "./data-table";
 import { useState, useEffect } from "react";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { DataTableSkeleton } from "./data-table-skeleton";
-import { NoResultPage, ErrorPage } from '@/app/authentication/error/page';
+import { ErrorPage } from '@/app/authentication/error/page';
 import { useLocation } from "react-router-dom";
 
 interface Students {
@@ -61,10 +61,6 @@ export default function Page() {
 
   if (!data) {
     return <DataTableSkeleton />;
-  }
-
-  if (data.length === 0) {
-    return <NoResultPage />;
   }
 
   return (
