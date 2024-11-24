@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Link } from "react-router-dom";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -21,30 +21,9 @@ export type Score = {
   studentEmail: string;
   gratedAt: Date;
   totalScore: number;
+  levelOfPlagiarism: string;
 };
 export const columns: ColumnDef<Score>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     accessorKey: "studentCode",
     header: "Student Code",
@@ -66,9 +45,13 @@ export const columns: ColumnDef<Score>[] = [
     header: "Score",
   },
   {
+    accessorKey: "levelOfPlagiarism",
+    header: "Plagiarism",
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
-      const payment = row.original;
+      const score = row.original;
 
       return (
         <DropdownMenu>
@@ -81,13 +64,16 @@ export const columns: ColumnDef<Score>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(score.studentCode)}
             >
-              Copy score ID
+              Copy student code
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View student</DropdownMenuItem>
-            <DropdownMenuItem>View score details</DropdownMenuItem>
+            <Link to="/scores-overview/scores/plagiarism" state={{ scoreId: score.id }}>
+            <DropdownMenuItem>View plagiarism</DropdownMenuItem></Link>
+            <Link to="/scores-overview/scores/score-details" state={{ scoreId: score.id }}>
+              <DropdownMenuItem>View score details</DropdownMenuItem>
+            </Link>
           </DropdownMenuContent>
         </DropdownMenu>
       );

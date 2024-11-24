@@ -20,6 +20,8 @@ export const API_ENDPOINTS = {
   getExamInfo: "/api/exam",                    //get exam info
   scoreOverview: "/api/score/getAll",          // API lấy danh sách bài thi đã có điểm
   score: "/api/score",                         // API lấy scores byExamPaperId
+  scoreDetail: "/api/score-details/details",
+  plagiarism: "/api/score/code-plagiarism",
   exportScore: "/api/score/export",            // API export score byExamPaperId
   createExam: "/api/exam/",
   
@@ -33,6 +35,10 @@ export const API_ENDPOINTS = {
   getQuestions: "/api/exam-question/list",
   getQuestion: "/api/exam-question",
 
+  // API Key
+  updateSelectedKey: "/api/ai_api_keys/update-selected-key",
+  aiApiKeys: "/api/ai_api_keys",
+  
   // Gherkin
   generateGherkin: "/api/gherkin_scenario/generate_gherkin_format",
   getlistIdGherkin: "/api/exam-paper//gherkin-scenarios",

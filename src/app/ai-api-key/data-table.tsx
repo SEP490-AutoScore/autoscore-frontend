@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import {
   ColumnDef,
@@ -35,9 +33,10 @@ import { Settings2 } from "lucide-react";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  filterColumn?: string;
 }
 
-export function DataTableOverview<TData, TValue>({
+export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -47,6 +46,7 @@ export function DataTableOverview<TData, TValue>({
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
     data,
@@ -58,10 +58,12 @@ export function DataTableOverview<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
+      rowSelection,
     },
   });
 
@@ -69,18 +71,18 @@ export function DataTableOverview<TData, TValue>({
     <div className="w-full border border-gray-200 p-8 rounded-lg">
       <div className="flex items-center justify-between space-y-2">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Scores</h2>
-          <p className="text-muted-foreground">
-            Here's a list of exam papers that has been graded!
-          </p>
+          <h2 className="text-2xl font-bold tracking-tight">AI-API-Keys</h2>
+          <p className="text-muted-foreground">Here's a list of AI API Keys!</p>
         </div>
       </div>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter exam paper code..."
-          value={(table.getColumn("examPaperCode")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter AI Name..."
+          value={
+            (table.getColumn("aiName")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
-            table.getColumn("examPaperCode")?.setFilterValue(event.target.value)
+            table.getColumn("aiName")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -96,6 +98,10 @@ export function DataTableOverview<TData, TValue>({
               .getAllColumns()
               .filter((column) => column.getCanHide())
               .map((column) => {
+                const label =
+                  typeof column.columnDef.header === "string"
+                    ? column.columnDef.header
+                    : column.id;
                 return (
                   <DropdownMenuCheckboxItem
                     key={column.id}
@@ -105,7 +111,7 @@ export function DataTableOverview<TData, TValue>({
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.id}
+                    {label}
                   </DropdownMenuCheckboxItem>
                 );
               })}
@@ -162,7 +168,7 @@ export function DataTableOverview<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 pt-4">
+      <div className="flex items-center justify-end space-x-2 pt-4 y-0">
         <Button
           variant="outline"
           size="sm"
