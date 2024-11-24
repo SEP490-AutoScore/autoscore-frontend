@@ -217,17 +217,17 @@ const GherkinPostmanPage: React.FC = () => {
       );
 
       if (!response.ok) {
-        throw new Error("Lỗi khi gọi API tạo Gherkin.");
+        throw new Error("Error!");
       }
 
       notify({
         title: "Success",
-        description: "Gherkin đã được tạo thành công!",
+        description: "Generate Gherkin Format Successfully!",
         variant: "default",
       });
 
       const result = await response.json();
-      console.log("Gherkin generated:", result);
+    
     } catch (error) {
       notify({
         title: "API Error",

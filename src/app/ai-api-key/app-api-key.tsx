@@ -1,22 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { DataTable } from "@/app/ai-api-key/data-table";
 import { AIApiKey, createColumns, updateSelectedKey } from "@/app/ai-api-key/columns";
+
+
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 import { AIApiKeysSkeleton } from "@/app/ai-api-key/ai-api-key-skeleton";
 
-interface AIApiKey {
-  aiApiKeyId: number;
-  aiName: string;
-  aiApiKey: string;
-  fullName: String;
-  status: boolean;
-  createdAt: string;
-  updatedAt: string;
-  selected: boolean;
-  shared: boolean;
-}
 
 export async function getAIApiKeys(): Promise<AIApiKey[]> {
+
   const token = localStorage.getItem("jwtToken");
 
   if (!token) {
@@ -37,6 +29,7 @@ export async function getAIApiKeys(): Promise<AIApiKey[]> {
   }
 
   const data = await response.json();
+
   return data.map((item: AIApiKey) => ({
     aiApiKeyId: item.aiApiKeyId,
     aiName: item.aiName,
