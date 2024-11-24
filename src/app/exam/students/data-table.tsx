@@ -1,17 +1,19 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import React from "react";
+import { Input } from "@/components/ui/input";
 
-import * as React from "react";
 import {
   ColumnDef,
-  ColumnFiltersState,
   SortingState,
-  VisibilityState,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  ColumnFiltersState,
+  getFilteredRowModel,
+  VisibilityState,
 } from "@tanstack/react-table";
 
 import {
@@ -22,14 +24,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import { Settings2 } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
@@ -37,7 +40,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
 }
 
-export function DataTableOverview<TData, TValue>({
+export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -47,6 +50,7 @@ export function DataTableOverview<TData, TValue>({
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
+  // const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
     data,
@@ -58,29 +62,42 @@ export function DataTableOverview<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
+    // onRowSelectionChange: setRowSelection,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
+      // rowSelection,
     },
   });
+
+  const formatColumnId = (id: string) => {
+    // Remove everything after the underscore
+    const cleanId = id.split("_")[0];
+    // Split camelCase or PascalCase into separate words and capitalize them
+    return cleanId
+      .replace(/([a-z])([A-Z])/g, "$1 $2")
+      .replace(/^./, (str) => str.toUpperCase());
+  };
 
   return (
     <div className="w-full border border-gray-200 p-8 rounded-lg">
       <div className="flex items-center justify-between space-y-2">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Scores</h2>
+          <h2 className="text-2xl font-bold tracking-tight">Students</h2>
           <p className="text-muted-foreground">
-            Here's a list of exam papers that has been graded!
+            Here's a list of students for this exam!
           </p>
         </div>
       </div>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter exam paper code..."
-          value={(table.getColumn("examPaperCode")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter by student code..."
+          value={
+            (table.getColumn("studentCode")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
-            table.getColumn("examPaperCode")?.setFilterValue(event.target.value)
+            table.getColumn("studentCode")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -92,6 +109,13 @@ export function DataTableOverview<TData, TValue>({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            <DropdownMenuLabel className="py-1.5 px-2 text-sm font-semibold">
+              Toggle columns
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator
+              aria-orientation="horizontal"
+              className="-mx-1 my-1 h-px bg-muted"
+            />
             {table
               .getAllColumns()
               .filter((column) => column.getCanHide())
@@ -105,7 +129,7 @@ export function DataTableOverview<TData, TValue>({
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.id}
+                    {formatColumnId(column.id)}
                   </DropdownMenuCheckboxItem>
                 );
               })}
@@ -117,9 +141,11 @@ export function DataTableOverview<TData, TValue>({
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="h-16">
-                {headerGroup.headers.map((header) => {
+                {headerGroup.headers.map((header, index) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id}
+                      className={`${index === 0 ? "pl-4" : ""}`}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -138,9 +164,11 @@ export function DataTableOverview<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                className="py-4 border-0 hover:bg-primary hover:text-primary-foreground">
+                  className="py-3 border-0 hover:bg-primary hover:text-primary-foreground"
+                >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="p-3">
+                    <TableCell key={cell.id}
+                      className={`${cell.column.id === "studentCode" ? "pl-4" : ""} py-3`}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -163,6 +191,11 @@ export function DataTableOverview<TData, TValue>({
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 pt-4">
+        {/* <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.length} of{" "}
+          {table.getFilteredRowModel().rows.length} row(s) selected.
+        </div> */}
+
         <Button
           variant="outline"
           size="sm"

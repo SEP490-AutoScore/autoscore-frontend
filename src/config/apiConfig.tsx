@@ -11,12 +11,17 @@ export const API_ENDPOINTS = {
   getAllPermisisons: "/api/permission/get-all",  // API lấy danh sách permissions
   getAllRoles: "/api/role",                      // API lấy danh sách roles
   getRoleDetail: "/api/role-permission/",        // API lấy danh sách permissions by role
-  getAllAccounts: "/api/account/",                // API lấy danh sách account
+  getAllAccounts: "/api/account/",               // API lấy danh sách account
+  getAllStudents: "/api/students/getall",        // API lấy danh sách sinh viên
+  uploadStudents: "/api/students/import" ,       // API upload danh sách sinh viên
+  uploadProcess: "/api/students/upload-progress",// API lấy tiền trình upload
 
   //Exam
   getExamInfo: "/api/exam",                    //get exam info
   scoreOverview: "/api/score/getAll",          // API lấy danh sách bài thi đã có điểm
   score: "/api/score",                         // API lấy scores byExamPaperId
+  scoreDetail: "/api/score-details/details",
+  plagiarism: "/api/score/code-plagiarism",
   exportScore: "/api/score/export",            // API export score byExamPaperId
   createExam: "/api/exam/",
   
@@ -30,6 +35,10 @@ export const API_ENDPOINTS = {
   getQuestions: "/api/exam-question/list",
   getQuestion: "/api/exam-question",
 
+  // API Key
+  updateSelectedKey: "/api/ai_api_keys/update-selected-key",
+  aiApiKeys: "/api/ai_api_keys",
+  
   // Gherkin
   generateGherkin: "/api/gherkin_scenario/generate_gherkin_format",
   getlistIdGherkin: "/api/exam-paper//gherkin-scenarios",

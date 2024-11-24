@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
 
-// This type is used to define the shape of our data.
 export type ScoredExam = {
   examPaperId: number;
   examCode: string;
@@ -23,7 +22,7 @@ export type ScoredExam = {
   semesterName: string;
   totalStudents: number;
 };
-async function exportListScore(examPaperId: number) {
+async function exportListScore(examPaperId: number, examPaperCode: string) {
   try {
     const response = await fetch(
       `${BASE_URL}${API_ENDPOINTS.exportScore}?exampaperid=${examPaperId}`,
@@ -43,7 +42,7 @@ async function exportListScore(examPaperId: number) {
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `scores_exam_${examPaperId}.xlsx`;
+    link.download = `${examPaperCode}_score.xlsx`;
     link.click();
     window.URL.revokeObjectURL(url);
   } catch (error) {
@@ -71,7 +70,6 @@ export const columns: ColumnDef<ScoredExam>[] = [
   },
   {
     accessorKey: "semesterName",
-    // header: "Semester Name",
     header: ({ column }) => {
       return (
         <Button
@@ -124,11 +122,11 @@ export const columns: ColumnDef<ScoredExam>[] = [
               Copy Exam code
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <Link to="/scores" state={{ examPaperId: scoredExam.examPaperId }}>
+            <Link to="/scores-overview/scores" state={{ examPaperId: scoredExam.examPaperId }}>
               <DropdownMenuItem>View list score</DropdownMenuItem>
             </Link>
             <DropdownMenuItem
-              onClick={() => exportListScore(scoredExam.examPaperId)}
+              onClick={() => exportListScore(scoredExam.examPaperId, scoredExam.examPaperCode)}
             >
               Export List Score
             </DropdownMenuItem>

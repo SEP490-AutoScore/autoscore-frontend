@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { MoreHorizontal } from "lucide-react";
 import { Link } from "react-router-dom";
+import FileUploadPopover from "@/components/file-upload";
 // import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useState } from "react";
 
 export type Exams = {
   examId: number;
@@ -32,6 +34,54 @@ export type Exams = {
     subjectName: string;
   };
 };
+
+type ActionsCellProps = {
+  exam: {
+    examId: number;
+  };
+};
+
+function ActionsCell({ exam }: ActionsCellProps) {
+  const [isUploadOpen, setIsUploadOpen] = useState(false); // State để điều khiển modal
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <Link to="/exams/students" state={{ examId: exam.examId }}>
+            <DropdownMenuItem className="cursor-pointer">
+              View Students
+            </DropdownMenuItem>
+          </Link>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => setIsUploadOpen(true)} // Mở modal
+          >
+            Upload File
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <Link to="/exams/exam-papers" state={{ examId: exam.examId }}>
+            <DropdownMenuItem className="cursor-pointer">
+              View Exam Details
+            </DropdownMenuItem>
+          </Link>
+          <DropdownMenuItem className="cursor-pointer">Delete Exam</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {/* Hiển thị modal FileUpload */}
+      {isUploadOpen && <FileUploadPopover onClose={() => setIsUploadOpen(false)} examId={exam.examId}/>}
+    </>
+  );
+}
 
 export const columns: ColumnDef<Exams>[] = [
   // {
@@ -103,33 +153,6 @@ export const columns: ColumnDef<Exams>[] = [
   {
     id: "actions",
     header: "Actions",
-    cell: ({ row }) => {
-      const exam = row.original;
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() =>
-                navigator.clipboard.writeText(exam.examId.toString())
-              }
-            >
-              Copy Exam ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <Link to="/exams/exam-papers" state={{ examId: exam.examId }}>
-              <DropdownMenuItem>View Exam Details</DropdownMenuItem>
-            </Link>
-            <DropdownMenuItem>Delete Exam</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    cell: ({ row }) => <ActionsCell exam={row.original} />, // Sử dụng Component riêng
   },
 ];
