@@ -84,9 +84,9 @@ export function DataTable<TData, TValue>({
     <div className="w-full border border-gray-200 p-8 rounded-lg">
       <div className="flex items-center justify-between space-y-2">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Exams</h2>
+          <h2 className="text-2xl font-bold tracking-tight">Sources</h2>
           <p className="text-muted-foreground">
-            Here's a list of exams for this campus!
+            Here's a list of source for grading!
           </p>
         </div>
       </div>
@@ -94,10 +94,10 @@ export function DataTable<TData, TValue>({
         <Input
           placeholder="Filter by exam code..."
           value={
-            (table.getColumn("examCode")?.getFilterValue() as string) ?? ""
+            (table.getColumn("examPaperCode")?.getFilterValue() as string) ?? ""
           }
           onChange={(event) =>
-            table.getColumn("examCode")?.setFilterValue(event.target.value)
+            table.getColumn("examPaperCode")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -147,9 +147,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   );
                 })}
@@ -165,7 +165,7 @@ export function DataTable<TData, TValue>({
                   className="py-3 border-0 hover:bg-primary hover:text-primary-foreground"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="pl-4">
+                    <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -188,10 +188,6 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 pt-4">
-        {/* <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div> */}
 
         <Button
           variant="outline"

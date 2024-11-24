@@ -8,13 +8,15 @@ import { SidebarInset } from "@/components/ui/sidebar";
 import { useHeader } from "@/hooks/use-header";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import PostmanForGradingLayout from "./postman-for-grading-layout";
+import ImpostFilePostmanPopup from "./import-file-postman";
 
 
 const Page: React.FC = () => {
   const [postmanData, setPostmanData] = useState<any[]>([]);
-  const [draggedNodeId, setDraggedNodeId] = useState<number | null>(null); // Node đang bị kéo
+  const [draggedNodeId, setDraggedNodeId] = useState<number | null>(null); 
   const token = localStorage.getItem("jwtToken");
-  const [selectedAction, setSelectedAction] = useState<string>(""); // Action được chọn
+  const [selectedAction, setSelectedAction] = useState<string>("");
+  const [showPopup, setShowPopup] = useState<boolean>(false); 
   const notify = useToastNotification(); 
 
   const location = useLocation();
@@ -32,7 +34,7 @@ const Page: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/postman-grading?examPaperId=1", {
+        const response = await fetch( `${BASE_URL}${API_ENDPOINTS.postmanGrading}?examPaperId=${examPaperId}`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -61,7 +63,8 @@ const Page: React.FC = () => {
     fetchData();
   }, [token]);
 
-
+  
+  
   const getChildrenNodes = (parentId: number, allNodes: any[]) => {
     return allNodes
       .slice(1) // Bỏ qua phần tử đầu tiên trong danh sách
@@ -134,7 +137,10 @@ const Page: React.FC = () => {
 
     if (action === "updateData") {
       await updateDataToServer();
+    }else if (action === "impostPostman") {
+      setShowPopup(true); 
     }
+   
   };
 
  const updateDataToServer = async () => {
@@ -297,7 +303,7 @@ const Page: React.FC = () => {
        top={
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Postman For Grading</h1>
-          <p className="text-sm text-muted-foreground">Here's tree!</p>
+          <p className="text-sm text-muted-foreground">Here's tree!!</p>
          
         </div>
             
@@ -312,7 +318,7 @@ const Page: React.FC = () => {
           >
             <option value="">Select an action</option>
             <option value="updateData">Update list functions</option>
-
+            <option value="impostPostman">Import postman</option>
             {/* Thêm các tùy chọn khác ở đây */}
           </select>
         </div>
@@ -324,6 +330,12 @@ const Page: React.FC = () => {
       }
     />
     </div>
+    {showPopup && (
+        <ImpostFilePostmanPopup
+          onClose={() => setShowPopup(false)}
+          examPaperId={examPaperId} 
+        />
+      )}
      </SidebarInset>
   );
 };

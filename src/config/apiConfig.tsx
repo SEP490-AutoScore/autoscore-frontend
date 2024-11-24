@@ -11,7 +11,12 @@ export const API_ENDPOINTS = {
   getAllPermisisons: "/api/permission/get-all",  // API lấy danh sách permissions
   getAllRoles: "/api/role",                      // API lấy danh sách roles
   getRoleDetail: "/api/role-permission/",        // API lấy danh sách permissions by role
-  getAllAccounts: "/api/account/",                // API lấy danh sách account
+  getAllAccounts: "/api/account/",               // API lấy danh sách account
+  getAllStudents: "/api/students/getall",        // API lấy danh sách sinh viên
+  uploadStudents: "/api/students/import" ,       // API upload danh sách sinh viên
+  uploadProcess: "/api/students/upload-progress",// API lấy tiền trình upload
+  uploadStudentSources: "/api/upload/import",    // API upload code student
+  uploadStudentSourceProcess: "/api/upload/progress",// API lấy tiến trình upload code
 
   //Exam
   getExamInfo: "/api/exam",                    //get exam info
@@ -26,6 +31,7 @@ export const API_ENDPOINTS = {
   importDatabase: "/api/database/import",
   changeDatabase: "/api/database/update",
   getDatabase: "/api/database/getbyExamPaperId",
+
 
   // Exam Question
   getlistIdQuestion: "/api/exam-paper/",
@@ -48,6 +54,8 @@ export const API_ENDPOINTS = {
   exportPostman: "/api/exam-paper/export-postman/",
   generatePostman: "/api/postman-grading/generate",
   mergePostman: "/api/postman-grading/merge/",
+  postmanGrading: "/api/postman-grading", 
+  importPostmanCollections: "/api/exam-paper/import-postman-collections", 
 
   //side
   getSubject: "/api/subject",
@@ -62,4 +70,6 @@ export const API_ENDPOINTS = {
   getImportant : "/api/important",
 
   exportWord: "/api/document/generate-word",
+  getSources: "/api/source",
+  getStudent: "/api/students"
 };

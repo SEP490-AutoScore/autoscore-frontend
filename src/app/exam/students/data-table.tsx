@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import React from "react";
 import { Input } from "@/components/ui/input";
-
+import { NoResultPage } from '@/app/authentication/error/page';
 import {
   ColumnDef,
   SortingState,
@@ -84,20 +84,20 @@ export function DataTable<TData, TValue>({
     <div className="w-full border border-gray-200 p-8 rounded-lg">
       <div className="flex items-center justify-between space-y-2">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Exams</h2>
+          <h2 className="text-2xl font-bold tracking-tight">Students</h2>
           <p className="text-muted-foreground">
-            Here's a list of exams for this campus!
+            Here's a list of students for this exam!
           </p>
         </div>
       </div>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter by exam code..."
+          placeholder="Filter by student code..."
           value={
-            (table.getColumn("examCode")?.getFilterValue() as string) ?? ""
+            (table.getColumn("studentCode")?.getFilterValue() as string) ?? ""
           }
           onChange={(event) =>
-            table.getColumn("examCode")?.setFilterValue(event.target.value)
+            table.getColumn("studentCode")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -141,9 +141,11 @@ export function DataTable<TData, TValue>({
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="h-16">
-                {headerGroup.headers.map((header) => {
+                {headerGroup.headers.map((header, index) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id}
+                      className={`${index === 0 ? "pl-4" : ""}`}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -165,7 +167,8 @@ export function DataTable<TData, TValue>({
                   className="py-3 border-0 hover:bg-primary hover:text-primary-foreground"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="pl-4">
+                    <TableCell key={cell.id}
+                      className={`${cell.column.id === "studentCode" ? "pl-4" : ""} py-3`}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -180,7 +183,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  <NoResultPage />
                 </TableCell>
               </TableRow>
             )}
