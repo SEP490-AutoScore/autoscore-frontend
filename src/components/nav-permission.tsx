@@ -92,18 +92,18 @@ export function NavPermission({
             <Collapsible
               key={item.title}
               asChild
-              defaultOpen={activeStates[item.url] || item.isActive}
+              defaultOpen={activeStates[item.title] || item.isActive}
               className="group/collapsible"
             >
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
-                  <Link
+                  {/* <Link
                     to={item.url}
                     onClick={() => {
                       setSelectedItem(item.url);
                       handleToggle(item.url);
                     }}
-                  >
+                  > */}
                     <SidebarMenuButton
                       tooltip={item.title}
                       className={`sidebar-link ${
@@ -111,6 +111,12 @@ export function NavPermission({
                           ? "bg-primary text-primary-foreground"
                           : ""
                       }`}
+                      onClick={() => {
+                        if (item.url) {
+                          setSelectedItem(item.url);
+                          handleToggle(item.title);
+                        }
+                      }}
                     >
                       {item.icon && <item.icon />}
                       <span>{item.title}</span>
@@ -118,7 +124,7 @@ export function NavPermission({
                         <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                       )}
                     </SidebarMenuButton>
-                  </Link>
+                  {/* </Link> */}
                 </CollapsibleTrigger>
                 {item.items && item.items.length > 0 && (
                   <CollapsibleContent>

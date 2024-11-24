@@ -32,6 +32,7 @@ export const API_ENDPOINTS = {
   changeDatabase: "/api/database/update",
   getDatabase: "/api/database/getbyExamPaperId",
 
+
   // Exam Question
   getlistIdQuestion: "/api/exam-paper/",
   getQuestions: "/api/exam-question/list",
@@ -53,6 +54,8 @@ export const API_ENDPOINTS = {
   exportPostman: "/api/exam-paper/export-postman/",
   generatePostman: "/api/postman-grading/generate",
   mergePostman: "/api/postman-grading/merge/",
+  postmanGrading: "/api/postman-grading", 
+  importPostmanCollections: "/api/exam-paper/import-postman-collections", 
 
   //side
   getSubject: "/api/subject",
