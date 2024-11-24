@@ -8,13 +8,15 @@ import { SidebarInset } from "@/components/ui/sidebar";
 import { useHeader } from "@/hooks/use-header";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import PostmanForGradingLayout from "./postman-for-grading-layout";
+import ImpostFilePostmanPopup from "./import-file-postman";
 
 
 const Page: React.FC = () => {
   const [postmanData, setPostmanData] = useState<any[]>([]);
-  const [draggedNodeId, setDraggedNodeId] = useState<number | null>(null); // Node đang bị kéo
+  const [draggedNodeId, setDraggedNodeId] = useState<number | null>(null); 
   const token = localStorage.getItem("jwtToken");
-  const [selectedAction, setSelectedAction] = useState<string>(""); // Action được chọn
+  const [selectedAction, setSelectedAction] = useState<string>("");
+  const [showPopup, setShowPopup] = useState<boolean>(false); 
   const notify = useToastNotification(); 
 
   const location = useLocation();
@@ -61,55 +63,7 @@ const Page: React.FC = () => {
     fetchData();
   }, [token]);
 
-  const importPostman = async (file: File, examPaperId: string) => {
-    try {
-      const formData = new FormData();
-      formData.append("files", file);
-      formData.append("examPaperId", examPaperId);
-
-      const response = await fetch("http://localhost:8080/api/exam-paper/import-postman-collections", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      if (response.ok) {
-        const result = await response.text();
-
-        if (result === "Files imported and validated successfully.") {
-          notify({
-            title: "Success",
-            description: "Files imported and validated successfully.!",
-            variant: "default",
-          });
-          // Có thể cập nhật lại dữ liệu sau khi import thành công
-          // fetchData();
-        } else {
-          notify({
-            title: "Warning",
-            description: `Unexpected response: ${result}`,
-            variant: "warning",
-          });
-        }
-      } else {
-        const errorText = await response.text();
-        notify({
-          title: "Failed",
-          description: `Failed to import Postman collections: ${errorText}`,
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error("Error importing Postman collections:", error);
-      notify({
-        title: "API Error",
-        description: "Đã xảy ra lỗi khi tạo Gherkin.",
-        variant: "destructive",
-      });
-    }
-  };
+  
   
   const getChildrenNodes = (parentId: number, allNodes: any[]) => {
     return allNodes
@@ -183,21 +137,10 @@ const Page: React.FC = () => {
 
     if (action === "updateData") {
       await updateDataToServer();
+    }else if (action === "impostPostman") {
+      setShowPopup(true); 
     }
-    else if (action === "impostPostman") {
-      const input = document.createElement("input");
-      input.type = "file";
-      input.accept = ".json"; // Chỉ cho phép chọn file JSON
-      input.onchange = async () => {
-        const file = input.files?.[0];
-        if (file && examPaperId) {
-          await importPostman(file, examPaperId);
-        } else {
-          // notify.error("File or Exam Paper ID is missing.");
-        }
-      };
-      input.click();
-    }
+   
   };
 
  const updateDataToServer = async () => {
@@ -387,6 +330,12 @@ const Page: React.FC = () => {
       }
     />
     </div>
+    {showPopup && (
+        <ImpostFilePostmanPopup
+          onClose={() => setShowPopup(false)}
+          examPaperId={examPaperId} // Đảm bảo examPaperId luôn là số
+        />
+      )}
      </SidebarInset>
   );
 };
