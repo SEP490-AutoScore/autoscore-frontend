@@ -92,11 +92,11 @@ export const createColumns = (handleSelectKey: (aiApiKeyId: number) => Promise<v
     },
   },
   {
-    accessorKey: "accountId",
-    header: "Account",
+    accessorKey: "fullName",
+    header: "Full Name",
     cell: ({ row }) => {
-      const accountId = row.getValue("accountId") as number;
-      return <div>{accountId}</div>;
+      const fullName = row.getValue("fullName") as string;
+      return <div>{fullName}</div>;
     },
   },
 

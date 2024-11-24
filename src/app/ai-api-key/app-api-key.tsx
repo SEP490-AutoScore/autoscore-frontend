@@ -8,7 +8,7 @@ interface AIApiKey {
   aiApiKeyId: number;
   aiName: string;
   aiApiKey: string;
-  accountId: number;
+  fullName: String;
   status: boolean;
   createdAt: string;
   updatedAt: string;
@@ -41,7 +41,7 @@ export async function getAIApiKeys(): Promise<AIApiKey[]> {
     aiApiKeyId: item.aiApiKeyId,
     aiName: item.aiName,
     aiApiKey: item.aiApiKey,
-    accountId: item.accountId,
+    fullName: item.fullName,
     status: item.status,
     createAt: item.createdAt || "N/A",
     updateAt: item.updatedAt || "N/A",
