@@ -14,12 +14,11 @@ const PostmanForGradingLayout: React.FC<LayoutProps> = ({ top, left, right }) =>
    
       {/* Content */}
       <div className="flex flex-1">
-        {/* Left: Chiếm 1/4 */}
+       
         <div className="w-1/4 p-4 border-r border-gray-200">
           {left}
         </div>
-
-        {/* Right: Chiếm 3/4 */}
+  
         <div className="w-3/4 p-4">
           {right}
         </div>
