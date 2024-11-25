@@ -10,12 +10,12 @@ export default function Page() {
     breadcrumbPage_2: "Students"
   });
   const location = useLocation(); // Dùng useLocation để lấy state
-  const sourceId = location.state?.sourceId;
+  const examPaperId = location.state?.examPaperId;
 
   return (
     <SidebarInset>
       {Header}
-      <Student sourceId={sourceId}/>
+      <Student examPaperId={examPaperId}/>
     </SidebarInset>
   );
 }

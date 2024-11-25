@@ -12,7 +12,7 @@ interface SelectedStudentDialogProps {
     onClose: () => void;
     studentIds: number[];
     examPaperId: number;
-    organizationId: number;
+    organizationId: number | 0;
 }
 
 export function StartGrading({

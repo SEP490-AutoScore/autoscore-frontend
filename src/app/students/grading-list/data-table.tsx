@@ -11,7 +11,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { StartGrading } from "@/app/students/grading-process/start-grading";
@@ -19,11 +18,13 @@ import { StartGrading } from "@/app/students/grading-process/start-grading";
 interface DataTableProps<TData extends { studentId: number }, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  examPaperId: number;
 }
 
 export function DataTable<TData extends { studentId: number }, TValue>({
   columns,
   data,
+  examPaperId
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -123,6 +124,8 @@ export function DataTable<TData extends { studentId: number }, TValue>({
         open={isDialogOpen}
         onClose={() => setDialogOpen(false)}
         studentIds={selectedStudentIds}
+        examPaperId= {examPaperId}
+        organizationId={0}
       />
     </div>
   );
