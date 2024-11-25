@@ -181,7 +181,11 @@ const GherkinPostmanPage: React.FC = () => {
       } else if (action === "generatePostmanScriptMore") {
         handleGenerateGherkinMore();
         
-    }else if (action === "generatePostmanScript") {
+    }
+    else if (action === "deleteGherkin") {
+      deleteGherkin();
+    }
+    else if (action === "generatePostmanScript") {
       generatePostmanScript();
     }
     else if (action === "generatePostmanScriptMore") {
@@ -355,7 +359,75 @@ const GherkinPostmanPage: React.FC = () => {
     }
   };
 
-
+  const deleteGherkin = async () => {
+    if (!selectedGherkins.length) {
+      notify({
+        title: "Validation Error",
+        description: "Please select at least one Gherkin Scenario to delete.",
+        variant: "destructive",
+      });
+      return;
+    }
+  
+    try {
+      setLoading(true);
+  
+      // Duyệt qua từng Gherkin Scenario ID để xóa
+      for (const gherkinId of selectedGherkins) {
+        const response = await fetch(
+          `${BASE_URL}${API_ENDPOINTS.deleteGherkin}/${gherkinId}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+  
+        if (!response.ok) {
+          const errorText = await response.text();
+          notify({
+            title: "Error",
+            description: `Failed to delete Gherkin Scenario ID ${gherkinId}: ${errorText}`,
+            variant: "destructive",
+          });
+          continue;
+        }
+  
+        const result = await response.json();
+  
+        if (result.gherkinScenarioId) {
+          notify({
+            title: "Success",
+            description: `Deleted Gherkin Scenario ID ${gherkinId} successfully.`,
+            variant: "default",
+          });
+        } else {
+          notify({
+            title: "Error",
+            description: `Failed to delete Gherkin Scenario ID ${gherkinId}: Invalid response.`,
+            variant: "destructive",
+          });
+        }
+      }
+  
+      // Làm mới dữ liệu sau khi xóa
+      if (storedQuestionId !== null) {
+        await fetchGherkinPostmanPairs(storedQuestionId);
+      }
+    } catch (error) {
+      notify({
+        title: "API Error",
+        description: "Failed to delete selected Gherkin Scenarios.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  
  
 
   const generatePostmanScript = async () => {
@@ -593,6 +665,9 @@ const GherkinPostmanPage: React.FC = () => {
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleActionChange("Create new Gherkin data")}>
                   Create new Gherkin data
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleActionChange("deleteGherkin")}>
+                  Delete Gherkin
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuLabel>Select action for postman</DropdownMenuLabel>

@@ -48,6 +48,7 @@ export const API_ENDPOINTS = {
   getlistIdGherkin: "/api/exam-paper//gherkin-scenarios",
   gherkinScenarioPairs: "/api/gherkin_scenario/pairs?examPaperId=",
   gherkinScenarioPairsByQuestion: "/api/gherkin_scenario/pairs/by-question",
+  deleteGherkin : "/api/gherkin_scenario",
   
 
   // Postman
