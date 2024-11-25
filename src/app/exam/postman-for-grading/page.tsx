@@ -9,6 +9,18 @@ import { useHeader } from "@/hooks/use-header";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import PostmanForGradingLayout from "./postman-for-grading-layout";
 import ImpostFilePostmanPopup from "./import-file-postman";
+import { Button } from "@/components/ui/button";
+import { MoreHorizontal } from "lucide-react";
+
+// Import DropdownMenu components
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator
+} from "@/components/ui/dropdown-menu";
 
 
 const Page: React.FC = () => {
@@ -34,7 +46,7 @@ const Page: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/postman-grading?examPaperId=1", {
+        const response = await fetch( `${BASE_URL}${API_ENDPOINTS.postmanGrading}?examPaperId=${examPaperId}`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -131,19 +143,17 @@ const Page: React.FC = () => {
     setDraggedNodeId(null); // Reset trạng thái kéo
   };
 
-  const handleActionChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const action = e.target.value;
+   
+  const handleActionChange = (action: string) => {
     setSelectedAction(action);
-
-    if (action === "updateData") {
-      await updateDataToServer();
-    }else if (action === "impostPostman") {
+       if (action === "updateListFunction") {
+       updateListFunction();
+    }else if (action === "impostFilePostman") {
       setShowPopup(true); 
     }
-   
   };
 
- const updateDataToServer = async () => {
+ const updateListFunction = async () => {
   const updateDTOs = postmanData.map((node) => ({
     postmanForGradingId: node.postmanForGradingId,
     postmanFunctionName: node.postmanFunctionName,
@@ -151,11 +161,8 @@ const Page: React.FC = () => {
     postmanForGradingParentId: node.postmanForGradingParentId,
   }));
 
-  // Ghi log toàn bộ thông tin node trước khi update
-  console.log("Dữ liệu trước khi update:", updateDTOs);
-
   try {
-    const response = await fetch("http://localhost:8080/api/postman-grading", {
+    const response = await fetch(`${BASE_URL}${API_ENDPOINTS.postmanGrading}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -168,40 +175,38 @@ const Page: React.FC = () => {
     });
 
     if (response.ok) {
-      const result = await response.text(); // Đọc phản hồi dạng text
-      console.log("Phản hồi từ server:", result);
+      const result = await response.text(); 
 
-    
+
       if (result.includes("Successfully")) {
         notify({
-          title: "Thành công!",
-          description: "Cập nhật Postman_For_Grading thành công.",
+          title: "Successfully",
+          description: "Update successfully.",
           variant: "default",
         });
       } else {
         notify({
-          title: "Cảnh báo",
-          description: "Phản hồi không chứa 'Successfully', kiểm tra lại.",
+          title: "Error",
+          description: "Something is wrong.",
           variant: "default",
         });
-        console.error("Unexpected response:", result);
       }
     } else {
       const errorMessage = await response.text();
       notify({
-        title: "Thất bại!",
-        description: `Cập nhật thất bại: ${errorMessage}`,
+        title: "Error",
+        description: `Something is wrong. ${errorMessage}`,
         variant: "destructive",
       });
-      console.error("Error:", errorMessage);
+  
     }
   } catch (error) {
     notify({
-      title: "Lỗi!",
-      description: `Có lỗi xảy ra khi cập nhật: ${error}`,
+      title: "Error!",
+      description: `Something is wrong. ${error}`,
       variant: "destructive",
     });
-    console.error("Error:", error);
+   
   }
 };
 
@@ -309,19 +314,26 @@ const Page: React.FC = () => {
             
       }
       left={
-        <div className="space-y-4">
-     
-          <select
-            className="border border-gray-300 rounded-md p-2"
-            value={selectedAction}
-            onChange={handleActionChange}
-          >
-            <option value="">Select an action</option>
-            <option value="updateData">Update list functions</option>
-            <option value="impostPostman">Import postman</option>
-            {/* Thêm các tùy chọn khác ở đây */}
-          </select>
-        </div>
+
+          <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Open menu</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-48">
+              <DropdownMenuLabel>Select an action</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => handleActionChange("updateListFunction")}>
+                Update list functions
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleActionChange("impostFilePostman")}>
+                Import file postman
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </DropdownMenuContent>
+          </DropdownMenu>
+
       }
       right={
         <div className="p-4">
@@ -333,7 +345,7 @@ const Page: React.FC = () => {
     {showPopup && (
         <ImpostFilePostmanPopup
           onClose={() => setShowPopup(false)}
-          examPaperId={examPaperId} // Đảm bảo examPaperId luôn là số
+          examPaperId={examPaperId} 
         />
       )}
      </SidebarInset>

@@ -12,7 +12,7 @@ const ExamDatabase = ({ examPaperId }) => {
         if (!token) throw new Error("JWT Token không tồn tại. Vui lòng đăng nhập.");
 
         const response = await fetch(
-          `http://localhost:8080/api/database/getbyExamPaperId?examPaperId=${examPaperId}`,
+          `${BASE_URL}${API_ENDPOINTS.getDatabase}?examPaperId=${examPaperId}`,
           { method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,

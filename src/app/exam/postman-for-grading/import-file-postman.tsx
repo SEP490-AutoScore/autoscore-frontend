@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToastNotification } from "@/hooks/use-toast-notification";
+import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 
 interface ImpostFilePostmanPopupProps {
   onClose: () => void;
@@ -54,7 +55,7 @@ const ImpostFilePostmanPopup: React.FC<ImpostFilePostmanPopupProps> = ({
       formData.append("examPaperId", examPaperId.toString());
 
       const response = await fetch(
-        "http://localhost:8080/api/exam-paper/import-postman-collections",
+        `${BASE_URL}${API_ENDPOINTS.importPostmanCollections}`,
         {
           method: "POST",
           headers: {
@@ -68,16 +69,16 @@ const ImpostFilePostmanPopup: React.FC<ImpostFilePostmanPopupProps> = ({
         const result = await response.text();
         if (result === "Files imported and validated successfully.") {
           showToast({
-            title: "Success",
-            description: "File imported and validated successfully.",
+            title: "Successfully",
+            description: "File imported successfully.",
             variant: "default",
           });
-          onClose(); // Đóng popup sau khi upload thành công
+          onClose(); 
         } else {
           showToast({
             title: "Unexpected Response",
             description: `Response: ${result}`,
-            variant: "warning",
+            variant: "default",
           });
         }
       } else {
@@ -89,7 +90,6 @@ const ImpostFilePostmanPopup: React.FC<ImpostFilePostmanPopupProps> = ({
         });
       }
     } catch (error) {
-      console.error("Error during file import:", error);
       showToast({
         title: "Upload Error",
         description: "An error occurred while importing the file.",
@@ -117,14 +117,14 @@ const ImpostFilePostmanPopup: React.FC<ImpostFilePostmanPopupProps> = ({
           </DialogTitle>
         </DialogHeader>
         <div className="flex flex-col space-y-4">
-          {/* Khu vực upload file */}
+          {/* upload file */}
           <div className="relative border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary">
             <input
               type="file"
               accept=".json"
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               onChange={handleFileChange}
-              disabled={isUploading} // Disable khi đang upload
+              disabled={isUploading} 
             />
             <div className="w-full flex justify-center mb-4">
               <img src={UploadImage} alt="Upload" className="w-20 h-fit" />
@@ -142,7 +142,7 @@ const ImpostFilePostmanPopup: React.FC<ImpostFilePostmanPopupProps> = ({
             )}
           </div>
 
-          {/* Phần mô tả */}
+          {/* Describe */}
           <div className="flex justify-between">
             <DialogDescription>Supported formats: .json</DialogDescription>
             <DialogDescription>Maximum size: 25MB</DialogDescription>
@@ -161,7 +161,7 @@ const ImpostFilePostmanPopup: React.FC<ImpostFilePostmanPopupProps> = ({
           <Button
             className="bg-white text-primary border border-primary hover:bg-primary hover:text-white"
             onClick={onClose}
-            disabled={isUploading} // Disable khi đang upload
+            disabled={isUploading}
           >
             Cancel
           </Button>

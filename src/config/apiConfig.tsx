@@ -32,6 +32,7 @@ export const API_ENDPOINTS = {
   changeDatabase: "/api/database/update",
   getDatabase: "/api/database/getbyExamPaperId",
 
+
   // Exam Question
   getlistIdQuestion: "/api/exam-paper/",
   getQuestions: "/api/exam-question/list",
@@ -43,6 +44,7 @@ export const API_ENDPOINTS = {
   
   // Gherkin
   generateGherkin: "/api/gherkin_scenario/generate_gherkin_format",
+  generateGherkinMore: "/api/gherkin_scenario/generate_gherkin_format_more",
   getlistIdGherkin: "/api/exam-paper//gherkin-scenarios",
   gherkinScenarioPairs: "/api/gherkin_scenario/pairs?examPaperId=",
   gherkinScenarioPairsByQuestion: "/api/gherkin_scenario/pairs/by-question",
@@ -52,7 +54,10 @@ export const API_ENDPOINTS = {
   importPostman: "/api/exam-paper/import-postman-collections",
   exportPostman: "/api/exam-paper/export-postman/",
   generatePostman: "/api/postman-grading/generate",
+  generatePostmanMore: "/api/postman-grading/generate-more",
   mergePostman: "/api/postman-grading/merge/",
+  postmanGrading: "/api/postman-grading", 
+  importPostmanCollections: "/api/exam-paper/import-postman-collections", 
 
   //side
   getSubject: "/api/subject",
