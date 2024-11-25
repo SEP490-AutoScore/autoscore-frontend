@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea"; // Import Textarea component
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { Alert } from "@/components/ui/alert";
+import { useToastNotification } from "@/hooks/use-toast-notification";
 
 interface Important {
     importantId: number;
@@ -21,6 +22,7 @@ interface Important {
 interface CreateExamPaperFormProps {
     examId: number;
     importants: Important[];
+    subjectId: number;
     onSuccess: (newExamPaper: any) => void;
     onError: (error: string) => void;
 }
@@ -28,6 +30,7 @@ interface CreateExamPaperFormProps {
 export function CreateExamPaperForm({
     examId,
     importants,
+    subjectId,
     onSuccess,
     onError,
 }: CreateExamPaperFormProps) {
@@ -40,7 +43,7 @@ export function CreateExamPaperForm({
 
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isSubmitted, setIsSubmitted] = useState<boolean>(false); // State to track submission
-
+    const showToast = useToastNotification();
     const handleFormSubmit = () => {
         const token = localStorage.getItem("jwtToken");
 
@@ -61,6 +64,7 @@ export function CreateExamPaperForm({
             body: JSON.stringify({
                 examPaperCode: formData.examPaperCode,
                 examId,
+                subjectId,
                 instruction: formData.instruction,
                 duration, // Send the duration
                 importantIdList: formData.importantIdList,
@@ -70,6 +74,11 @@ export function CreateExamPaperForm({
                 if (!response.ok) {
                     throw new Error("Failed to create exam paper");
                 }
+                showToast({
+                    title: "Create success",
+                    description: "Create new exam paper success",
+                    variant: "default",
+                  });
                 return response.json();
             })
             .then((data) => {
@@ -100,8 +109,7 @@ export function CreateExamPaperForm({
 
     if (isSubmitted) {
         return (
-            <div className="text-center mt-8">
-                <p className="text-xl font-semibold text-green-600">Exam Paper Created Successfully!</p>
+            <div>
             </div>
         );
     }
@@ -132,7 +140,7 @@ export function CreateExamPaperForm({
                         }
                         className="rounded-lg border border-gray-300 p-3 text-sm shadow-sm focus:ring-2 focus:ring-blue-400"
                     />
-                    
+
                     {/* Instruction Textarea */}
                     <Textarea
                         placeholder="Instructions"
@@ -172,8 +180,8 @@ export function CreateExamPaperForm({
                                             const updatedList = e.target.checked
                                                 ? [...prevData.importantIdList, id]
                                                 : prevData.importantIdList.filter(
-                                                      (item) => item !== id
-                                                  );
+                                                    (item) => item !== id
+                                                );
                                             return { ...prevData, importantIdList: updatedList };
                                         });
                                     }}

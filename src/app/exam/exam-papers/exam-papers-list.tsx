@@ -30,14 +30,21 @@ interface Important {
   };
 }
 
+interface Subject {
+  subjectId: number;
+  subjectName: string;
+  subjectCode: string;
+}
+
 interface ExamPaper {
   examPaperId: number;
   examPaperCode: string;
+  subject: Subject;
   duration: string; // Add this field
   importants: Important[];
 }
 
-export function ExamPaperList({ examId }: { examId: number }) {
+export function ExamPaperList({ examId, subjectId }: { examId: number; subjectId: number }) {
   const [examPapers, setExamPapers] = useState<ExamPaper[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -46,7 +53,7 @@ export function ExamPaperList({ examId }: { examId: number }) {
   const [isUploadOpen, setIsUploadOpen] = useState(false); // State để điều khiển modal
 
   useEffect(() => {
-    fetch(`${BASE_URL}${API_ENDPOINTS.getImportant}?subjectId=1`, {
+    fetch(`${BASE_URL}${API_ENDPOINTS.getImportant}?subjectId=${subjectId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -145,6 +152,7 @@ export function ExamPaperList({ examId }: { examId: number }) {
             <CreateExamPaperForm
               examId={examId}
               importants={importants}
+              subjectId= {subjectId}
               onSuccess={handleFormSuccess}
               onError={handleFormError}
             />

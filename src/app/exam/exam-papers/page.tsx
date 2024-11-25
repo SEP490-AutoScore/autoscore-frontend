@@ -91,7 +91,7 @@ export default function ExamDetailPage() {
           <ExamDetailContent examData={examData} />
         </div>
         <div className="p-6">
-          <ExamPaperList examId={examId} />
+        <ExamPaperList examId={examId} subjectId={examData?.subject.subjectId} />
         </div>
       </div>
     </SidebarInset>
