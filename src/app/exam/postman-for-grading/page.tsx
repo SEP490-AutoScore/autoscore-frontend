@@ -150,6 +150,10 @@ const Page: React.FC = () => {
        updateListFunction();
     }else if (action === "impostFilePostman") {
       setShowPopup(true); 
+      
+    }
+    else if (action === "exportFilePostman") {
+      exportFilePostman(); 
     }
   };
 
@@ -207,6 +211,70 @@ const Page: React.FC = () => {
       variant: "destructive",
     });
    
+  }
+};
+
+const exportFilePostman = async () => {
+  if (!examPaperId) {
+    notify({
+      title: "Error",
+      description: "Invalid exam paper ID.",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  try {
+    const response = await fetch(`${BASE_URL}${API_ENDPOINTS.exportPostman}/${examPaperId}`, {
+    
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+
+      if (data.info) {
+        // Nếu có thông tin trả về, thông báo thành công
+        notify({
+          title: "Successfully",
+          description: `Exported Postman Collection Sucessfully`,
+          variant: "default",
+        });
+
+        // Tạo file từ response và lưu vào máy người dùng
+        const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${data.info.name}.json`; // Đặt tên file cho collection
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url); // Hủy URL sau khi tải xuống
+      } else {
+        notify({
+          title: "Error",
+          description: "Failed to export Postman collection.",
+          variant: "destructive",
+        });
+      }
+    } else {
+      const errorMessage = await response.text();
+      notify({
+        title: "Error",
+        description: `Failed to export: ${errorMessage}`,
+        variant: "destructive",
+      });
+    }
+  } catch (error) {
+    notify({
+      title: "Error",
+      description: `Something went wrong: ${error}`,
+      variant: "destructive",
+    });
   }
 };
 
@@ -329,6 +397,9 @@ const Page: React.FC = () => {
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleActionChange("impostFilePostman")}>
                 Import file postman
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleActionChange("exportFilePostman")}>
+                Export file postman
               </DropdownMenuItem>
               <DropdownMenuSeparator />
             </DropdownMenuContent>
