@@ -95,7 +95,8 @@ export function ExamPaperCard({
             <div>
               <CardTitle className="text-md font-semibold">Subject</CardTitle>
               <CardDescription>
-                {examPaper.importants[0].subject.subjectName ? `${examPaper.importants[0].subject.subjectName} (${examPaper.importants[0].subject.subjectCode})` : "N/A"}
+                {/* {examPaper.importants[0].subject.subjectName ? `${examPaper.importants[0].subject.subjectName} (${examPaper.importants[0].subject.subjectCode})` : "N/A"} */}
+                Subject
               </CardDescription>
             </div>
           </div>

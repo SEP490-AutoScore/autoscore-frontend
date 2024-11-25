@@ -68,7 +68,7 @@ export const columns: ColumnDef<Source>[] = [
                             Copy Exam ID
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <Link to="/grading/students" state={{ sourceId: data.sourceId }}>
+                        <Link to="/grading/students" state={{ examPaperId: data.examPaper.examPaperId }}>
                             <DropdownMenuItem>View Students</DropdownMenuItem>
                         </Link>
                     </DropdownMenuContent>

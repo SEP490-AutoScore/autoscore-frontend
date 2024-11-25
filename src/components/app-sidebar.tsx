@@ -5,6 +5,7 @@ import {
   Shield,
   BookOpen,
   Settings,
+  NotebookPen
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -47,7 +48,7 @@ const data = {
   navPermission: [
     {
       title: "Accounts",
-      url: "##",
+      url: "?",
       icon: UsersRound,
       allowedRoles: ["ADMIN"],
       permission: "VIEW_ACCOUNT",
@@ -114,6 +115,13 @@ const data = {
       url: "/ai-api-keys",
       allowedRoles: ["ADMIN", "EXAMNINER"],
       icon: Settings,
+      items: [],
+    },
+    {
+      title: "Grading",
+      url: "/grading",
+      allowedRoles: ["ADMIN", "EXAMNINER"],
+      icon: NotebookPen,
       items: [],
     },
   ],
