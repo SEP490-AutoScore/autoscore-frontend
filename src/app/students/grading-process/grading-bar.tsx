@@ -1,8 +1,9 @@
 import React from "react";
 import useSSE from "./grading-hook";
+import { GRADING_URL} from "@/config/apiConfig";
 
 const SSEComponent: React.FC = () => {
-  const events = useSSE("http://localhost:8081/events");
+  const events = useSSE(`${GRADING_URL}/events`);
 
   return (
     <div className="p-4">

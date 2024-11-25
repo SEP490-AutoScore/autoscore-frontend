@@ -1,6 +1,8 @@
 // Base URL của API
 export const BASE_URL = "http://localhost:8080";
 
+export const GRADING_URL = "http://localhost:8081";
+
 // Các endpoint API
 export const API_ENDPOINTS = {
   oauthGoogle: "/oauth2/authorization/google",   // Đăng nhập Google OAuth
