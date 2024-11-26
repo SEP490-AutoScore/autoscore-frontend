@@ -2,10 +2,10 @@ import { useCallback, useEffect, useState } from "react";
 import { DataTable } from "@/app/ai-api-key/data-table";
 import { AIApiKey, createColumns, updateSelectedKey } from "@/app/ai-api-key/columns";
 
-
+import  {PopupComponent} from "@/app/ai-api-key/PopupComponent";
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 import { AIApiKeysSkeleton } from "@/app/ai-api-key/ai-api-key-skeleton";
-
+import { Button } from "@/components/ui/button";
 
 export async function getAIApiKeys(): Promise<AIApiKey[]> {
 
@@ -46,6 +46,8 @@ export async function getAIApiKeys(): Promise<AIApiKey[]> {
 export default function AIApiKeysPage() {
   const [data, setData] = useState<AIApiKey[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [popupData, setPopupData] = useState(null); 
+  const [showPopup, setShowPopup] = useState(false); 
 
   const fetchData = useCallback(async () => {
     try {
@@ -61,6 +63,33 @@ export default function AIApiKeysPage() {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  const fetchPopupData = async () => {
+    const token = localStorage.getItem("jwtToken");
+    if (!token) {
+      console.error("JWT token not found.");
+      return;
+    }
+    try {
+      const response = await fetch("http://localhost:8080/api/content", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setPopupData(data);
+        setShowPopup(true); // Show popup
+      } else {
+        console.error("Failed to fetch data:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error fetching popup data:", error);
+    }
+  };
+
 
   const handleSelectKey = useCallback(async (aiApiKeyId: number) => {
     try {
@@ -82,9 +111,22 @@ export default function AIApiKeysPage() {
     return <AIApiKeysSkeleton />;
   }
 
-  return (
+   return (
     <div className="container mx-auto">
+      {/* Nút Show question ask AI */}
+      <div className="mb-4 flex justify-end">
+        <Button variant="outline" onClick={fetchPopupData}>
+          Show question ask AI
+        </Button>
+      </div>
+
+      {/* Bảng DataTable */}
       <DataTable columns={columns} data={data} />
+
+      {/* Popup */}
+      {showPopup && (
+        <PopupComponent data={popupData} onClose={() => setShowPopup(false)} />
+      )}
     </div>
   );
 }

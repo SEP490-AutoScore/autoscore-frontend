@@ -1,4 +1,6 @@
 import * as React from "react";
+
+
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -88,10 +90,12 @@ export function DataTable<TData, TValue>({
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
+   
             <Button variant="outline" className="ml-auto">
               <Settings2 className="h-4 w-4" />
               View
             </Button>
+           
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             {table
