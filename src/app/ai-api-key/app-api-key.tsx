@@ -51,10 +51,9 @@ export default function AIApiKeysPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [popupData, setPopupData] = useState(null); 
   const [showPopup, setShowPopup] = useState(false); 
-<<<<<<< HEAD
-=======
+
   const [showCreatePopup, setShowCreatePopup] = useState(false);
->>>>>>> vuongvt
+
 
   const fetchData = useCallback(async () => {
     try {
@@ -78,11 +77,9 @@ export default function AIApiKeysPage() {
       return;
     }
     try {
-<<<<<<< HEAD
-      const response = await fetch("http://localhost:8080/api/content", {
-=======
+
       const response = await fetch(`${BASE_URL}${API_ENDPOINTS.showQuestionAskAi}`, {
->>>>>>> vuongvt
+
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -155,14 +152,7 @@ export default function AIApiKeysPage() {
 
    return (
     <div className="container mx-auto">
-<<<<<<< HEAD
-      {/* Nút Show question ask AI */}
-      <div className="mb-4 flex justify-end">
-        <Button variant="outline" onClick={fetchPopupData}>
-          Show question ask AI
-        </Button>
-      </div>
-=======
+
     {/* Nút Show question ask AI */}
     <div className="mb-4 flex justify-end gap-x-2">
       <Button variant="outline" onClick={fetchPopupData}>
@@ -172,7 +162,7 @@ export default function AIApiKeysPage() {
           Create new key
         </Button>
     </div>
->>>>>>> vuongvt
+
 
       {/* Bảng DataTable */}
       <DataTable columns={columns} data={data} />
@@ -181,8 +171,7 @@ export default function AIApiKeysPage() {
       {showPopup && (
         <PopupComponent data={popupData} onClose={() => setShowPopup(false)} />
       )}
-<<<<<<< HEAD
-=======
+
          {showCreatePopup && (
         <CreateKeyPopup
           onClose={() => setShowCreatePopup(false)}
@@ -192,7 +181,7 @@ export default function AIApiKeysPage() {
   
 
 
->>>>>>> vuongvt
+
     </div>
   );
 }
