@@ -10,8 +10,4 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  server: {
-    host: '20.189.121.125', // Chấp nhận mọi kết nối
-    port: 5173,
-  },
 })
