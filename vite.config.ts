@@ -11,7 +11,7 @@ export default defineConfig({
     },
   },
   server: {
-    host: '0.0.0.0', // Chấp nhận mọi kết nối
+    host: '20.189.121.125', // Chấp nhận mọi kết nối
     port: 5173,
-  }
+  },
 })
