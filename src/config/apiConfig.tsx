@@ -36,14 +36,15 @@ export const API_ENDPOINTS = {
 
 
   // Exam Question
-  // getlistIdQuestion: "/api/exam-paper/",
   getQuestions: "/api/exam-question/list",
   getQuestion: "/api/exam-question",
 
   // API Key
   updateSelectedKey: "/api/ai_api_keys/update-selected-key",
   aiApiKeys: "/api/ai_api_keys",
-  
+  showQuestionAskAi: "/api/content",
+  createAiApiKeys: "/api/ai_api_keys",
+  updateAiApiKey: "/api/ai_api_keys",
   // Gherkin
   generateGherkin: "/api/gherkin_scenario/generate_gherkin_format",
   generateGherkinMore: "/api/gherkin_scenario/generate_gherkin_format_more",

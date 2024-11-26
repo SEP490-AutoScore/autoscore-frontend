@@ -1,4 +1,6 @@
-import React, { useEffect, useState , useRef} from "react";
+
+import React, { useEffect, useState, useRef } from "react";
+
 import { useLocation } from "react-router-dom";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -11,6 +13,7 @@ import PostmanForGradingLayout from "./postman-for-grading-layout";
 import ImpostFilePostmanPopup from "./import-file-postman";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
+import { Settings2 } from "lucide-react";
 
 // Import DropdownMenu components
 import {
@@ -85,27 +88,25 @@ const Page: React.FC = () => {
 
 
 
-  
+  const handleShowOrder = () => {
+    const nodesOnScreen = Object.entries(nodeRefs.current)
+      .filter(([_, el]) => el !== null)
+      .map(([id, el]) => ({
+        id: Number(id),
+        offset: (el as HTMLElement).getBoundingClientRect().top,
+      }))
+      .sort((a, b) => a.offset - b.offset);
 
- const handleShowOrder = () => {
-  const nodesOnScreen = Object.entries(nodeRefs.current)
-    .filter(([_, el]) => el !== null)
-    .map(([id, el]) => ({
-      id: Number(id),
-      offset: (el as HTMLElement).getBoundingClientRect().top,
-    }))
-    .sort((a, b) => a.offset - b.offset);
+    const sortedNodes = nodesOnScreen.map(({ id }, index) => {
+      const node = postmanData.find((n) => n.postmanForGradingId === id);
+      return {
+        ...node,
+        order: index + 1, // Gắn thêm thứ tự mới
+      };
+    });
 
-  const sortedNodes = nodesOnScreen.map(({ id }, index) => {
-    const node = postmanData.find((n) => n.postmanForGradingId === id);
-    return {
-      ...node,
-      order: index + 1, // Gắn thêm thứ tự mới
-    };
-  });
-
-  return sortedNodes; // Trả về danh sách node đã sắp xếp
-};
+    return sortedNodes; // Trả về danh sách node đã sắp xếp
+  };
 
 
   const updateListFunction = async () => {
@@ -122,11 +123,11 @@ const Page: React.FC = () => {
     const updateDTOs: any[] = [];
     for (const sortedNode of sortedNodes) {
       updateDTOs.push({
-        postmanForGradingId: sortedNode.postmanForGradingId,      
-        postmanFunctionName: sortedNode.postmanFunctionName,     
-        scoreOfFunction: sortedNode.scoreOfFunction,             
-        postmanForGradingParentId: sortedNode.postmanForGradingParentId, 
-                              
+        postmanForGradingId: sortedNode.postmanForGradingId,
+        postmanFunctionName: sortedNode.postmanFunctionName,
+        scoreOfFunction: sortedNode.scoreOfFunction,
+        postmanForGradingParentId: sortedNode.postmanForGradingParentId,
+
       });
     }
 
@@ -200,6 +201,7 @@ const Page: React.FC = () => {
         },
       });
 
+
       if (response.ok) {
         const data = await response.json();
 
@@ -245,7 +247,7 @@ const Page: React.FC = () => {
     }
   };
 
-  
+
   const handleActionChange = (action: string) => {
     setSelectedAction(action);
     if (action === "updateListFunction") {
@@ -258,7 +260,7 @@ const Page: React.FC = () => {
       exportFilePostman();
     }
     else if (action === "mergeAllFilePostman") {
-      mergeAllFilePostman(); 
+      mergeAllFilePostman();
     }
   };
 
@@ -271,18 +273,18 @@ const Page: React.FC = () => {
       });
       return;
     }
-  
+
     try {
       const response = await fetch(`${BASE_URL}${API_ENDPOINTS.mergeFilePostman}/${examPaperId}`, {
-        method: "POST", 
+        method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       if (response.ok) {
         const result = await response.text();
-  
+
         if (result.includes("Successfully")) {
           notify({
             title: "Success",
@@ -333,7 +335,9 @@ const Page: React.FC = () => {
     });
 
     setPostmanData(updatedNodes);
-  
+
+
+
 
 
   };
@@ -371,6 +375,10 @@ const Page: React.FC = () => {
   };
  
     
+
+
+
+
 
 
   const handleDrop = (targetId: number, action: "moveToNode" | "moveBelowNode") => {
@@ -434,7 +442,9 @@ const Page: React.FC = () => {
 
 
 
-  
+
+
+
 
 
   const renderTree = (parent: any, allNodes: any[]) => {
@@ -479,67 +489,69 @@ const Page: React.FC = () => {
 
     return (
       <div
-      ref={(el) => {
-        if (el) nodeRefs.current[parent.postmanForGradingId] = el; // Gán ref cho từng node
-      }}
-    >
-      <ul className="ml-4 list-disc">
-        <li key={parent.postmanForGradingId} className="mt-2">
-          {/* Node chính */}
-          <div
-            draggable
-            onDragStart={handleDragStart}
-            onDrop={(e) => {
-              e.preventDefault();
-              handleDrop(parent.postmanForGradingId, "moveToNode");
-            }}
-            onDragOver={(e) => e.preventDefault()}
-            className="p-3 rounded-lg cursor-pointer border border-gray-300"
-          >
-            {/* Hiển thị thông tin node */}
-            <div className="flex items-center space-x-2">
-              <span className="font-semibold">{parent.postmanFunctionName}</span>
-              <span className="text-sm text-gray-600">
-                ({parent.totalPmTest ?? "0"} test cases)
-              </span>
-              <span className="text-sm text-gray-600">
-                (ID: {parent.postmanForGradingId})
-              </span>
-              <span className="text-sm text-gray-600">
-                (Parent ID: {parent.postmanForGradingParentId ?? "Root"})
-              </span>
- 
+
+        ref={(el) => {
+          if (el) nodeRefs.current[parent.postmanForGradingId] = el; // Gán ref cho từng node
+        }}
+      >
+        <ul className="ml-10 list-disc">
+          <li key={parent.postmanForGradingId} className="mt-2">
+            {/* Node chính */}
+            <div
+              draggable
+              onDragStart={handleDragStart}
+              onDrop={(e) => {
+                e.preventDefault();
+                handleDrop(parent.postmanForGradingId, "moveToNode");
+              }}
+              onDragOver={(e) => e.preventDefault()}
+              className="p-3 rounded-lg cursor-pointer border border-gray-300"
+            >
+              {/* Hiển thị thông tin node */}
+              <div className="flex items-center space-x-2">
+                <span className="font-semibold">{parent.postmanFunctionName}</span>
+                <span className="text-sm text-gray-600">
+                  ({parent.totalPmTest ?? "0"} test cases)
+                </span>
+                <span className="text-sm text-gray-600">
+                  (ID: {parent.postmanForGradingId})
+                </span>
+                <span className="text-sm text-gray-600">
+                  (Parent ID: {parent.postmanForGradingParentId ?? "Root"})
+                </span>
+
+              </div>
+
+              {/* Hiển thị và chỉnh sửa điểm số */}
+              <div className="mt-2">
+                <label className="text-sm text-gray-600">
+                  Score:
+                  <input
+                    type="number"
+
+                    value={parent.scoreOfFunction}
+                    onChange={handleScoreChange}
+                    className="ml-2 border border-gray-300 rounded-md p-1 w-20"
+                  />
+                </label>
+              </div>
             </div>
 
-            {/* Hiển thị và chỉnh sửa điểm số */}
-            <div className="mt-2">
-              <label className="text-sm text-gray-600">
-                Score:
-                <input
-                  type="number"
-
-                  value={parent.scoreOfFunction}
-                  onChange={handleScoreChange}
-                  className="ml-2 border border-gray-300 rounded-md p-1 w-20"
-                />
-              </label>
-            </div>
-          </div>
-
-          {/* Div trên */}
-          <div
-            className="bg-gray-200 h-4 mt-2 rounded-md"
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={() => handleDrop(parent.postmanForGradingId, "moveBelowNode")}
-          ></div>
-     
+            {/* Div trên */}
+            <div
+              className="bg-gray-200 h-4 mt-2 rounded-md"
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={() => handleDrop(parent.postmanForGradingId, "moveBelowNode")}
+            ></div>
 
 
-          {/* Đệ quy render các node con */}
-          {children.map((child) => renderTree(child, allNodes))}
-         
-        </li>
-      </ul>
+
+            {/* Đệ quy render các node con */}
+            {children.map((child) => renderTree(child, allNodes))}
+
+          </li>
+        </ul>
+
       </div>
     );
   };
@@ -552,7 +564,9 @@ const Page: React.FC = () => {
           top={
             <div>
               <h1 className="text-2xl font-bold tracking-tight">Postman For Grading</h1>
-              <p className="text-sm text-muted-foreground">Here's tree!!</p>
+
+              <p className="text-sm text-muted-foreground">Function tree is showing!</p>
+
 
             </div>
 
@@ -561,13 +575,15 @@ const Page: React.FC = () => {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
+
+              <Button variant="outline" className="ml-auto">
+                    <Settings2 className="h-4 w-4" />
+                    List action
+                  </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-48">
-                <DropdownMenuLabel>Select an action</DropdownMenuLabel>
+                <DropdownMenuLabel>List action</DropdownMenuLabel>
+
                 <DropdownMenuItem onClick={() => handleActionChange("updateListFunction")}>
                   Update list functions
                 </DropdownMenuItem>
@@ -580,7 +596,9 @@ const Page: React.FC = () => {
                 <DropdownMenuItem onClick={() => handleActionChange("mergeAllFilePostman")}>
                   Merge all file postman
                 </DropdownMenuItem>
-              
+
+
+
                 <DropdownMenuSeparator />
               </DropdownMenuContent>
             </DropdownMenu>

@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import NewGherkinDataProps from "./NewGherkinDataProps";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-
+import { Settings2 } from "lucide-react";
 
 // Import DropdownMenu components
 import {
@@ -34,6 +34,7 @@ const GherkinPostmanPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
 
+
   const notify = useToastNotification();
 
   const token = localStorage.getItem("jwtToken");
@@ -50,6 +51,8 @@ const GherkinPostmanPage: React.FC = () => {
       setStoredQuestionId(selectedQuestionId);
     }
   }, [selectedQuestionId]);
+
+
 
   const Header = useHeader({
     breadcrumbLink: "/exams",
@@ -68,7 +71,7 @@ const GherkinPostmanPage: React.FC = () => {
         : [...prevSelected, gherkinScenarioId]
     );
   };
-  
+
   const togglePostmanSelection = (postmanForGradingId: number) => {
     if (!postmanForGradingId) return; // Nếu Postman không hợp lệ, không cho chọn
     setSelectedPostmans((prevSelected) =>
@@ -77,55 +80,58 @@ const GherkinPostmanPage: React.FC = () => {
         : [...prevSelected, postmanForGradingId]
     );
   };
-  
-
 
   useEffect(() => {
     const fetchData = async () => {
       if (!token) {
-
         return;
       }
- 
+
 
       try {
         setLoading(true);
-
-        const [dataResponse, questionsResponse] = await Promise.all([
-          fetch(`${BASE_URL}${API_ENDPOINTS.gherkinScenarioPairs}${examPaperId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }),
-          fetch(`${BASE_URL}${API_ENDPOINTS.getQuestions}`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ examPaperId }),
-          }),
-        ]);
-
-        if (!dataResponse.ok || !questionsResponse.ok) {
-          throw new Error("Lỗi khi gọi API");
+  
+        // Gọi API đầu tiên
+        const dataResponse = await fetch(`${BASE_URL}${API_ENDPOINTS.gherkinScenarioPairs}${examPaperId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        if (!dataResponse.ok) {
+          throw new Error("Lỗi khi gọi API cho data");
         }
-
+  
         const Data = await dataResponse.json();
-        const questionsData = await questionsResponse.json();
-
         setData(Data);
+  
+        // Gọi API thứ hai
+        const questionsResponse = await fetch(`${BASE_URL}${API_ENDPOINTS.getQuestions}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ examPaperId }),
+        });
+  
+        if (!questionsResponse.ok) {
+          throw new Error("Lỗi khi gọi API cho questions");
+        }
+  
+        const questionsData = await questionsResponse.json();
         setQuestions(questionsData);
+  
       } catch (error) {
         console.error("Lỗi khi gọi API:", error);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchData();
   }, [token, examPaperId]);
-
+  
 
   if (!examPaperId) {
     return (
@@ -138,7 +144,7 @@ const GherkinPostmanPage: React.FC = () => {
   }
 
   const fetchGherkinPostmanPairs = async (questionId: number) => {
-    if (!token || questionId === null) return; // Ensure questionId is passed as an argument
+    if (!token || questionId === null) return;
 
     try {
       setLoading(true);
@@ -253,7 +259,7 @@ const GherkinPostmanPage: React.FC = () => {
       if (!response.ok) {
         notify({
           title: "Error",
-          description: "Failed to generate Gherkin format. May be cause by has not database",
+          description: "Failed to generate Gherkin format. Maybe cause by has not database",
           variant: "destructive",
         });
       }
@@ -273,7 +279,7 @@ const GherkinPostmanPage: React.FC = () => {
       } else {
         notify({
           title: "Error",
-          description: "Failed to generate Gherkin format. May be cause by has not database",
+          description: "Failed to generate Gherkin format. Maybe api key wrong",
           variant: "destructive",
         });
       }
@@ -403,10 +409,12 @@ const GherkinPostmanPage: React.FC = () => {
         }
       }
 
-      // Làm mới dữ liệu sau khi xóa
+      //Làm mới dữ liệu sau khi xóa
       if (storedQuestionId !== null) {
         await fetchGherkinPostmanPairs(storedQuestionId);
       }
+
+
     } catch (error) {
       notify({
         title: "API Error",
@@ -449,7 +457,7 @@ const GherkinPostmanPage: React.FC = () => {
         if (!response.ok) {
           notify({
             title: "Error",
-            description: "AI response wrong.",
+            description: "AI not response, may be ai key wrong",
             variant: "destructive",
           });
           continue; // Skip this iteration and continue with the next Gherkin scenario
@@ -619,15 +627,17 @@ const GherkinPostmanPage: React.FC = () => {
   };
 
 
+
+
   //Gherkin Content
   const gherkinContent = loading ? (
     <Skeleton className="h-64 w-full" />
   ) : (
     <div>
       {data.map((item: any, index) => {
-      // Kiểm tra dữ liệu Gherkin có hợp lệ hay không
-      const isGherkinValid = item.gherkin?.gherkinScenarioId && item.gherkin?.gherkinData;
-      const isSelected = selectedGherkins.includes(item.gherkin?.gherkinScenarioId);
+        // Kiểm tra dữ liệu Gherkin có hợp lệ hay không
+        const isGherkinValid = item.gherkin?.gherkinScenarioId && item.gherkin?.gherkinData;
+        const isSelected = selectedGherkins.includes(item.gherkin?.gherkinScenarioId);
 
 
         return (
@@ -661,9 +671,9 @@ const GherkinPostmanPage: React.FC = () => {
   ) : (
     <div>
       {data.map((item: any, index) => {
-      // Kiểm tra dữ liệu Postman có hợp lệ hay không
-      const isPostmanValid = item.postman?.postmanForGradingId && item.postman;
-      const isSelected = selectedPostmans.includes(item.postman?.postmanForGradingId);
+        // Kiểm tra dữ liệu Postman có hợp lệ hay không
+        const isPostmanValid = item.postman?.postmanForGradingId && item.postman;
+        const isSelected = selectedPostmans.includes(item.postman?.postmanForGradingId);
 
         return (
           <Card
@@ -686,13 +696,17 @@ const GherkinPostmanPage: React.FC = () => {
                     Total PM Tests: {item.postman?.totalPmTest}
                   </p>
                   <pre className="text-sm whitespace-pre-wrap bg-gray-200 p-2 rounded">
-                    {atob(item.postman?.fileCollectionPostman)}
+
+                    {item.postman?.fileCollectionPostman}
                   </pre>
                   <p className="text-sm">
                     Status: {item.postman?.status ? "Active" : "Inactive"}
                   </p>
                   <p className="text-sm">
                     Gherkin ID: {item.postman?.gherkinScenarioId}
+                  </p>
+                  <p className="text-sm">
+                    Exam Question ID: {item.postman?.examQuestionId}
                   </p>
                 </>
               ) : (
@@ -704,6 +718,8 @@ const GherkinPostmanPage: React.FC = () => {
       })}
     </div>
   );
+
+
 
   const renderQuestionDetails = () => {
     if (!storedQuestionId) {
@@ -789,58 +805,54 @@ const GherkinPostmanPage: React.FC = () => {
 
         <GherkinPostmanLayout
 
-          top={{
-            left: (
-              <>
-                <div className="text-2xl font-bold tracking-tight">Gherkin Scenario and Postman Script</div>
-                <p className="text-muted-foreground">
-                  Here's a list of gherkin scenario and postman script of this question!
-                </p>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                      <span className="sr-only">Open menu</span>
-                      <MoreHorizontal className="h-4 w-48" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-50">
-                    <DropdownMenuLabel>Select action for gherkin</DropdownMenuLabel>
-                    <DropdownMenuItem onClick={() => handleActionChange("handleGenerateGherkin")}>
-                      Generate Gherkin
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleActionChange("handleGenerateGherkinMore")}>
-                      Generate Gherkin More
-                    </DropdownMenuItem>
+          top={
 
-                    <DropdownMenuItem onClick={() => handleActionChange("deleteGherkin")}>
-                      Delete Gherkin
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleActionChange("newGherkinData")}>
-                      New Gherkin Data
-                    </DropdownMenuItem>
+            <>
+              <div className="text-2xl font-bold tracking-tight">Gherkin Scenario and Postman Script</div>
+              <p className="text-muted-foreground">
+                Here's a list of gherkin scenario and postman script!
+              </p>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="ml-auto">
+                    <Settings2 className="h-4 w-4" />
+                    List action
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-50">
+                  <DropdownMenuLabel>List action for gherkin</DropdownMenuLabel>
+                  <DropdownMenuItem onClick={() => handleActionChange("handleGenerateGherkin")}>
+                    Generate Gherkin
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleActionChange("handleGenerateGherkinMore")}>
+                    Generate Gherkin More
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem onClick={() => handleActionChange("deleteGherkin")}>
+                    Delete Gherkin
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleActionChange("newGherkinData")}>
+                    New Gherkin Data
+                  </DropdownMenuItem>
 
 
-                    <DropdownMenuSeparator />
-                    <DropdownMenuLabel>Select action for postman</DropdownMenuLabel>
-                    <DropdownMenuItem onClick={() => handleActionChange("generatePostmanScript")}>
-                      Generate Postman Script
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleActionChange("generatePostmanScriptMore")}>
-                      Generate More test case in postman script
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleActionChange("deletePostman")}>
-                      Delete Postman
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </>
-            ),
-            right: (
-              <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel>List action for postman</DropdownMenuLabel>
+                  <DropdownMenuItem onClick={() => handleActionChange("generatePostmanScript")}>
+                    Generate Postman Script
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleActionChange("generatePostmanScriptMore")}>
+                    Generate More test case in postman script
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleActionChange("deletePostman")}>
+                    Delete Postman
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
 
-              </>
-            ),
-          }}
+
+          }
 
           middle={
             <>
