@@ -59,8 +59,9 @@ export const API_ENDPOINTS = {
   exportPostman: "/api/exam-paper/export-postman",
   generatePostman: "/api/postman-grading/generate",
   generatePostmanMore: "/api/postman-grading/generate-more",
-  mergePostman: "/api/postman-grading/merge/",
+  mergeFilePostman: "/api/postman-grading/merge",
   postmanGrading: "/api/postman-grading", 
+  updatePostmanGrading: "/api/postman-grading", 
   importPostmanCollections: "/api/exam-paper/import-postman-collections", 
   deletePostman: "/api/postman-grading", 
   
