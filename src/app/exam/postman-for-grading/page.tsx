@@ -1,6 +1,4 @@
-
 import React, { useEffect, useState, useRef } from "react";
-
 import { useLocation } from "react-router-dom";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,8 +12,9 @@ import ImpostFilePostmanPopup from "./import-file-postman";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { Settings2 } from "lucide-react";
+import FileCollectionPopup from "./FileCollectionPopup";
+import LogRunPostman from "./LogRunPostmanPopup";
 
-// Import DropdownMenu components
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -27,6 +26,9 @@ import {
 
 
 const Page: React.FC = () => {
+  const location = useLocation();
+  const { examId, examPaperId } = location.state || {};
+
   const [postmanData, setPostmanData] = useState<any[]>([]);
   const [draggedNodeId, setDraggedNodeId] = useState<number | null>(null);
   const token = localStorage.getItem("jwtToken");
@@ -35,11 +37,14 @@ const Page: React.FC = () => {
   const notify = useToastNotification();
   const [reloadData, setReloadData] = useState<boolean>(false);
   const nodeRefs = useRef<Record<number, HTMLElement | null>>({});
+  const [isConfirmFile, setIsConfirmFile] = useState<boolean | null>(null);
+  const [totalItem, setTotalItem] = useState<number | null>(null);
+  const [fileCollectionPostman, setFileCollectionPostman] = useState<string | null>(null);
+  const [logRunPostman, setLogRunPostman] = useState<string | null>(null);
+  const [showFilePostmanPopup, setShowFilePostmanPopup] = useState<boolean>(false);
+  const [showLogRunPostmanPopup, setShowLogRunPostmanPopup] = useState<boolean>(false);
 
 
-
-  const location = useLocation();
-  const { examId, examPaperId } = location.state || {};
 
   const Header = useHeader({
     breadcrumbLink: "/exams",
@@ -53,6 +58,9 @@ const Page: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+
+        // Gọi API đầu tiên
+
         const response = await fetch(`${BASE_URL}${API_ENDPOINTS.postmanGrading}?examPaperId=${examPaperId}`, {
           method: "GET",
           headers: {
@@ -60,12 +68,13 @@ const Page: React.FC = () => {
           },
         });
 
+
         if (response.ok) {
           const data = await response.json();
 
           const dataWithOrder = data.map((node: any, index: number) => ({
             ...node,
-            // Gắn thứ tự từ phần tử thứ 2 trở đi
+            // order priority from node 2
             postmanForGradingOrder: node.postmanForGradingOrder ?? (index > 0 ? index : null),
           }));
 
@@ -74,6 +83,28 @@ const Page: React.FC = () => {
         } else {
           console.error("Failed to fetch data");
         }
+
+        // Gọi API thứ hai
+        const infoFilePostmanResponse = await fetch(
+          `${BASE_URL}${API_ENDPOINTS.infoFilePostmanExamPaper}?examPaperId=${examPaperId}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+
+            },
+          }
+        );
+
+        if (infoFilePostmanResponse.ok) {
+          const infoFilePostmanData = await infoFilePostmanResponse.json();
+          setIsConfirmFile(infoFilePostmanData.isComfirmFile);
+          setTotalItem(infoFilePostmanData.totalItem);
+          setFileCollectionPostman(infoFilePostmanData.fileCollectionPostman);
+          setLogRunPostman(infoFilePostmanData.logRunPostman);
+        } else {
+          console.error("Failed to fetch infoFilePostman data");
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -81,12 +112,29 @@ const Page: React.FC = () => {
 
     if (token && examPaperId) {
       fetchData();
-      setReloadData(false); // Reset trạng thái sau khi tải dữ liệu
+      setReloadData(false);
     }
 
   }, [token, reloadData, examPaperId]);
 
+  const handleActionChange = (action: string) => {
+    setSelectedAction(action);
+    if (action === "updateListFunction") {
+      updateListFunction();
+    } else if (action === "impostFilePostman") {
+      setShowPopup(true);
 
+    }
+    else if (action === "exportFilePostman") {
+      exportFilePostman();
+    }
+    else if (action === "mergeAllFilePostman") {
+      mergeAllFilePostman();
+    }
+    else if (action === "confirmFilePostman") {
+      confirmFilePostman();
+    }
+  };
 
   const handleShowOrder = () => {
     const nodesOnScreen = Object.entries(nodeRefs.current)
@@ -159,7 +207,7 @@ const Page: React.FC = () => {
         } else {
           notify({
             title: "Error",
-            description: "Something is wrong.",
+            description: "Something went wrong. Please reload page",
             variant: "default",
           });
         }
@@ -167,7 +215,7 @@ const Page: React.FC = () => {
         const errorMessage = await response.text();
         notify({
           title: "Error",
-          description: `Something is wrong. ${errorMessage}`,
+          description: `Something went wrong. ${errorMessage}`,
           variant: "destructive",
         });
 
@@ -175,7 +223,7 @@ const Page: React.FC = () => {
     } catch (error) {
       notify({
         title: "Error!",
-        description: `Something is wrong. ${error}`,
+        description: `Something went wrong. ${error}`,
         variant: "destructive",
       });
 
@@ -248,21 +296,7 @@ const Page: React.FC = () => {
   };
 
 
-  const handleActionChange = (action: string) => {
-    setSelectedAction(action);
-    if (action === "updateListFunction") {
-      updateListFunction();
-    } else if (action === "impostFilePostman") {
-      setShowPopup(true);
 
-    }
-    else if (action === "exportFilePostman") {
-      exportFilePostman();
-    }
-    else if (action === "mergeAllFilePostman") {
-      mergeAllFilePostman();
-    }
-  };
 
   const mergeAllFilePostman = async () => {
     if (!examPaperId) {
@@ -304,6 +338,60 @@ const Page: React.FC = () => {
         notify({
           title: "Error",
           description: `Merge failed. ${errorMessage}`,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      notify({
+        title: "Error!",
+        description: `An error occurred: ${error}`,
+        variant: "destructive",
+      });
+    }
+  };
+
+
+
+  const confirmFilePostman = async () => {
+    if (!examPaperId) {
+      notify({
+        title: "Error",
+        description: "Exam Paper ID is missing.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch(`${BASE_URL}${API_ENDPOINTS.confirmFilePostman}/${examPaperId}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const result = await response.text();
+
+        if (result.includes("Successfully")) {
+          notify({
+            title: "Success",
+            description: `Confirm file successfully`,
+            variant: "default",
+          });
+          setReloadData(true);
+        } else {
+          notify({
+            title: "Error",
+            description: "Confirm failed. Unexpected response.",
+            variant: "destructive",
+          });
+        }
+      } else {
+        const errorMessage = await response.text();
+        notify({
+          title: "Error",
+          description: `Confirm failed. ${errorMessage}`,
           variant: "destructive",
         });
       }
@@ -373,10 +461,6 @@ const Page: React.FC = () => {
 
     }
   };
- 
-    
-
-
 
 
 
@@ -571,39 +655,77 @@ const Page: React.FC = () => {
             </div>
 
           }
-          left={
-
+          leftTop={
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-
-              <Button variant="outline" className="ml-auto">
-                    <Settings2 className="h-4 w-4" />
-                    List action
-                  </Button>
+                <Button variant="outline" className="ml-auto">
+                  <Settings2 className="h-4 w-4" />
+                  List action
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-48">
                 <DropdownMenuLabel>List action</DropdownMenuLabel>
-
-                <DropdownMenuItem onClick={() => handleActionChange("updateListFunction")}>
-                  Update list functions
-                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleActionChange("impostFilePostman")}>
                   Import file postman
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleActionChange("exportFilePostman")}>
-                  Export file postman
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleActionChange("mergeAllFilePostman")}>
                   Merge all file postman
                 </DropdownMenuItem>
-
-
-
+                <DropdownMenuItem onClick={() => handleActionChange("updateListFunction")}>
+                  Update list functions
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleActionChange("confirmFilePostman")}>
+                  Confirm file postman
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleActionChange("exportFilePostman")}>
+                  Export file postman
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
               </DropdownMenuContent>
             </DropdownMenu>
 
           }
+
+          leftBottom={
+            <div className="p-4 space-y-4">
+              {/* Heading with smaller font size */}
+              <h1 className="text-xl font-semibold text-gray-800">Info main file postman </h1>
+
+              {/* Display isConfirmFile and totalItem when button is clicked */}
+              {isConfirmFile !== null && totalItem !== null ? (
+                <div className="space-y-2">
+                  <p className="text-sm text-gray-700">
+                    <strong className="font-semibold">Is Confirmed File: </strong>
+                    {isConfirmFile ? "Yes" : "Not yet"}
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    <strong className="font-semibold">Total Function: </strong> {totalItem}
+                  </p>
+                  <Button
+                    variant="outline"
+                    className="mb-4"
+                    onClick={() => setShowFilePostmanPopup(true)}
+                  >
+                    Show File Collection Data
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="mb-4"
+                    onClick={() => setShowLogRunPostmanPopup(true)}
+                  >
+                    Show log File Collection Data
+                  </Button>
+
+                </div>
+              ) : (
+                <Skeleton className="w-full h-32 bg-gray-200 rounded-lg" />
+              )}
+            </div>
+          }
+
+
+
+
           right={
             <div className="p-4">
               {postmanData.length > 0 && renderTree(postmanData[0], postmanData)}
@@ -612,13 +734,24 @@ const Page: React.FC = () => {
         />
       </div>
       {showPopup && (
-
         <ImpostFilePostmanPopup
           onClose={() => {
             setShowPopup(false);
-            setReloadData(true); // Đánh dấu cần tải lại dữ liệu
+            setReloadData(true);
           }}
           examPaperId={examPaperId}
+        />
+      )}
+      {showFilePostmanPopup && (
+        <FileCollectionPopup
+          fileCollectionPostman={fileCollectionPostman}
+          onClose={() => setShowFilePostmanPopup(false)}
+        />
+      )}
+      {showLogRunPostmanPopup && (
+        <LogRunPostman
+          logRunPostman={logRunPostman}
+          onClose={() => setShowLogRunPostmanPopup(false)}
         />
       )}
     </SidebarInset>
