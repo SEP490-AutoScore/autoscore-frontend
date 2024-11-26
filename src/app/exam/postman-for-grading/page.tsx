@@ -2,15 +2,12 @@ import React, { useEffect, useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { useHeader } from "@/hooks/use-header";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import PostmanForGradingLayout from "./postman-for-grading-layout";
 import ImpostFilePostmanPopup from "./import-file-postman";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
 import { Settings2 } from "lucide-react";
 import FileCollectionPopup from "./FileCollectionPopup";
 import LogRunPostman from "./LogRunPostmanPopup";
@@ -32,7 +29,7 @@ const Page: React.FC = () => {
   const [postmanData, setPostmanData] = useState<any[]>([]);
   const [draggedNodeId, setDraggedNodeId] = useState<number | null>(null);
   const token = localStorage.getItem("jwtToken");
-  const [selectedAction, setSelectedAction] = useState<string>("");
+  const [, setSelectedAction] = useState<string>("");
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const notify = useToastNotification();
   const [reloadData, setReloadData] = useState<boolean>(false);
@@ -536,7 +533,7 @@ const Page: React.FC = () => {
       (a, b) => a.postmanForGradingOrder - b.postmanForGradingOrder
     );
 
-    const handleDragStart = (e: React.DragEvent) => {
+    const handleDragStart = () => {
       setDraggedNodeId(parent.postmanForGradingId);
     };
 

@@ -4,7 +4,7 @@ import { useToastNotification } from "@/hooks/use-toast-notification";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 
 
-export const CreateKeyPopup = ({ onClose, onSubmit }: any) => {
+export const CreateKeyPopup = ({ onClose }: any) => {
     const notify = useToastNotification();
     // Form mặc định với aiName là "GEMINI"
     const [form, setForm] = useState({

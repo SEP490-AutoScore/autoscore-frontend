@@ -41,7 +41,7 @@ export default function PlagiarismPage() {
           type="text"
           placeholder="Enter Exam Paper ID"
           value={scoreId}
-          onChange={(e) => setScoreId(e.target.value)}
+          onChange={(e) => setScoreId(Number(e.target.value))}
           className="max-w-sm"
         />
         <Button onClick={fetchData}>Fetch Data</Button>

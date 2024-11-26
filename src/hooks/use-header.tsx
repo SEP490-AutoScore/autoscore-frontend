@@ -9,7 +9,6 @@ export function useHeader({
   breadcrumbLink_2,
   breadcrumbPage_2,
   breadcrumbPage_3,
-  breadcrumbLink_3, 
   stateGive, // Optional state parameter
 }: {
   breadcrumbLink?: string;

@@ -101,7 +101,7 @@ export default function AIApiKeysPage() {
 
   const handleSelectKey = useCallback(async (aiApiKeyId: number) => {
     try {
-      await updateSelectedKey(aiApiKeyId, true);
+      await updateSelectedKey(aiApiKeyId);
       setData((prevData) =>
         prevData.map((key) =>
           key.aiApiKeyId === aiApiKeyId ? { ...key, selected: true } : { ...key, selected: false }

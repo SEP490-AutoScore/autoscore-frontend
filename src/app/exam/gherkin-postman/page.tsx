@@ -9,9 +9,8 @@ import { useHeader } from "@/hooks/use-header";
 import GherkinPostmanLayout from "./gherkin-postman-layout";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
 import NewGherkinDataProps from "./NewGherkinDataProps";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog } from "@/components/ui/dialog";
 import { Settings2 } from "lucide-react";
 
 // Import DropdownMenu components
@@ -30,7 +29,7 @@ const GherkinPostmanPage: React.FC = () => {
 
   const [selectedGherkins, setSelectedGherkins] = useState<number[]>([]);
   const [selectedPostmans, setSelectedPostmans] = useState<number[]>([]);
-  const [selectedAction, setSelectedAction] = useState<string>("");
+  const [, setSelectedAction] = useState<string>("");
   const [loading, setLoading] = useState(true);
 
 
@@ -41,7 +40,7 @@ const GherkinPostmanPage: React.FC = () => {
   const location = useLocation();
   const { examId, examPaperId } = location.state || {};
   const [questions, setQuestions] = useState<any[]>([]);
-  const [selectedQuestionId, setSelectedQuestionId] = useState<number | null>(null);
+  const [selectedQuestionId] = useState<number | null>(null);
   const [storedQuestionId, setStoredQuestionId] = useState<number | null>(null);
   const [isNewGherkinDialogOpen, setIsNewGherkinDialogOpen] = useState(false);
 
@@ -388,7 +387,6 @@ const GherkinPostmanPage: React.FC = () => {
         );
 
         if (!response.ok) {
-          const errorText = await response.text();
           continue;
         }
 
@@ -590,7 +588,6 @@ const GherkinPostmanPage: React.FC = () => {
 
 
         if (!response.ok) {
-          const errorText = await response.text();
           continue;
         }
         const responseText = await response.text();
@@ -636,7 +633,6 @@ const GherkinPostmanPage: React.FC = () => {
     <div>
       {data.map((item: any, index) => {
         // Kiểm tra dữ liệu Gherkin có hợp lệ hay không
-        const isGherkinValid = item.gherkin?.gherkinScenarioId && item.gherkin?.gherkinData;
         const isSelected = selectedGherkins.includes(item.gherkin?.gherkinScenarioId);
 
 
@@ -672,7 +668,6 @@ const GherkinPostmanPage: React.FC = () => {
     <div>
       {data.map((item: any, index) => {
         // Kiểm tra dữ liệu Postman có hợp lệ hay không
-        const isPostmanValid = item.postman?.postmanForGradingId && item.postman;
         const isSelected = selectedPostmans.includes(item.postman?.postmanForGradingId);
 
         return (

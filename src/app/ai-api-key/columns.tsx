@@ -27,7 +27,7 @@ export type AIApiKey = {
 
 };
 
-export async function updateSelectedKey(aiApiKeyId: number, selected: boolean): Promise<AIApiKey> {
+export async function updateSelectedKey(aiApiKeyId: number): Promise<AIApiKey> {
 
 
 
