@@ -40,7 +40,7 @@ const data = {
       title: "Dashboard",
       url: "/dashboard",
       icon: PieChart,
-      allowedRoles: ["ADMIN", "EXAMNIER"],
+      allowedRoles: ["ADMIN", "EXAMINER", "LECTURER", "HEAD_OF_DEPARTMENT"],
       permission: "DASHBOARD",
       items: [],
     },
@@ -50,7 +50,7 @@ const data = {
       title: "Accounts",
       url: "?",
       icon: UsersRound,
-      allowedRoles: ["ADMIN"],
+      allowedRoles: ["ADMIN", "EXAMIER", "HEAD_OF_DEPARTMENT"],
       permission: "VIEW_ACCOUNT",
       items: [
         // {
@@ -90,7 +90,7 @@ const data = {
       title: "Examination",
       url: "###",
       icon: BookOpen,
-      allowedRoles: ["ADMIN"],
+      allowedRoles: ["ADMIN", "EXAMINER", "LECTURER", "HEAD_OF_DEPARTMENT"],
       permission: "VIEW_EXAM",
       items: [
         {
@@ -113,14 +113,14 @@ const data = {
     {
       title: "Setting",
       url: "/ai-api-keys",
-      allowedRoles: ["ADMIN", "EXAMNINER"],
+      allowedRoles: ["ADMIN", "EXAMINER", "LECTURER", "HEAD_OF_DEPARTMENT"],
       icon: Settings,
       items: [],
     },
     {
       title: "Grading",
       url: "/grading",
-      allowedRoles: ["ADMIN", "EXAMNINER"],
+      allowedRoles: ["ADMIN", "EXAMINER", "LECTURER", "HEAD_OF_DEPARTMENT"],
       icon: NotebookPen,
       items: [],
     },
