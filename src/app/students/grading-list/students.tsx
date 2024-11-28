@@ -5,7 +5,6 @@ import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 import { DataTable } from "@/app/students/grading-list/data-table";
 import { ErrorPage } from "@/app/authentication/error/page";
 import { DataTableSkeleton } from "@/app/students/grading-list/data-skeleton";
-import GradingProcess from "@/app/students/grading-process/grading-bar"
 
 async function getData(examPaperId: number) {
   try {
@@ -67,7 +66,6 @@ export default function ScorePage({ examPaperId }: { examPaperId: number }) {
   return <>
     <div className="flex flex-col p-4 pt-0">
       <DataTable columns={columns} data={data} examPaperId={examPaperId} />
-      <GradingProcess />
     </div>
 
   </>

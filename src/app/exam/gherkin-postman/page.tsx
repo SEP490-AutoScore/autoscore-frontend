@@ -222,7 +222,7 @@ const GherkinPostmanPage: React.FC = () => {
           onClick={() => handleQuestionClick(item.examQuestionId)}
           className="w-1/8"
         >
-          Question ID {item.examQuestionId}
+          Question {item.examQuestionId}
         </Button>
       ))}
     </div>
@@ -701,7 +701,7 @@ const GherkinPostmanPage: React.FC = () => {
                     Gherkin ID: {item.postman?.gherkinScenarioId}
                   </p>
                   <p className="text-sm">
-                    Exam Question ID: {item.postman?.examQuestionId}
+                     Question: {item.postman?.examQuestionId}
                   </p>
                 </>
               ) : (
