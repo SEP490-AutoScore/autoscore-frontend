@@ -174,7 +174,7 @@ const GherkinPostmanPage: React.FC = () => {
     setSelectedAction(action);
     if (action === "handleGenerateGherkin") {
       handleGenerateGherkin();
-    } else if (action === "generatePostmanScriptMore") {
+    } else if (action === "handleGenerateGherkinMore") {
       handleGenerateGherkinMore();
 
     }
@@ -278,7 +278,7 @@ const GherkinPostmanPage: React.FC = () => {
       } else {
         notify({
           title: "Error",
-          description: "Failed to generate Gherkin format. Maybe api key wrong",
+          description: "Failed to generate Gherkin format. Maybe api key wrong or has not database",
           variant: "destructive",
         });
       }
