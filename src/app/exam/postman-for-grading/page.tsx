@@ -56,8 +56,6 @@ const Page: React.FC = () => {
     const fetchData = async () => {
       try {
 
-        // Gọi API đầu tiên
-
         const response = await fetch(`${BASE_URL}${API_ENDPOINTS.postmanGrading}?examPaperId=${examPaperId}`, {
           method: "GET",
           headers: {
@@ -118,6 +116,7 @@ const Page: React.FC = () => {
     setSelectedAction(action);
     if (action === "updateListFunction") {
       updateListFunction();
+  
     } else if (action === "impostFilePostman") {
       setShowPopup(true);
 
@@ -176,7 +175,7 @@ const Page: React.FC = () => {
       });
     }
 
-
+   
     try {
       const response = await fetch(`${BASE_URL}${API_ENDPOINTS.updatePostmanGrading}`, {
         method: "PUT",
@@ -189,7 +188,7 @@ const Page: React.FC = () => {
           updateDTOs,
         }),
       });
-      console.log(updateDTOs)
+  
       if (response.ok) {
         const result = await response.text();
 
@@ -212,7 +211,7 @@ const Page: React.FC = () => {
         const errorMessage = await response.text();
         notify({
           title: "Error",
-          description: `Something went wrong. ${errorMessage}`,
+          description: `Something went wrong. Please reload page${errorMessage}`,
           variant: "destructive",
         });
 
@@ -220,7 +219,7 @@ const Page: React.FC = () => {
     } catch (error) {
       notify({
         title: "Error!",
-        description: `Something went wrong. ${error}`,
+        description: `Something went wrong. Please reload page${error}`,
         variant: "destructive",
       });
 
