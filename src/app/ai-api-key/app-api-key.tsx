@@ -6,8 +6,11 @@ import  {PopupComponent} from "@/app/ai-api-key/PopupComponent";
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 import { AIApiKeysSkeleton } from "@/app/ai-api-key/ai-api-key-skeleton";
 import { Button } from "@/components/ui/button";
+import  {CreateKeyPopup} from "@/app/ai-api-key/CreateKeyPopup";
+
 
 export async function getAIApiKeys(): Promise<AIApiKey[]> {
+
 
   const token = localStorage.getItem("jwtToken");
 
@@ -36,8 +39,8 @@ export async function getAIApiKeys(): Promise<AIApiKey[]> {
     aiApiKey: item.aiApiKey,
     fullName: item.fullName,
     status: item.status,
-    createAt: item.createdAt || "N/A",
-    updateAt: item.updatedAt || "N/A",
+    createdAt: item.createdAt || "N/A",
+    updatedAt: item.updatedAt || "N/A",
     shared: item.shared,
     selected: item.selected,
   }));
@@ -48,6 +51,9 @@ export default function AIApiKeysPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [popupData, setPopupData] = useState(null); 
   const [showPopup, setShowPopup] = useState(false); 
+
+  const [showCreatePopup, setShowCreatePopup] = useState(false);
+
 
   const fetchData = useCallback(async () => {
     try {
@@ -71,7 +77,9 @@ export default function AIApiKeysPage() {
       return;
     }
     try {
-      const response = await fetch("http://localhost:8080/api/content", {
+
+      const response = await fetch(`${BASE_URL}${API_ENDPOINTS.showQuestionAskAi}`, {
+
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -93,7 +101,7 @@ export default function AIApiKeysPage() {
 
   const handleSelectKey = useCallback(async (aiApiKeyId: number) => {
     try {
-      await updateSelectedKey(aiApiKeyId, true);
+      await updateSelectedKey(aiApiKeyId);
       setData((prevData) =>
         prevData.map((key) =>
           key.aiApiKeyId === aiApiKeyId ? { ...key, selected: true } : { ...key, selected: false }
@@ -107,18 +115,54 @@ export default function AIApiKeysPage() {
 
   const columns = createColumns(handleSelectKey);
 
+
+   const handleCreateKey = async (keyData: any) => {
+    const token = localStorage.getItem("jwtToken");
+    if (!token) {
+      console.error("JWT token not found.");
+      return;
+    }
+    try {
+      const response = await fetch(`${BASE_URL}${API_ENDPOINTS.aiApiKeys}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(keyData),
+      });
+
+      if (response.ok) {
+        alert("Key created successfully!");
+        fetchData(); // Cập nhật danh sách sau khi thêm mới
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to create key:", errorData.message);
+      }
+    } catch (error) {
+      console.error("Error creating key:", error);
+    }
+  };
+
+ 
+  
   if (loading) {
     return <AIApiKeysSkeleton />;
   }
 
    return (
     <div className="container mx-auto">
-      {/* Nút Show question ask AI */}
-      <div className="mb-4 flex justify-end">
-        <Button variant="outline" onClick={fetchPopupData}>
-          Show question ask AI
+
+    {/* Nút Show question ask AI */}
+    <div className="mb-4 flex justify-end gap-x-2">
+      <Button variant="outline" onClick={fetchPopupData}>
+        Show question ask AI
+      </Button>
+      <Button variant="outline" onClick={() => setShowCreatePopup(true)}>
+          Create new key
         </Button>
-      </div>
+    </div>
+
 
       {/* Bảng DataTable */}
       <DataTable columns={columns} data={data} />
@@ -127,6 +171,17 @@ export default function AIApiKeysPage() {
       {showPopup && (
         <PopupComponent data={popupData} onClose={() => setShowPopup(false)} />
       )}
+
+         {showCreatePopup && (
+        <CreateKeyPopup
+          onClose={() => setShowCreatePopup(false)}
+          onSubmit={handleCreateKey}
+        />
+      )}
+  
+
+
+
     </div>
   );
 }

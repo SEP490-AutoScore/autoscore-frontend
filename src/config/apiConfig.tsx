@@ -15,7 +15,7 @@ export const API_ENDPOINTS = {
   getRoleDetail: "/api/role-permission/",        // API lấy danh sách permissions by role
   getAllAccounts: "/api/account/",               // API lấy danh sách account
   getAllStudents: "/api/students/getall",        // API lấy danh sách sinh viên
-  uploadStudents: "/api/students/import" ,       // API upload danh sách sinh viên
+  uploadStudents: "/api/students/import",       // API upload danh sách sinh viên
   uploadProcess: "/api/students/upload-progress",// API lấy tiền trình upload
   uploadStudentSources: "/api/upload/import",    // API upload code student
   uploadStudentSourceProcess: "/api/upload/progress",// API lấy tiến trình upload code
@@ -28,7 +28,7 @@ export const API_ENDPOINTS = {
   plagiarism: "/api/score/code-plagiarism",
   exportScore: "/api/score/export",            // API export score byExamPaperId
   createExam: "/api/exam/",
-  
+
   // Exam Database 
   importDatabase: "/api/database/import",
   changeDatabase: "/api/database/update",
@@ -36,23 +36,24 @@ export const API_ENDPOINTS = {
 
 
   // Exam Question
-  // getlistIdQuestion: "/api/exam-paper/",
   getQuestions: "/api/exam-question/list",
   getQuestion: "/api/exam-question",
 
   // API Key
   updateSelectedKey: "/api/ai_api_keys/update-selected-key",
   aiApiKeys: "/api/ai_api_keys",
-  
+  showQuestionAskAi: "/api/content",
+  createAiApiKeys: "/api/ai_api_keys",
+  updateAiApiKey: "/api/ai_api_keys",
   // Gherkin
   generateGherkin: "/api/gherkin_scenario/generate_gherkin_format",
   generateGherkinMore: "/api/gherkin_scenario/generate_gherkin_format_more",
   getlistIdGherkin: "/api/exam-paper//gherkin-scenarios",
   gherkinScenarioPairs: "/api/gherkin_scenario/pairs?examPaperId=",
   gherkinScenarioPairsByQuestion: "/api/gherkin_scenario/pairs/by-question",
-  deleteGherkin : "/api/gherkin_scenario",
+  deleteGherkin: "/api/gherkin_scenario",
   createGherkin: "/api/gherkin_scenario",
-  
+
 
   // Postman
   importPostman: "/api/exam-paper/import-postman-collections",
@@ -60,11 +61,12 @@ export const API_ENDPOINTS = {
   generatePostman: "/api/postman-grading/generate",
   generatePostmanMore: "/api/postman-grading/generate-more",
   mergeFilePostman: "/api/postman-grading/merge",
-  postmanGrading: "/api/postman-grading", 
-  updatePostmanGrading: "/api/postman-grading", 
-  importPostmanCollections: "/api/exam-paper/import-postman-collections", 
-  deletePostman: "/api/postman-grading", 
-  
+  postmanGrading: "/api/postman-grading",
+  updatePostmanGrading: "/api/postman-grading",
+  importPostmanCollections: "/api/exam-paper/import-postman-collections",
+  deletePostman: "/api/postman-grading",
+  infoFilePostmanExamPaper: "/api/exam-paper/infoFilePostman",
+  confirmFilePostman: "/api/exam-paper/confirmFilePostman",
 
   //side
   getSubject: "/api/subject",
@@ -76,7 +78,7 @@ export const API_ENDPOINTS = {
   getListExamPaper: "/api/exam-paper/all",
 
   //important
-  getImportant : "/api/important",
+  getImportant: "/api/important",
 
   exportWord: "/api/document/generate-word",
   getSources: "/api/source",

@@ -11,11 +11,13 @@ export function useToastNotification() {
       description = "There was a problem with your request.",
       actionText,
       variant = "default",
+    
     }: {
       title?: string;
       description: string;
       actionText?: string;
       variant?: "default" | "destructive";
+   
     }) => {
       toast({
         title,
@@ -24,6 +26,7 @@ export function useToastNotification() {
           <ToastAction altText="Perform an action">{actionText}</ToastAction>
         ) : undefined,
         variant,
+      
       });
     },
     [toast]
