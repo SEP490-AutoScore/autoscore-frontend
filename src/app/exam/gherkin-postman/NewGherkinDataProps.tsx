@@ -14,10 +14,16 @@ interface NewGherkinDataPropsProps {
 }
 
 export const NewGherkinDataProps = ({ onClose, questionId, fetchGherkinPostmanPairs }: NewGherkinDataPropsProps) => {
-  const [gherkinData, setGherkinData] = useState<string>(""); // Quản lý nội dung nhập liệu
+  const [gherkinData, setGherkinData] = useState<string>(""); 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const notify = useToastNotification();
+
+  const handleClose = () => {
+    setGherkinData(""); 
+    setErrorMessage(null); 
+    onClose();
+  };
 
   const handleFormSubmit = async () => {
     if (!gherkinData.trim()) {
@@ -34,7 +40,7 @@ export const NewGherkinDataProps = ({ onClose, questionId, fetchGherkinPostmanPa
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`, // Giả sử bạn sử dụng JWT token trong header
+          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
         },
         body: JSON.stringify({
           gherkinData,
@@ -51,9 +57,9 @@ export const NewGherkinDataProps = ({ onClose, questionId, fetchGherkinPostmanPa
           description: `Gherkin scenario create Successfully`,
           variant: "default",
         });
-        onClose(); 
+          handleClose();
         if (questionId !== null) {
-          await fetchGherkinPostmanPairs(questionId); // Gọi hàm truyền vào
+          await fetchGherkinPostmanPairs(questionId); 
         }
 
       } else {
