@@ -51,8 +51,10 @@ export const API_ENDPOINTS = {
   getlistIdGherkin: "/api/exam-paper//gherkin-scenarios",
   gherkinScenarioPairs: "/api/gherkin_scenario/pairs?examPaperId=",
   gherkinScenarioPairsByQuestion: "/api/gherkin_scenario/pairs/by-question",
-  deleteGherkin: "/api/gherkin_scenario",
+  deleteGherkin: "/api/gherkin_scenario/gherkinScenarioIds",
   createGherkin: "/api/gherkin_scenario",
+  getGherkinById: "/api/gherkin_scenario",
+  updateGherkin: "/api/gherkin_scenario",
 
 
   // Postman
@@ -67,7 +69,9 @@ export const API_ENDPOINTS = {
   deletePostman: "/api/postman-grading",
   infoFilePostmanExamPaper: "/api/exam-paper/infoFilePostman",
   confirmFilePostman: "/api/exam-paper/confirmFilePostman",
-
+  getPostmanById: "/api/postman-grading",
+  updateExamQuestion: "/api/postman-grading/update-exam-question",
+  saveCalculateScores: "/api/postman-grading/calculate-scores",
   //side
   getSubject: "/api/subject",
   getSemester: "/api/semester",

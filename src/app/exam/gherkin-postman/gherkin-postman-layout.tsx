@@ -1,21 +1,26 @@
 import React from "react";
 
 interface LayoutProps {
-  top: React.ReactNode;
+  topleft: React.ReactNode;
+  topright: React.ReactNode;
   middle: React.ReactNode;
   left: React.ReactNode;
   right: React.ReactNode;
 }
 
-const GherkinPostmanLayout: React.FC<LayoutProps> = ({ top, middle, left, right }) => {
+const GherkinPostmanLayout: React.FC<LayoutProps> = ({ topleft,topright, middle, left, right }) => {
   return (
 
     <div>
       <header className="p-4">
         <div className="flex">
-          {/* Phần bên trái (Gherkin Tool) */}
+        
           <div className="w-1/2 p-4">
-            {top}
+            {topleft}
+          </div>
+
+          <div className="w-1/2 p-4">
+            {topright}
           </div>
 
         </div>
