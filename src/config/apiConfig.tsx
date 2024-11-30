@@ -30,19 +30,22 @@ export const API_ENDPOINTS = {
   exportScore: "/api/score/export", // API export score byExamPaperId
   createExam: "/api/exam/",
 
-  // Exam Database
+  // Exam Database 
   importDatabase: "/api/database/import",
   changeDatabase: "/api/database/update",
   getDatabase: "/api/database/getbyExamPaperId",
 
   // Exam Question
-  // getlistIdQuestion: "/api/exam-paper/",
   getQuestions: "/api/exam-question/list",
   getQuestion: "/api/exam-question",
 
   // API Key
   updateSelectedKey: "/api/ai_api_keys/update-selected-key",
   aiApiKeys: "/api/ai_api_keys",
+
+  showQuestionAskAi: "/api/content",
+  createAiApiKeys: "/api/ai_api_keys",
+  updateAiApiKey: "/api/ai_api_keys",
 
   // Gherkin
   generateGherkin: "/api/gherkin_scenario/generate_gherkin_format",
@@ -63,6 +66,8 @@ export const API_ENDPOINTS = {
   updatePostmanGrading: "/api/postman-grading",
   importPostmanCollections: "/api/exam-paper/import-postman-collections",
   deletePostman: "/api/postman-grading",
+  infoFilePostmanExamPaper: "/api/exam-paper/infoFilePostman",
+  confirmFilePostman: "/api/exam-paper/confirmFilePostman",
 
   //side
   getSubject: "/api/subject",

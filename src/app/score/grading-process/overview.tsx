@@ -16,12 +16,6 @@ interface ExamPaper {
     duration: string;
 }
 
-interface Subject {
-    subjectId: number | 1;
-    subjectCode: string | "Subject";
-    subjectName: string | "Subject";
-}
-
 async function getData(): Promise<Source[]> {
     // Lấy token từ local storage
     const token = localStorage.getItem("jwtToken");
