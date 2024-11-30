@@ -36,10 +36,12 @@ export function ExamDetailContent({ examData }: ExamDetailContentProps) {
           </p>
         </div>
       </div>
-      <Card>
+      <Card className="shadow-none">
         <CardHeader className="pb-4">
-          <CardTitle className="text-xl">Imformation</CardTitle>
-          <CardDescription>This is some information about the exam.</CardDescription>
+          <CardTitle className="text-xl">Information</CardTitle>
+          <CardDescription>
+            This is some information about the exam.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {/* Three-column layout */}

@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { CreateExamPaperForm } from "./create-exam-paper-form"; // Adjust the import path
-import FolderUploadPopover from "@/components/folder-upload";
 import {
   Card,
   CardContent,
@@ -15,7 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { FolderUp, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { NotFoundPage } from "@/app/authentication/error/page";
 
 interface Important {
@@ -50,7 +49,6 @@ export function ExamPaperList({ examId, subjectId }: { examId: number; subjectId
   const [error, setError] = useState<string | null>(null);
   const [importants, setImportants] = useState<Important[]>([]);
   const token = localStorage.getItem("jwtToken");
-  const [isUploadOpen, setIsUploadOpen] = useState(false); // State để điều khiển modal
 
   useEffect(() => {
     fetch(`${BASE_URL}${API_ENDPOINTS.getImportant}?subjectId=${subjectId}`, {
@@ -130,7 +128,7 @@ export function ExamPaperList({ examId, subjectId }: { examId: number; subjectId
 
   return (
     <>
-    <Card>
+    <Card className="shadow-none">
       <CardHeader className="flex flex-row items-center justify-between">
         <div className="space-y-1">
           <CardTitle className="text-xl">Exam Papers</CardTitle>
@@ -157,14 +155,6 @@ export function ExamPaperList({ examId, subjectId }: { examId: number; subjectId
               onError={handleFormError}
             />
           </Dialog>
-          <Button
-            variant="outline"
-            className="p-2.5 h-10 w-10 rounded-full border-primary text-primary hover:text-white hover:bg-primary"
-            title="Upload Student Sources"
-            onClick={() => setIsUploadOpen(true)}
-          >
-            <FolderUp />
-          </Button>
         </div>
       </CardHeader>
       <Separator />
@@ -184,8 +174,6 @@ export function ExamPaperList({ examId, subjectId }: { examId: number; subjectId
         )}
       </CardContent>
     </Card>
-    {/* Hiển thị modal FileUpload */}
-    {isUploadOpen && <FolderUploadPopover onClose={() => setIsUploadOpen(false)} examId={examId}/>}
   </>
   );
 }

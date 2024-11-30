@@ -1,9 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { NoResultPage } from "@/app/authentication/error/page";
-import FileUploadPopover from "@/components/file-upload";
+import React from "react";
 import {
   ColumnDef,
   SortingState,
@@ -18,6 +14,15 @@ import {
 } from "@tanstack/react-table";
 
 import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+
+import {
   Table,
   TableBody,
   TableCell,
@@ -26,29 +31,20 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
-import { Settings2, Upload } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Settings2 } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  examId: number;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  examId,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [isUploadOpen, setIsUploadOpen] = useState(false); // State để điều khiển modal
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -85,16 +81,7 @@ export function DataTable<TData, TValue>({
   };
 
   return (
-    <div className="w-full">
-      <div className="flex items-center justify-between space-y-2">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Students</h2>
-          <p className="text-muted-foreground">
-            Here's a list of students for this exam!
-          </p>
-        </div>
-        <Button onClick={() => setIsUploadOpen(true)} variant={"outline"}><Upload className="h-4 w-4" />Upload File</Button>
-      </div>
+    <>
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter by student code..."
@@ -145,12 +132,18 @@ export function DataTable<TData, TValue>({
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="h-16">
+              <TableRow
+                key={headerGroup.id}
+                className="grid grid-cols-7" // Áp dụng grid với 4 phần
+              >
                 {headerGroup.headers.map((header, index) => {
                   return (
                     <TableHead
                       key={header.id}
-                      className={`${index === 0 ? "pl-4" : ""}`}
+                      className={`font-semibold h-16 py-4
+                    ${index === 2 ? "col-span-4" : "col-span-1"}
+                    ${index === 0 ? "" : "px-4 py-6"}
+                  `}
                     >
                       {header.isPlaceholder
                         ? null
@@ -170,14 +163,16 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="py-3 border-0 hover:bg-primary hover:text-primary-foreground"
+                  className="grid grid-cols-7 border-0 hover:bg-primary hover:text-primary-foreground" // Áp dụng grid với 4 phần
                 >
-                  {row.getVisibleCells().map((cell) => (
+                  {row.getVisibleCells().map((cell, index) => (
                     <TableCell
                       key={cell.id}
-                      className={`${
-                        cell.column.id === "studentCode" ? "pl-4" : ""
-                      } py-3`}
+                      className={`
+                    px-4 py-3 truncate px-4 py-3 whitespace-nowrap overflow-hidden
+                    ${index === 2 ? "col-span-4" : "col-span-1"}
+                    title={cell.getValue<string>()}
+                  `}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
@@ -193,7 +188,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  <NoResultPage />
+                  No results.
                 </TableCell>
               </TableRow>
             )}
@@ -223,13 +218,6 @@ export function DataTable<TData, TValue>({
           Next
         </Button>
       </div>
-      {/* Hiển thị modal FileUpload */}
-      {isUploadOpen && (
-        <FileUploadPopover
-          onClose={() => setIsUploadOpen(false)}
-          examId={examId}
-        />
-      )}
-    </div>
+    </>
   );
 }

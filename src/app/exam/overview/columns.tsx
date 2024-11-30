@@ -4,8 +4,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { MoreHorizontal } from "lucide-react";
 import { Link } from "react-router-dom";
-import FileUploadPopover from "@/components/file-upload";
-// import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,7 +13,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
 
 export type Exams = {
   examId: number;
@@ -42,7 +39,6 @@ type ActionsCellProps = {
 };
 
 function ActionsCell({ exam }: ActionsCellProps) {
-  const [isUploadOpen, setIsUploadOpen] = useState(false); // State để điều khiển modal
 
   return (
     <>
@@ -56,18 +52,6 @@ function ActionsCell({ exam }: ActionsCellProps) {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <Link to="/exams/students" state={{ examId: exam.examId }}>
-            <DropdownMenuItem className="cursor-pointer">
-              View Students
-            </DropdownMenuItem>
-          </Link>
-          <DropdownMenuItem
-            className="cursor-pointer"
-            onClick={() => setIsUploadOpen(true)} // Mở modal
-          >
-            Upload File
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
           <Link to="/exams/exam-papers" state={{ examId: exam.examId }}>
             <DropdownMenuItem className="cursor-pointer">
               View Exam Details
@@ -77,35 +61,12 @@ function ActionsCell({ exam }: ActionsCellProps) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Hiển thị modal FileUpload */}
-      {isUploadOpen && <FileUploadPopover onClose={() => setIsUploadOpen(false)} examId={exam.examId}/>}
+      
     </>
   );
 }
 
 export const columns: ColumnDef<Exams>[] = [
-  // {
-  //   id: "select",
-  //   header: ({ table }) => (
-  //     <Checkbox
-  //       checked={
-  //         table.getIsAllPageRowsSelected() ||
-  //         (table.getIsSomePageRowsSelected() && "indeterminate")
-  //       }
-  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //       aria-label="Select all"
-  //     />
-  //   ),
-  //   cell: ({ row }) => (
-  //     <Checkbox
-  //       checked={row.getIsSelected()}
-  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //       aria-label="Select row"
-  //     />
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
   {
     accessorKey: "examCode",
     header: ({ column }) => (
