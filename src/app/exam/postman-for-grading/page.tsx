@@ -9,8 +9,8 @@ import PostmanForGradingLayout from "./postman-for-grading-layout";
 import ImpostFilePostmanPopup from "./import-file-postman";
 import { Button } from "@/components/ui/button";
 import { Settings2 } from "lucide-react";
-import FileCollectionPopup from "./FileCollectionPopup";
-import LogRunPostman from "./LogRunPostmanPopup";
+import FileCollectionDialog from "./FileCollectionDialog";
+import LogRunPostmanDialog from "./LogRunPostmanDialog";
 
 import {
   DropdownMenu,
@@ -38,8 +38,8 @@ const Page: React.FC = () => {
   const [totalItem, setTotalItem] = useState<number | null>(null);
   const [fileCollectionPostman, setFileCollectionPostman] = useState<string | null>(null);
   const [logRunPostman, setLogRunPostman] = useState<string | null>(null);
-  const [showFilePostmanPopup, setShowFilePostmanPopup] = useState<boolean>(false);
-  const [showLogRunPostmanPopup, setShowLogRunPostmanPopup] = useState<boolean>(false);
+  const [showFilePostmanDialog, setShowFilePostmanDialog] = useState<boolean>(false);
+  const [showLogRunPostmanDialog, setShowLogRunPostmanDialog] = useState<boolean>(false);
 
 
 
@@ -116,7 +116,7 @@ const Page: React.FC = () => {
     setSelectedAction(action);
     if (action === "updateListFunction") {
       updateListFunction();
-  
+
     } else if (action === "impostFilePostman") {
       setShowPopup(true);
 
@@ -175,7 +175,7 @@ const Page: React.FC = () => {
       });
     }
 
-   
+
     try {
       const response = await fetch(`${BASE_URL}${API_ENDPOINTS.updatePostmanGrading}`, {
         method: "PUT",
@@ -188,7 +188,7 @@ const Page: React.FC = () => {
           updateDTOs,
         }),
       });
-  
+
       if (response.ok) {
         const result = await response.text();
 
@@ -700,14 +700,14 @@ const Page: React.FC = () => {
                   <Button
                     variant="outline"
                     className="mb-4"
-                    onClick={() => setShowFilePostmanPopup(true)}
+                    onClick={() => setShowFilePostmanDialog(true)}
                   >
                     Show File Collection Data
                   </Button>
                   <Button
                     variant="outline"
                     className="mb-4"
-                    onClick={() => setShowLogRunPostmanPopup(true)}
+                    onClick={() => setShowLogRunPostmanDialog(true)}
                   >
                     Show log File Collection Data
                   </Button>
@@ -738,16 +738,22 @@ const Page: React.FC = () => {
           examPaperId={examPaperId}
         />
       )}
-      {showFilePostmanPopup && (
-        <FileCollectionPopup
+
+
+      {showFilePostmanDialog && (
+        <FileCollectionDialog
           fileCollectionPostman={fileCollectionPostman}
-          onClose={() => setShowFilePostmanPopup(false)}
+          open={showFilePostmanDialog}
+          onClose={() => setShowFilePostmanDialog(false)}
         />
       )}
-      {showLogRunPostmanPopup && (
-        <LogRunPostman
+
+
+      {showLogRunPostmanDialog && (
+        <LogRunPostmanDialog
           logRunPostman={logRunPostman}
-          onClose={() => setShowLogRunPostmanPopup(false)}
+          open={showLogRunPostmanDialog}
+          onClose={() => setShowLogRunPostmanDialog(false)}
         />
       )}
     </SidebarInset>

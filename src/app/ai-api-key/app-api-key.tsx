@@ -2,12 +2,11 @@ import { useCallback, useEffect, useState } from "react";
 import { DataTable } from "@/app/ai-api-key/data-table";
 import { AIApiKey, createColumns, updateSelectedKey } from "@/app/ai-api-key/columns";
 
-import  {PopupComponent} from "@/app/ai-api-key/PopupComponent";
+import { DialogComponent } from "@/app/ai-api-key/DialogComponent";
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 import { AIApiKeysSkeleton } from "@/app/ai-api-key/ai-api-key-skeleton";
 import { Button } from "@/components/ui/button";
-import  {CreateKeyPopup} from "@/app/ai-api-key/CreateKeyPopup";
-
+import { CreateKeyDialog } from "@/app/ai-api-key/CreateKeyDialog";
 
 export async function getAIApiKeys(): Promise<AIApiKey[]> {
 
@@ -45,15 +44,11 @@ export async function getAIApiKeys(): Promise<AIApiKey[]> {
     selected: item.selected,
   }));
 }
-
 export default function AIApiKeysPage() {
   const [data, setData] = useState<AIApiKey[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [popupData, setPopupData] = useState(null); 
-  const [showPopup, setShowPopup] = useState(false); 
-
-  const [showCreatePopup, setShowCreatePopup] = useState(false);
-
+  const [showDialog, setShowDialog] = useState(false);
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
@@ -69,35 +64,6 @@ export default function AIApiKeysPage() {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
-
-  const fetchPopupData = async () => {
-    const token = localStorage.getItem("jwtToken");
-    if (!token) {
-      console.error("JWT token not found.");
-      return;
-    }
-    try {
-
-      const response = await fetch(`${BASE_URL}${API_ENDPOINTS.showQuestionAskAi}`, {
-
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setPopupData(data);
-        setShowPopup(true); // Show popup
-      } else {
-        console.error("Failed to fetch data:", response.statusText);
-      }
-    } catch (error) {
-      console.error("Error fetching popup data:", error);
-    }
-  };
-
 
   const handleSelectKey = useCallback(async (aiApiKeyId: number) => {
     try {
@@ -115,73 +81,40 @@ export default function AIApiKeysPage() {
 
   const columns = createColumns(handleSelectKey);
 
-
-   const handleCreateKey = async (keyData: any) => {
-    const token = localStorage.getItem("jwtToken");
-    if (!token) {
-      console.error("JWT token not found.");
-      return;
-    }
-    try {
-      const response = await fetch(`${BASE_URL}${API_ENDPOINTS.aiApiKeys}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(keyData),
-      });
-
-      if (response.ok) {
-        alert("Key created successfully!");
-        fetchData(); // Cập nhật danh sách sau khi thêm mới
-      } else {
-        const errorData = await response.json();
-        console.error("Failed to create key:", errorData.message);
-      }
-    } catch (error) {
-      console.error("Error creating key:", error);
-    }
-  };
-
- 
-  
   if (loading) {
     return <AIApiKeysSkeleton />;
   }
 
-   return (
+  return (
     <div className="container mx-auto">
+      <div className="mb-4 flex justify-end gap-x-2">
 
-    {/* Nút Show question ask AI */}
-    <div className="mb-4 flex justify-end gap-x-2">
-      <Button variant="outline" onClick={fetchPopupData}>
-        Show question ask AI
-      </Button>
-      <Button variant="outline" onClick={() => setShowCreatePopup(true)}>
+
+        <Button variant="outline" onClick={() => setShowDialog(true)}>
+          Show question ask AI
+        </Button>
+
+
+        <Button variant="outline" onClick={() => setShowCreateDialog(true)}>
           Create new key
         </Button>
-    </div>
+      </div>
 
-
-      {/* Bảng DataTable */}
       <DataTable columns={columns} data={data} />
 
-      {/* Popup */}
-      {showPopup && (
-        <PopupComponent data={popupData} onClose={() => setShowPopup(false)} />
-      )}
+      <DialogComponent open={showDialog} onClose={() => setShowDialog(false)} />
 
-         {showCreatePopup && (
-        <CreateKeyPopup
-          onClose={() => setShowCreatePopup(false)}
-          onSubmit={handleCreateKey}
+      {showCreateDialog && (
+        <CreateKeyDialog
+          open={showCreateDialog}
+          onClose={() => {
+            setShowCreateDialog(false); 
+            fetchData(); 
+          }}
         />
       )}
-  
-
-
 
     </div>
+
   );
 }

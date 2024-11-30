@@ -3,10 +3,9 @@ import { useEffect, useState } from "react";
 interface EventData {
   processId: number;
   status: string;
-  successProcess: number;
-  totalProcess: number;
   startDate: string;
   updateDate: string;
+  examPaperId: number;
 }
 
 const useSSE = (url: string): EventData[] => {

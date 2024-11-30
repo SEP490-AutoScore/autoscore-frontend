@@ -34,6 +34,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Settings2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -101,6 +102,9 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
+        <Button variant="outline" className="ml-auto">
+              <Link to="new-exam">Craete new</Link>
+            </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">

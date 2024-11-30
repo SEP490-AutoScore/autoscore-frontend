@@ -8,6 +8,9 @@ import { useHeader } from "@/hooks/use-header";
 import ExamQuestionsList from "./exam-questions";
 import InfoComponent from "./instruction";
 import Database from "./exam-database";
+import GradingProcess from "@/app/students/grading-process/grading-bar"
+import Grading from "@/app/students/grading-exam/grading-exam-paper"
+
 interface Subject {
     subjectId: number;
     subjectName: string;
@@ -158,6 +161,10 @@ export default function ExamPaperDetails() {
             {Header}
             <div className="space-y-6 p-6">
                 {examPaper && <ExamPaperInfo examPaper={examPaper} />}
+            </div>
+            <div className="space-y-6 p-6">
+                <Grading examPaperId={examPaperId}/>
+                <GradingProcess examPaperId={examPaperId} />
             </div>
             <div className="space-y-6 p-6">
                 <InfoComponent examPaperId={examPaperId} />
