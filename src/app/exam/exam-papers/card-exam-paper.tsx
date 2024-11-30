@@ -4,12 +4,7 @@ import {
   CardDescription,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Download,
-  NotebookText,
-  SquareChartGantt,
-  Target,
-} from "lucide-react";
+import { Download, NotebookText, SquareChartGantt, Target } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
@@ -88,7 +83,15 @@ export function ExamPaperCard({
 
   return (
     <div className="my-2.5">
-      <Card key={examPaper.examPaperId}>
+      <Card
+        key={examPaper.examPaperId}
+        className="shadow-none hover:shadow-md cursor-pointer"
+        onClick={() =>
+          navigate("/exams/exam-papers/exam-questions", {
+            state: { examId, examPaperId: examPaper.examPaperId },
+          })
+        }
+      >
         <CardContent className="p-4 w-full">
           <div className="flex justify-between items-center">
             <div className="flex justify-between w-1/3">

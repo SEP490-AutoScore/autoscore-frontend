@@ -5,7 +5,6 @@ import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { DataTableSkeleton } from "./data-table-skeleton";
 import { ErrorPage } from '@/app/authentication/error/page';
 import { useLocation } from "react-router-dom";
-
 interface Students {
   studentCode: string;
   studentEmail: string;
@@ -65,7 +64,7 @@ export default function Page() {
 
   return (
     <div className="container mx-auto">
-      <DataTable columns={columns} data={data} />
+      <DataTable columns={columns} data={data} examId={examId}/>
     </div>
   );
 }
