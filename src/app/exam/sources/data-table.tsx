@@ -168,10 +168,10 @@ export function DataTable<TData, TValue>({
                   {row.getVisibleCells().map((cell, index) => (
                     <TableCell
                       key={cell.id}
+                      title={cell.getValue<string>()}
                       className={`
                     px-4 py-3 truncate px-4 py-3 whitespace-nowrap overflow-hidden
                     ${index === 2 ? "col-span-4" : "col-span-1"}
-                    title={cell.getValue<string>()}
                   `}
                     >
                       {flexRender(

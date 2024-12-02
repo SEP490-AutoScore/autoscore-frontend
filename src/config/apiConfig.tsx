@@ -10,7 +10,7 @@ export const API_ENDPOINTS = {
   refreshToken: "/api/auth/refresh-token", // API refresh token
   getAllExams: "/api/exam/list", // API lấy danh sách exams
   vertification: "/api/auth/verify", // API kiểm tra token
-  getAllPermisisons: "/api/permission/get-all", // API lấy danh sách permissions
+  getAllPermissions: "/api/permission/get-all", // API lấy danh sách permissions
   getAllRoles: "/api/role", // API lấy danh sách roles
   getRoleDetail: "/api/role-permission/", // API lấy danh sách permissions by role
   getAllAccounts: "/api/account/", // API lấy danh sách account
@@ -20,6 +20,11 @@ export const API_ENDPOINTS = {
   uploadStudentSources: "/api/upload/import", // API upload code student
   uploadStudentSourceProcess: "/api/upload/progress", // API lấy tiến trình upload code
   getSourcesByExamId: "/api/source/", // API lấy danh sách sources
+  getAllPermissionCategories: "/api/permission/category", // API lấy danh sách permission categories
+  createPermission: "/api/permission/create", // API tạo permission
+  getPermissionDetail: "/api/permission/", // API lấy permission detail
+  updatePermission: "/api/permission/update", // API update permission
+  deletePermission: "/api/permission/delete/", // API delete permission
 
   //Exam
   getExamInfo: "/api/exam", //get exam info
