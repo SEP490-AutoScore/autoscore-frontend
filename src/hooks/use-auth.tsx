@@ -8,3 +8,12 @@ export function useAuth() {
   }
   return context;
 }
+
+export const checkPermission = ({ permission } : { permission: string }): boolean => {
+  const permissions = localStorage.getItem("permissions");
+  if (!permissions) return false;
+  if (permission === "ALL_ACCESS") return true;
+
+  const permissionsArray = permissions.split(",").map((perm) => perm.trim());
+  return permissionsArray.includes(permission);
+}

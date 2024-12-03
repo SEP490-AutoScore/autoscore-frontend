@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import PermissionCategoryTable, {
-  Role
+  Role,
 } from "@/app/authentication/role/detail/data-table-permission-category";
-import { columns } from "@/app/authentication/role/detail/columns";
 import { DataTableSkeleton } from "@/app/authentication/role/detail/data-table-skeleton";
 import { NoResultPage, ErrorPage } from "@/app/authentication/error/page";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 async function getData(id: number): Promise<Role> {
   const token = localStorage.getItem("jwtToken");
@@ -26,9 +26,10 @@ async function getData(id: number): Promise<Role> {
   return res.json();
 }
 
-export default function Page() {
+export default function Page({ reload }: { reload?: boolean }) {
   const [data, setData] = useState<Role | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
   const location = useLocation();
   const { id } = location.state || {};
 
@@ -37,12 +38,21 @@ export default function Page() {
       setError("Role ID is required");
       return;
     }
-    getData(id)
-      .then((response) => {
-        setData(response);
-      })
-      .catch((err) => setError(err.message));
-  }, [id]);
+    if (reload) {
+      getData(id)
+        .then((response) => {
+          setData(response);
+        })
+        .catch((err) => setError(err.message));
+        navigate("/roles/detail", { state: { reload: false, id: id } });
+    } else {
+      getData(id)
+        .then((response) => {
+          setData(response);
+        })
+        .catch((err) => setError(err.message));
+    }
+  }, [id, reload, navigate]);
 
   if (error) return <ErrorPage />;
   if (!data) return <DataTableSkeleton />;
@@ -60,7 +70,7 @@ export default function Page() {
         <PermissionCategoryTable
           key={category.permissionCategoryId}
           category={category}
-          columns={columns}
+          roleId={data.roleId}
         />
       ))}
     </div>

@@ -25,6 +25,11 @@ export const API_ENDPOINTS = {
   getPermissionDetail: "/api/permission/", // API lấy permission detail
   updatePermission: "/api/permission/update", // API update permission
   deletePermission: "/api/permission/delete/", // API delete permission
+  createRole: "/api/role/create", // API tạo role
+  updateRole: "/api/role/update", // API update role
+  getRoleById: "/api/role/", // API lấy role detail
+  deleteRole: "/api/role/delete/", // API delete role
+  updateRolePermission: "/api/role-permission/update", // API update role permission
 
   //Exam
   getExamInfo: "/api/exam", //get exam info

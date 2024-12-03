@@ -99,7 +99,7 @@ export function DataTable<TData, TValue>({
                   <TableCell
                     key={cell.id}
                     className={`
-                    px-4 py-3
+                    px-4 py-3 truncate px-4 py-3 whitespace-nowrap overflow-hidden
                     ${index === 2 ? "col-span-3" : "col-span-1"} 
                   `}
                   >
