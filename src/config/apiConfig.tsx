@@ -93,4 +93,11 @@ export const API_ENDPOINTS = {
   exportWord: "/api/document/generate-word",
   getSources: "/api/source",
   getStudent: "/api/students",
+
+  //dashboard
+  totalStudents: "/api/score/total-students",
+  studentsWithZeroScore: "/api/score/students-with-zero-score",
+  studentsWithScoreGreaterThanZero: "/api/score/students-with-score-greater-than-zero",
+  studentScores: "/api/score/student-scores",
+
 };
