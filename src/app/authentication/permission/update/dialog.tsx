@@ -12,7 +12,7 @@ export function DialogPermission({ permissionId, onSuccess }: { permissionId: nu
       <DialogHeader>
         <DialogTitle>Update Permission</DialogTitle>
         <DialogDescription>
-          Update a permission in the system.
+          Update permission to system.
         </DialogDescription>
       </DialogHeader>
       <PermissionForm permissionId={permissionId} onSuccess={onSuccess}/>
