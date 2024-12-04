@@ -17,22 +17,16 @@ interface Subject {
     subjectCode: string;
 }
 
-interface Semester {
-    semesterId: number;
-    semesterName: string;
-    semesterCode: string;
-}
-
 interface ExamPaper {
     examPaperId: number;
     examPaperCode: string;
+    examId: number;
     importants: any[];
     isUsed: boolean;
     status: string;
     instruction: string;
     duration: number;
-    subject: Subject | null; // Subject can be null
-    semester: Semester | null; // Semester can be null
+    subject: Subject; // Subject can be null
 }
 
 export default function ExamPaperDetails() {
@@ -84,6 +78,7 @@ export default function ExamPaperDetails() {
                 // Set examPaper with exam data, including subject and semester
                 setExamPaper((prevState) => ({
                     ...prevState,
+                    examId: data.examId,
                     examPaperId: data.examPaperId,
                     examPaperCode: data.examPaperCode,
                     importants: data.importants,
@@ -92,7 +87,6 @@ export default function ExamPaperDetails() {
                     instruction: data.instruction,
                     duration: data.duration,
                     subject: data.subject || null,
-                    semester: data.semester || null,
                 }));
             })
             .catch((err) => setError(err.message))

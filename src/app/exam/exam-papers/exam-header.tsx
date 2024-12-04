@@ -6,8 +6,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+import UpdateExam from "@/app/exam/exam-papers/update-exam-form"
+
 interface ExamDetailContentProps {
   examData: {
+    examId: number;
     examCode: string;
     examAt: string;
     gradingAt: string;
@@ -38,10 +41,15 @@ export function ExamDetailContent({ examData }: ExamDetailContentProps) {
       </div>
       <Card className="shadow-none">
         <CardHeader className="pb-4">
-          <CardTitle className="text-xl">Information</CardTitle>
-          <CardDescription>
-            This is some information about the exam.
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-xl">Information</CardTitle>
+              <CardDescription>
+                This is some information about the exam.
+              </CardDescription>
+            </div>
+            <UpdateExam examId={examData.examId} />
+          </div>
         </CardHeader>
         <CardContent>
           {/* Three-column layout */}

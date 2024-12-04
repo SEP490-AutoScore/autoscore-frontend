@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button"; // Assuming you're using ShadCN UI Button
-import { Input } from "@/components/ui/input"; // Assuming you have an Input component in ShadCN UI
-import { Textarea } from "@/components/ui/textarea"; // Assuming you have a Textarea component
-import { Label } from "@/components/ui/label"; // Assuming you have a Label component in ShadCN UI
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 interface CreateQuestionFormProps {
     onCreate: (newQuestionData: any) => void;
-    onClose: () => void; // Function to close the modal
+    onClose: () => void;
 }
 
 const CreateQuestionForm: React.FC<CreateQuestionFormProps> = ({ onCreate, onClose }) => {
@@ -14,9 +14,9 @@ const CreateQuestionForm: React.FC<CreateQuestionFormProps> = ({ onCreate, onClo
     const [examQuestionScore, setExamQuestionScore] = useState<number>(0);
     const [endPoint, setEndPoint] = useState<string>("");
     const [roleAllow, setRoleAllow] = useState<string>("");
-    const [httpMethod, setHttpMethod] = useState<string>("GET"); // Default value as GET
+    const [httpMethod, setHttpMethod] = useState<string>("GET");
     const [description, setDescription] = useState<string>("");
-    const [payloadType, setPayloadType] = useState<string>("JSON"); // Default value as JSON
+    const [payloadType, setPayloadType] = useState<string>("JSON");
     const [payload, setPayload] = useState<string>("");
     const [validation, setValidation] = useState<string>("");
     const [sucessResponse, setSuccessResponse] = useState<string>("");
@@ -36,16 +36,22 @@ const CreateQuestionForm: React.FC<CreateQuestionFormProps> = ({ onCreate, onClo
             validation,
             sucessResponse,
             errorResponse,
-            orderBy: 0, // Assuming you want to set a default order
-            examPaperId: 0, // Replace with actual examPaperId
+            orderBy: 0,
+            examPaperId: 0,
         };
-        onCreate(newQuestionData); // Call the onCreate prop passed from parent
-        onClose(); // Close the modal after submission
+        onCreate(newQuestionData);
+        onClose();
     };
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-white p-6 rounded-lg w-3/4 max-w-3xl">
+            <div
+                className="bg-white p-6 rounded-lg w-3/4 max-w-3xl"
+                style={{
+                    maxHeight: "90vh", // Giới hạn chiều cao tối đa
+                    overflowY: "auto", // Kích hoạt cuộn nếu nội dung vượt quá chiều cao
+                }}
+            >
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <Label htmlFor="questionContent">Question Content</Label>
@@ -68,11 +74,11 @@ const CreateQuestionForm: React.FC<CreateQuestionFormProps> = ({ onCreate, onClo
                                 onChange={(e) => {
                                     const value = parseFloat(e.target.value);
                                     if (value >= 0) {
-                                        setExamQuestionScore(value); // Chỉ cho phép giá trị >= 0
+                                        setExamQuestionScore(value);
                                     }
                                 }}
-                                min="0" // Không cho phép giá trị dưới 0
-                                step="0.1" // Cho phép giá trị số thập phân
+                                min="0"
+                                step="0.1"
                                 required
                             />
                         </div>
@@ -126,7 +132,6 @@ const CreateQuestionForm: React.FC<CreateQuestionFormProps> = ({ onCreate, onClo
                         />
                     </div>
 
-                    {/* Dropdown for Payload Type */}
                     <div>
                         <Label htmlFor="payloadType">Payload Type</Label>
                         <select
@@ -178,14 +183,12 @@ const CreateQuestionForm: React.FC<CreateQuestionFormProps> = ({ onCreate, onClo
                     </div>
 
                     <div className="flex justify-end space-x-4">
-                        {/* Create Question Button */}
                         <Button
                             type="submit"
                             className="w-auto bg-white text-black hover:bg-orange-500 hover:text-white"
                         >
                             Create Question
                         </Button>
-                        {/* Cancel Button */}
                         <Button
                             type="button"
                             onClick={onClose}
