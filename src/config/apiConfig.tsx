@@ -30,6 +30,7 @@ export const API_ENDPOINTS = {
   getRoleById: "/api/role/", // API lấy role detail
   deleteRole: "/api/role/delete/", // API delete role
   updateRolePermission: "/api/role-permission/update", // API update role permission
+  getAllOrganizations: "/api/organization", // API lấy danh sách organizations
 
   //Exam
   getExamInfo: "/api/exam", //get exam info

@@ -25,6 +25,7 @@ import ExamPapersOverview from "@/app/exam/exam-paper-overview/page";
 import ExamPaperDetail from "@/app/exam/exam-paper-overview/exam-paper-detail";
 import Grading from "@/app/score/grading-process/page";
 import StudentsList from "@/app/students/grading-list/page";
+import Organization from "@/app/authentication/organization/overview/page";
 
 const AppRoutes = () => {
   return (
@@ -59,6 +60,7 @@ const AppRoutes = () => {
           <Route path="ai-api-keys" element={<AIApiKeysPage />} />
           <Route path="grading" element={<Grading />} />
           <Route path="grading/students" element={<StudentsList />} />
+          <Route path="organizations" element={<Organization />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
