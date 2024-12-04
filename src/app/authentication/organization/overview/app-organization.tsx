@@ -31,7 +31,7 @@ function buildTree(data: Organization[]): Organization[] {
   return tree;
 }
 
-function App({ reload }: { reload: boolean; }) {
+function App({ reload }: { reload: boolean }) {
   const [treeData, setTreeData] = useState<Organization[]>([]);
   const navigate = useNavigate();
 
@@ -57,7 +57,6 @@ function App({ reload }: { reload: boolean; }) {
     } else {
       fetchData();
     }
-
   }, [reload, navigate]);
 
   return (
@@ -66,7 +65,8 @@ function App({ reload }: { reload: boolean; }) {
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Organization</h2>
           <p className="text-muted-foreground">
-            Here's a list of organizations in the system!
+            Here's a list of organizations in the system! <br/>
+            <span className="font-semibold text-primary">Note:</span> You can right click to view all actions of node!
           </p>
         </div>
         <div className="flex flex-col w-full">
