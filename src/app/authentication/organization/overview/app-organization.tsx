@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TreeView from "./tree-view";
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
+import { useNavigate } from "react-router-dom";
 
 type Organization = {
   organizationId: number;
@@ -30,8 +31,9 @@ function buildTree(data: Organization[]): Organization[] {
   return tree;
 }
 
-const App: React.FC = () => {
+function App({ reload }: { reload: boolean; }) {
   const [treeData, setTreeData] = useState<Organization[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,9 +51,14 @@ const App: React.FC = () => {
       const tree = buildTree(data);
       setTreeData(tree);
     };
+    if (reload) {
+      fetchData();
+      navigate("/organizations", { state: { reload: false } });
+    } else {
+      fetchData();
+    }
 
-    fetchData();
-  }, []);
+  }, [reload, navigate]);
 
   return (
     <div className="container mx-auto w-full border border-gray-200 p-8 rounded-lg ">
@@ -70,6 +77,6 @@ const App: React.FC = () => {
       </div>
     </div>
   );
-};
+}
 
 export default App;

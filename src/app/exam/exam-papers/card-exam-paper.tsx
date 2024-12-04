@@ -9,6 +9,12 @@ import { useNavigate } from "react-router-dom";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+} from "@/components/ui/tooltip";
+import { TooltipTrigger } from "@radix-ui/react-tooltip";
 
 interface Important {
   importantId: number;
@@ -109,46 +115,70 @@ export function ExamPaperCard({
               </div>
             </div>
             <div className="flex gap-2">
-              <Button
-                className="p-4 h-10 w-10 border rounded-full border-primary text-primary bg-white hover:bg-primary hover:text-white transition-colors duration-200"
-                title="View Paper Details"
-                onClick={() =>
-                  navigate("/exams/exam-papers/exam-questions", {
-                    state: { examId, examPaperId: examPaper.examPaperId },
-                  })
-                }
-              >
-                <NotebookText />
-              </Button>
-              <Button
-                className="p-4 h-10 w-10 border rounded-full border-primary text-primary bg-white hover:bg-primary hover:text-white transition-colors duration-200"
-                title="View Gherkin Postman"
-                onClick={() =>
-                  navigate("/exams/exam-papers/gherkin-postman", {
-                    state: { examId, examPaperId: examPaper.examPaperId },
-                  })
-                }
-              >
-                <SquareChartGantt />
-              </Button>
-              <Button
-                className="p-4 h-10 w-10 border rounded-full border-primary text-primary bg-white hover:bg-primary hover:text-white transition-colors duration-200"
-                title="View Postman Grading"
-                onClick={() =>
-                  navigate("/exams/exam-papers/postman-for-grading", {
-                    state: { examId, examPaperId: examPaper.examPaperId },
-                  })
-                }
-              >
-                <Target />
-              </Button>
-              <Button
-                className="p-4 h-10 w-10 border rounded-full border-primary text-primary bg-white hover:bg-primary hover:text-white transition-colors duration-200"
-                title="Export Word"
-                onClick={handleDownloadWord}
-              >
-                <Download />
-              </Button>
+              <TooltipProvider delayDuration={0}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      className="p-4 h-10 w-10 border rounded-full border-primary text-primary bg-white hover:bg-primary hover:text-white transition-colors duration-200"
+                      onClick={() =>
+                        navigate("/exams/exam-papers/exam-questions", {
+                          state: { examId, examPaperId: examPaper.examPaperId },
+                        })
+                      }
+                    >
+                      <NotebookText />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>View Paper Details</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider delayDuration={0}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      className="p-4 h-10 w-10 border rounded-full border-primary text-primary bg-white hover:bg-primary hover:text-white transition-colors duration-200"
+                      onClick={() =>
+                        navigate("/exams/exam-papers/gherkin-postman", {
+                          state: { examId, examPaperId: examPaper.examPaperId },
+                        })
+                      }
+                    >
+                      <SquareChartGantt />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>View Gherkin Postman</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider delayDuration={0}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      className="p-4 h-10 w-10 border rounded-full border-primary text-primary bg-white hover:bg-primary hover:text-white transition-colors duration-200"
+                      onClick={() =>
+                        navigate("/exams/exam-papers/postman-for-grading", {
+                          state: { examId, examPaperId: examPaper.examPaperId },
+                        })
+                      }
+                    >
+                      <Target />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>View Postman Grading</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider delayDuration={0}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      className="p-4 h-10 w-10 border rounded-full border-primary text-primary bg-white hover:bg-primary hover:text-white transition-colors duration-200"
+                      onClick={handleDownloadWord}
+                    >
+                      <Download />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Export Word</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
         </CardContent>
