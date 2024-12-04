@@ -16,6 +16,12 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Plus } from "lucide-react";
 import { NotFoundPage } from "@/app/authentication/error/page";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Important {
   importantId: number;
@@ -43,7 +49,13 @@ interface ExamPaper {
   importants: Important[];
 }
 
-export function ExamPaperList({ examId, subjectId }: { examId: number; subjectId: number }) {
+export function ExamPaperList({
+  examId,
+  subjectId,
+}: {
+  examId: number;
+  subjectId: number;
+}) {
   const [examPapers, setExamPapers] = useState<ExamPaper[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -128,52 +140,58 @@ export function ExamPaperList({ examId, subjectId }: { examId: number; subjectId
 
   return (
     <>
-    <Card className="shadow-none">
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div className="space-y-1">
-          <CardTitle className="text-xl">Exam Papers</CardTitle>
-          <CardDescription className="text-sm text-muted-foreground">
-            This is a list of all the exam papers in this exam.
-          </CardDescription>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button
-                variant="outline"
-                className="p-2.5 h-10 w-10 rounded-full border-primary text-primary hover:text-white hover:bg-primary"
-                title="Add Exam Paper"
-              >
-                <Plus className="h-6 w-6" />
-              </Button>
-            </DialogTrigger>
-            <CreateExamPaperForm
-              examId={examId}
-              importants={importants}
-              subjectId= {subjectId}
-              onSuccess={handleFormSuccess}
-              onError={handleFormError}
-            />
-          </Dialog>
-        </div>
-      </CardHeader>
-      <Separator />
-      <CardContent>
-        {examPapers.length === 0 ? (
-          <NotFoundPage />
-        ) : (
-          <div className=" mt-6">
-            {examPapers.map((examPaper) => (
-              <ExamPaperCard
-                key={examPaper.examPaperId}
-                examPaper={examPaper}
-                examId={examId}
-              />
-            ))}
+      <Card className="shadow-none">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div className="space-y-1">
+            <CardTitle className="text-xl">Exam Papers</CardTitle>
+            <CardDescription className="text-sm text-muted-foreground">
+              This is a list of all the exam papers in this exam.
+            </CardDescription>
           </div>
-        )}
-      </CardContent>
-    </Card>
-  </>
+          <div className="flex items-center space-x-2">
+            <Dialog>
+              <DialogTrigger asChild>
+                <TooltipProvider delayDuration={0}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="p-2.5 h-10 w-10 rounded-full border-primary text-primary hover:text-white hover:bg-primary"
+                      >
+                        <Plus className="h-6 w-6" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Add Exam Paper</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </DialogTrigger>
+              <CreateExamPaperForm
+                examId={examId}
+                importants={importants}
+                subjectId={subjectId}
+                onSuccess={handleFormSuccess}
+                onError={handleFormError}
+              />
+            </Dialog>
+          </div>
+        </CardHeader>
+        <Separator />
+        <CardContent>
+          {examPapers.length === 0 ? (
+            <NotFoundPage />
+          ) : (
+            <div className=" mt-6">
+              {examPapers.map((examPaper) => (
+                <ExamPaperCard
+                  key={examPaper.examPaperId}
+                  examPaper={examPaper}
+                  examId={examId}
+                />
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </>
   );
 }

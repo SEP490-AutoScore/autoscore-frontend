@@ -30,6 +30,11 @@ export const API_ENDPOINTS = {
   getRoleById: "/api/role/", // API lấy role detail
   deleteRole: "/api/role/delete/", // API delete role
   updateRolePermission: "/api/role-permission/update", // API update role permission
+  getAllOrganizations: "/api/organization", // API lấy danh sách organizations
+  getOrganizationDetail: "/api/organization/", // API lấy organization detail
+  createOrganization: "/api/organization/create", // API tạo organization
+  updateOrganization: "/api/organization/update", // API update organization
+  deleteOrganization: "/api/organization/delete/", // API delete organization
 
   //Exam
   getExamInfo: "/api/exam", //get exam info
@@ -40,7 +45,7 @@ export const API_ENDPOINTS = {
   exportScore: "/api/score/export", // API export score byExamPaperId
   createExam: "/api/exam/",
 
-  // Exam Database 
+  // Exam Database
   importDatabase: "/api/database/import",
   changeDatabase: "/api/database/update",
   getDatabase: "/api/database/getbyExamPaperId",

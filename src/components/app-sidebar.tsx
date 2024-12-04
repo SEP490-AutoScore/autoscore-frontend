@@ -5,7 +5,9 @@ import {
   Shield,
   BookOpen,
   Settings,
-  NotebookPen
+  NotebookPen,
+  ChartSpline,
+  Building2,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -44,6 +46,14 @@ const data = {
       permission: "DASHBOARD",
       items: [],
     },
+    {
+      title: "Analysis",
+      url: "/analysis",
+      icon: ChartSpline,
+      allowedRoles: ["ADMIN", "EXAMINER", "LECTURER", "HEAD_OF_DEPARTMENT"],
+      permission: "DASHBOARD",
+      items: [],
+    },
   ],
   navPermission: [
     {
@@ -53,11 +63,6 @@ const data = {
       allowedRoles: ["ADMIN", "EXAMIER", "HEAD_OF_DEPARTMENT"],
       permission: "VIEW_ACCOUNT",
       items: [
-        // {
-        //   title: "Add User",
-        //   url: "##.",
-        //   permission: "CREATE_ACCOUNT",
-        // },
         {
           title: "Users",
           url: "/accounts",
@@ -84,8 +89,27 @@ const data = {
         },
       ],
     },
+    {
+      title: "Organization",
+      url: "$$$",
+      icon: Building2,
+      allowedRoles: ["ADMIN"],
+      permission: "ALL_ACCESS",
+      items: [
+        {
+          title: "Organizations",
+          url: "/organizations",
+          permission: "ALL_ACCESS",
+        },
+        {
+          title: "Positions",
+          url: "/$$",
+          permission: "ALL_ACCESS",
+        },
+      ],
+    },
   ],
-  navgrading: [
+  navGrading: [
     {
       title: "Examination",
       url: "###",
@@ -138,13 +162,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const allItems = [
       ...data.navMain,
       ...data.navPermission,
-      ...data.navgrading,
+      ...data.navGrading,
     ];
 
     // Lọc các mục hợp lệ
     const validItem = allItems.find((item) => {
-      const hasRole = !item.allowedRoles || item.allowedRoles.includes(userRole);
-      const hasPermission = !item.permission || userPermissions.includes(item.permission);
+      const hasRole =
+        !item.allowedRoles || item.allowedRoles.includes(userRole);
+      const hasPermission =
+        !item.permission ||
+        userPermissions.includes(item.permission);
       return hasRole && hasPermission;
     });
 
@@ -167,7 +194,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <AutoScoreSwitcher campus={data.user.campus.toString() || "FPT University"} />
+        <AutoScoreSwitcher
+          campus={data.user.campus.toString() || "FPT University"}
+        />
       </SidebarHeader>
       <SidebarContent>
         <NavMain
@@ -185,7 +214,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           permissions={userPermissions}
         />
         <NavGrading
-          items={data.navgrading}
+          items={data.navGrading}
           selectedItem={selectedItem}
           setSelectedItem={setSelectedItem}
           role={userRole}
