@@ -47,6 +47,10 @@ async function getData(): Promise<ExamPapers[]> {
         throw new Error(`Failed to fetch data: ${error}`);
     }
 
+    if (res.status === 204) {
+        const dataNull: ExamPapers[] = [];
+        return dataNull;
+    }
     // Parse và trả về dữ liệu JSON
     const data: ExamPapers[] = await res.json();
     return data;

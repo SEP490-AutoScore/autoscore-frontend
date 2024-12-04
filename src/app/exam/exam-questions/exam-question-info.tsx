@@ -1,4 +1,5 @@
 import React from "react";
+import UpdateQuestion from "@/app/exam/exam-questions/update-question-form"
 
 interface ExamQuestion {
     examQuestionId: number;
@@ -14,6 +15,7 @@ interface ExamQuestion {
     sucessResponse: string | null;
     errorResponse: string | null;
     orderBy: number;
+    examId: number;
 }
 
 interface ExamQuestionItemProps {
@@ -33,6 +35,10 @@ const ExamQuestionItem: React.FC<ExamQuestionItemProps> = ({ question, isExpande
                 <span className="text-sm text-blue-500">
                     {isExpanded ? "Hide" : "Show"} Details
                 </span>
+                <UpdateQuestion
+                    examPaperId={question.examId}
+                    questionId={question.examQuestionId}
+                />
             </div>
 
             {isExpanded && (
