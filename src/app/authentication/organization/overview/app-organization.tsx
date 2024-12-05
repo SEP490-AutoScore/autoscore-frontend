@@ -65,8 +65,10 @@ function App({ reload }: { reload: boolean }) {
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Organization</h2>
           <p className="text-muted-foreground">
-            Here's a list of organizations in the system! <br/>
-            <span className="font-semibold text-primary">Note:</span> You can right click to view all actions of node!
+            Here's a list of organizations in the system! <br />
+            <span className="font-semibold text-primary">Note:</span> Use{" "}
+            <span className="font-semibold text-primary">LEFT click</span> to view details and <span className="font-semibold text-primary">RIGHT click</span>{" "}
+            to view actions for each node!
           </p>
         </div>
         <div className="flex flex-col w-full">

@@ -32,11 +32,13 @@ export interface Permissions {
 interface PermissionCategoryTableProps {
   category: Permissions;
   roleId: number;
+  roleCode: string;
 }
 
 const PermissionCategoryTable: React.FC<PermissionCategoryTableProps> = ({
   category,
   roleId,
+  roleCode,
 }) => {
   const navigate = useNavigate();
   const showToast = useToastNotification();
@@ -82,7 +84,7 @@ const PermissionCategoryTable: React.FC<PermissionCategoryTableProps> = ({
     }
   };
 
-  const columns = createColumns(handleUpdateStatus);
+  const columns = createColumns(roleCode, handleUpdateStatus);
 
   return (
     <div className="mt-6">

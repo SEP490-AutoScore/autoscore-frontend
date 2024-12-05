@@ -6,7 +6,10 @@ import { Permission } from "./data-table-permission-category";
 import { Switch } from "@/components/ui/switch";
 import { checkPermission } from "@/hooks/use-auth";
 
-export const createColumns = (onUpdateStatus: (id: number, status: boolean) => void): ColumnDef<Permission>[] => [
+export const createColumns = (
+  roleCode: string,
+  onUpdateStatus: (id: number, status: boolean) => void
+): ColumnDef<Permission>[] => [
   {
     accessorKey: "action",
     header: ({ column }) => (
@@ -33,7 +36,13 @@ export const createColumns = (onUpdateStatus: (id: number, status: boolean) => v
     cell: ({ row }) => (
       <Switch
         checked={row.getValue("status")}
-        disabled={!checkPermission({ permission: "UPDATE_ROLE_PERMISSION" })}
+        disabled={
+          checkPermission({ permission: "UPDATE_ROLE" })
+            ? roleCode === "ADMIN"
+              ? true
+              : row.original.action === "ALL_ACCESS"
+            : true
+        }
         onCheckedChange={(checked) => {
           const permissionId = row.original.permissionId;
           onUpdateStatus(permissionId, checked);

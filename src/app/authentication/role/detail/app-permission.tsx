@@ -71,6 +71,7 @@ export default function Page({ reload }: { reload?: boolean }) {
           key={category.permissionCategoryId}
           category={category}
           roleId={data.roleId}
+          roleCode={data.roleCode}
         />
       ))}
     </div>
