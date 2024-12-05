@@ -44,6 +44,14 @@ export const API_ENDPOINTS = {
   plagiarism: "/api/score/code-plagiarism",
   exportScore: "/api/score/export", // API export score byExamPaperId
   createExam: "/api/exam/",
+  examCount: "/api/exam/count", 
+  examcountByGradingAt: "/api/exam/countByGradingAt",
+  examcountByGradingAtPassed: "/api/exam/countByGradingAtPassed", // API để lấy số lượng Exam có gradingAt đã vượt qua thời gian hiện tại
+  examCountByGradingAtPassedAndSemester: "/api/exam/countByGradingAtPassedAndSemester",
+
+  //Score
+  topStudents: "/api/score/top-students", 
+
 
   // Exam Database
   importDatabase: "/api/database/import",

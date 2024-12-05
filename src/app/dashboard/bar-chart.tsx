@@ -1,32 +1,80 @@
-"use client";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { ChartContainer } from "@/components/ui/chart";
 
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+type BarChartComponentProps = {
+  data: {
+    Spring: number;
+    Summer: number;
+    Fall: number;
+  };
+  loading: boolean;
+  error: string | null;
+  year: string;
+  handleYearChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+};
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+const chartConfig = {
+  "exam-counts": {
+    label: "Exam Counts",
+    color: "#FF8D29",
+  },
+};
 
-interface BarChartComponentProps {
-  data: { studentCode: string; totalScore: number }[];
-}
+export function BarChartComponent({ data, loading, error, year, handleYearChange }: BarChartComponentProps) {
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-export function BarChartComponent({ data }: BarChartComponentProps) {
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  // Dữ liệu cho BarChart
+  const chartData = [
+    { semester: "Spring", count: data.Spring },
+    { semester: "Summer", count: data.Summer },
+    { semester: "Fall", count: data.Fall },
+  ];
+
+  // Generate years from current year to 10 years ago
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 11 }, (_, index) => (currentYear - index).toString());
+
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Bar Chart - Student Scores</CardTitle>
-        <CardDescription>Scores by Student</CardDescription>
+        <CardHeader className="relative">
+        <CardTitle>Exams per Semester</CardTitle>
+        <CardDescription>Exams counts per semester for selected year</CardDescription>
+
+        {/* Dropdown select to choose year */}
+        <div className="absolute top-2 right-2">
+          <select
+            id="year"
+            value={year}
+            onChange={handleYearChange}
+            className="select select-bordered"
+          >
+            {years.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        </div>
       </CardHeader>
+
       <CardContent>
-        <BarChart width={600} height={300} data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="studentCode" />
-          <Bar dataKey="totalScore" fill="#8884d8" radius={4} />
-        </BarChart>
+        <ChartContainer config={chartConfig}>
+          <BarChart width={500} height={300} data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="semester" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="count" fill={chartConfig["exam-counts"].color} />
+          </BarChart>
+        </ChartContainer>
       </CardContent>
     </Card>
   );
