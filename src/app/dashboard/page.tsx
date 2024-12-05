@@ -3,13 +3,9 @@ import { SidebarInset } from "@/components/ui/sidebar";
 import { CardHeaderDashboard } from "./card-header";
 import { Book } from "lucide-react";
 import { BarChartComponent } from "./bar-chart";
-import { PieChartComponent } from "./pie-chart";
-import { LineChartComponent } from "./line-chart";
-import { DataTableDemo } from "./data-table";
-import { BarChartHorizontalComponent } from "./bar-chart-horizontal";
-import { DropdownList } from "./dropdown-list";
 import { useState, useEffect } from "react";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
+import { TableStudentComponent } from "./table-student";
 
 export default function Page() {
   const Header = useHeader({
@@ -17,262 +13,196 @@ export default function Page() {
     breadcrumbPage: "Dashboard",
   });
 
-  const [selectedExamPaper, setSelectedExamPaper] = useState<string | null>(null);
-  const [totalStudents, setTotalStudents] = useState<number | null>(null);
-  const [studentsWithZeroScore, setStudentsWithZeroScore] = useState<number | null>(null);
-  const [studentsWithScoreGreaterThanZero, setStudentsWithScoreGreaterThanZero] = useState<number | null>(null);
-  const [studentScores, setStudentScores] = useState<
-    { studentCode: string; totalScore: number }[]
-  >([]);
-  const [loading, setLoading] = useState(false);
+  const [examCount, setExamCount] = useState<number | null>(null);
+  const [examGradingAtCount, setExamGradingAtCount] = useState<number | null>(null);
+  const [examGradingAtPassedCount, setExamGradingAtPassedCount] = useState<number | null>(null);
+  const [year, setYear] = useState<string>("2024");
+  const [semesterData, setSemesterData] = useState({
+    Spring: 0,
+    Summer: 0,
+    Fall: 0,
+  });  // Store exam counts by semester for selected year
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  // Hàm gọi API khi examPaperId thay đổi
+   // Generate years from current year to 10 years ago
+   const currentYear = new Date().getFullYear();
+   const years = Array.from({ length: 11 }, (_, index) => (currentYear - index).toString());
+ 
+   const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+     setYear(event.target.value);
+   };
+ 
+
   useEffect(() => {
-    if (!selectedExamPaper) return;
+    const token = localStorage.getItem("jwtToken");
 
-    const fetchTotalStudents = async () => {
-      setLoading(true);
-      setError(null);
+    if (!token) {
+      setError("JWT token not found.");
+      setLoading(false);
+      return;
+    }
 
-      const token = localStorage.getItem("jwtToken");
-      if (!token) {
-        setError("JWT token not found.");
-        setLoading(false);
-        return;
-      }
-
+    // Gọi API để lấy số lượng Exam
+    const fetchExamCount = async () => {
       try {
-        const response = await fetch(
-          `${BASE_URL}${API_ENDPOINTS.totalStudents}?examPaperId=${selectedExamPaper}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(`${BASE_URL}${API_ENDPOINTS.examCount}`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`, // Gửi token trong header
+            "Content-Type": "application/json",
+          },
+        });
 
-        if (!response.ok) {
-          throw new Error(`Error fetching total students: ${response.statusText}`);
+        if (response.ok) {
+          const data = await response.text(); // Dữ liệu trả về là plain text
+          setExamCount(parseInt(data, 10)); // Chuyển đổi dữ liệu trả về thành kiểu số
+        } else {
+          const errorData = await response.text();
+          setError(errorData); // Hiển thị lỗi nếu API không thành công
         }
-
-        const data = await response.text(); // API trả về dạng plaintext
-        setTotalStudents(Number(data)); // Chuyển dữ liệu thành số
-        setLoading(false);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        setError("An error occurred while fetching the exam count.");
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchTotalStudents();
-  }, [selectedExamPaper]);
 
-  // Gọi API số học sinh có điểm bằng 0
-  useEffect(() => {
-    if (!selectedExamPaper) return;
-
-    const fetchStudentsWithZeroScore = async () => {
-      setLoading(true);
-      setError(null);
-
-      const token = localStorage.getItem("jwtToken");
-      if (!token) {
-        setError("JWT token not found.");
-        setLoading(false);
-        return;
-      }
-
+    // Gọi API để lấy số lượng Exam có gradingAt đã vượt qua thời gian hiện tại
+    const fetchExamGradingAtCount = async () => {
       try {
-        const response = await fetch(
-          `${BASE_URL}${API_ENDPOINTS.studentsWithZeroScore}?examPaperId=${selectedExamPaper}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(`${BASE_URL}${API_ENDPOINTS.examcountByGradingAt}`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`, // Gửi token trong header
+            "Content-Type": "application/json",
+          },
+        });
 
-        if (!response.ok) {
-          throw new Error(`Error fetching students with zero score: ${response.statusText}`);
+        if (response.ok) {
+          const data = await response.text(); // Dữ liệu trả về là plain text
+          setExamGradingAtCount(parseInt(data, 10)); // Chuyển đổi dữ liệu trả về thành kiểu số
+        } else {
+          const errorData = await response.text();
+          setError(errorData); // Hiển thị lỗi nếu API không thành công
         }
-
-        const data = await response.text();
-        setStudentsWithZeroScore(Number(data));
-        setLoading(false);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        setError("An error occurred while fetching the gradingAt exam count.");
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchStudentsWithZeroScore();
-  }, [selectedExamPaper]);
-
-  // Gọi API số học sinh có điểm > 0
-  useEffect(() => {
-    if (!selectedExamPaper) return;
-
-    const fetchStudentsWithScoreGreaterThanZero = async () => {
-      setLoading(true);
-      setError(null);
-
-      const token = localStorage.getItem("jwtToken");
-      if (!token) {
-        setError("JWT token not found.");
-        setLoading(false);
-        return;
-      }
-
+    // Gọi API để lấy số lượng Exam có gradingAt đã vượt qua thời gian hiện tại
+    const fetchExamGradingAtPassedCount = async () => {
       try {
-        const response = await fetch(
-          `${BASE_URL}${API_ENDPOINTS.studentsWithScoreGreaterThanZero}?examPaperId=${selectedExamPaper}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(`${BASE_URL}${API_ENDPOINTS.examcountByGradingAtPassed}`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`, // Gửi token trong header
+            "Content-Type": "application/json",
+          },
+        });
 
-        if (!response.ok) {
-          throw new Error(`Error fetching students with score > 0: ${response.statusText}`);
+        if (response.ok) {
+          const data = await response.text(); // Dữ liệu trả về là plain text
+          setExamGradingAtPassedCount(parseInt(data, 10)); // Chuyển đổi dữ liệu trả về thành kiểu số
+        } else {
+          const errorData = await response.text();
+          setError(errorData); // Hiển thị lỗi nếu API không thành công
         }
-
-        const data = await response.text();
-        setStudentsWithScoreGreaterThanZero(Number(data));
-        setLoading(false);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        setError("An error occurred while fetching the gradingAt passed exam count.");
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchStudentsWithScoreGreaterThanZero();
-  }, [selectedExamPaper]);
+   // Gọi API để lấy số lượng Exam theo kỳ học và năm
+   const fetchSemesterData = async (year: string) => {
+    try {
+      const response = await fetch(`${BASE_URL}${API_ENDPOINTS.examCountByGradingAtPassedAndSemester}?year=${year}`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-  useEffect(() => {
-    if (!selectedExamPaper) return;
-
-    const fetchStudentScores = async () => {
-      setLoading(true);
-      setError(null);
-
-      const token = localStorage.getItem("jwtToken");
-      if (!token) {
-        setError("JWT token not found.");
-        setLoading(false);
-        return;
+      if (response.ok) {
+        const data = await response.json(); // Dữ liệu trả về là JSON
+        setSemesterData(data); // Cập nhật dữ liệu của các kỳ học
+      } else {
+        const errorData = await response.text();
+        setError(errorData);
       }
-
-      try {
-        const response = await fetch(
-          `${BASE_URL}${API_ENDPOINTS.studentScores}?examPaperId=${selectedExamPaper}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`Error fetching student scores: ${response.statusText}`);
-        }
-
-        const data = await response.json(); // API trả về danh sách JSON
-        setStudentScores(data);
-        setLoading(false);
-      } catch (err: any) {
-        setError(err.message);
-        setLoading(false);
-      }
-    };
-
-    fetchStudentScores();
-  }, [selectedExamPaper]);
-
-  const handleSelect = (examPaperId: string) => {
-    setSelectedExamPaper(examPaperId);
+    } catch (err) {
+      setError("An error occurred while fetching semester data.");
+    }
   };
+
+
+    fetchExamCount();
+    fetchExamGradingAtCount();
+    fetchExamGradingAtPassedCount();
+    fetchSemesterData(year);
+
+  }, [year]);
+
+ 
   return (
     <SidebarInset>
       {Header}
       <div className="p-4 pt-0">
         <div className="grid grid-cols-8 gap-6">
+        
 
-          <div className="col-span-2">
-            <DropdownList onSelect={handleSelect} />
-          </div>
-         
-
-          {/* Thông tin tổng học sinh */}
           <div className="col-span-2">
             <CardHeaderDashboard
-              title="Total Students"
-              content="Student Statistics"
-              description={
-                loading
-                  ? "Loading total students..."
-                  : error
-                    ? `Error: ${error}`
-                    : totalStudents !== null
-                      ? `Total Students: ${totalStudents}`
-                      : "Overview"
-              }
+              title="Total Exams"
+              content={loading ? "Loading..." : examCount !== null ? examCount.toString() : "Error"}
+              description="Total number of EXAM type exams."
               icon={Book}
             />
           </div>
 
-
-          {/* Thông tin học sinh điểm 0 */}
           <div className="col-span-2">
             <CardHeaderDashboard
-              title="Students with Zero Score"
-              content="Student Statistics"
-              description={
-                loading
-                  ? "Loading zero score data..."
-                  : error
-                    ? `Error: ${error}`
-                    : studentsWithZeroScore !== null
-                      ? `Zero Score: ${studentsWithZeroScore}`
-                      : "Overview"
-              }
+              title="Exams Grading Over Time"
+              content={loading ? "Loading..." : examGradingAtCount !== null ? examGradingAtCount.toString() : "Error"}
+              description="Number of exams where gradingAt has passed the current time."
               icon={Book}
             />
           </div>
 
-
-
-          {/* Thông tin học sinh điểm > 0 */}
           <div className="col-span-2">
             <CardHeaderDashboard
-              title="Students with Score > 0"
-              content="Student Statistics"
-              description={
-                loading
-                  ? "Loading score data..."
-                  : error
-                    ? `Error: ${error}`
-                    : studentsWithScoreGreaterThanZero !== null
-                      ? `Score > 0: ${studentsWithScoreGreaterThanZero}`
-                      : "Overview"
-              }
+              title="Exams Grading At Passed"
+              content={loading ? "Loading..." : examGradingAtPassedCount !== null ? examGradingAtPassedCount.toString() : "Error"}
+              description="Number of exams where gradingAt is passed."
               icon={Book}
             />
           </div>
 
-          <div className="col-span-8">
-            {loading ? (
-              <p>Loading student scores...</p>
-            ) : error ? (
-              <p>Error: {error}</p>
-            ) : (
-              <BarChartComponent data={studentScores} />
-            )}
+          {/* Bar chart for semester data */}
+          <div className="col-span-6">
+            <BarChartComponent
+              data={semesterData}
+              loading={loading}
+              error={error}
+              year={year}
+              handleYearChange={handleYearChange}
+            />
+          </div>
+
+              {/* Insert TableStudentComponent */}
+              <div className="col-span-6">
+            <TableStudentComponent /> {/* This will render the table of top students */}
           </div>
 
 
-          <div className="col-span-4">
+          {/* <div className="col-span-4">
             <LineChartComponent />
           </div>
           <div className="col-span-4 border border-gray-200 p-4 rounded-lg shadow">
@@ -283,7 +213,7 @@ export default function Page() {
           </div>
           <div className="col-span-2">
             <PieChartComponent />
-          </div>
+          </div> */}
         </div>
       </div>
     </SidebarInset>
