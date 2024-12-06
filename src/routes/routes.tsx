@@ -26,6 +26,8 @@ import ExamPaperDetail from "@/app/exam/exam-paper-overview/exam-paper-detail";
 import Grading from "@/app/score/grading-process/page";
 import StudentsList from "@/app/students/grading-list/page";
 import Organization from "@/app/authentication/organization/overview/page";
+import Semester from "@/app/semester/semesters/page";
+import Subject from "@/app/semester/subjects/page";
 import Positions from "@/app/authentication/position/overview/page";
 
 const AppRoutes = () => {
@@ -63,6 +65,8 @@ const AppRoutes = () => {
           <Route path="grading/students" element={<StudentsList />} />
           <Route path="organizations" element={<Organization />} />
           <Route path="positions" element={<Positions />} />
+          <Route path="subjects" element={<Subject />} />
+          <Route path="semesters" element={<Semester />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
