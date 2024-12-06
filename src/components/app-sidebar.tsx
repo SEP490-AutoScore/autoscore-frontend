@@ -103,7 +103,7 @@ const data = {
         },
         {
           title: "Positions",
-          url: "/$$",
+          url: "/positions",
           permission: "ALL_ACCESS",
         },
       ],

@@ -35,6 +35,11 @@ export const API_ENDPOINTS = {
   createOrganization: "/api/organization/create", // API tạo organization
   updateOrganization: "/api/organization/update", // API update organization
   deleteOrganization: "/api/organization/delete/", // API delete organization
+  getAllPosition: "/api/position", // API lấy danh sách positions
+  getPositionDetail: "/api/position/", // API lấy position detail
+  createPosition: "/api/position/create", // API tạo position
+  updatePosition: "/api/position/update", // API update position
+  deletePosition: "/api/position/delete/", // API delete position
 
   //Exam
   getExamInfo: "/api/exam", //get exam info
