@@ -19,25 +19,37 @@ export function ExamPaperInfo({ examPaper }: { examPaper: ExamPaper }) {
     return (
         <Card className="border shadow-md">
             <CardHeader>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div>
-                        <p className="font-semibold">Exam Code:</p>
-                        <p>{examPaper.examPaperCode || "N/A"}</p>
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+                    {/* Thông tin Exam Paper */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
+                        <div>
+                            <p className="font-semibold">Exam Code:</p>
+                            <p>{examPaper.examPaperCode || "N/A"}</p>
+                        </div>
+                        <div>
+                            <p className="font-semibold">Subject:</p>
+                            <p>
+                                {examPaper.subject
+                                    ? `${examPaper.subject.subjectName || "N/A"} (${examPaper.subject.subjectCode || "N/A"})`
+                                    : "N/A"}
+                            </p>
+                        </div>
+                        <div>
+                            <p className="font-semibold">Duration:</p>
+                            <p>
+                                {examPaper.duration !== null && examPaper.duration >= 0
+                                    ? `${examPaper.duration} minutes`
+                                    : "N/A"}
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <p className="font-semibold">Subject:</p>
-                        <p>
-                            {examPaper.subject
-                                ? `${examPaper.subject.subjectName || "N/A"} (${examPaper.subject.subjectCode || "N/A"})`
-                                : "N/A"}
-                        </p>
-                    </div>
-                    <div>
-                        <p className="font-semibold">Duration:</p>
-                        <p>{examPaper.duration !== null && examPaper.duration >= 0 ? `${examPaper.duration} minutes` : "N/A"}</p>
-                    </div>
+                    {/* Nút UpdateExamPaper */}
+                    <UpdateExamPaper
+                        examPaperId={examPaper.examPaperId}
+                        subjectId={examPaper.subject.subjectId}
+                        examId={examPaper.examId}
+                    />
                 </div>
-                <UpdateExamPaper examPaperId={examPaper.examPaperId} subjectId={examPaper.subject.subjectId} examId={examPaper.examId} />
             </CardHeader>
         </Card>
     );

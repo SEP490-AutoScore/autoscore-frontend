@@ -20,6 +20,7 @@ interface ExamQuestion {
     sucessResponse: string | null;
     errorResponse: string | null;
     orderBy: number;
+    examPaperId:number;
 }
 
 interface ExamQuestionsListProps {
@@ -167,6 +168,7 @@ const ExamQuestionsList: React.FC<ExamQuestionsListProps> = ({ examPaperId }) =>
                     <div key={question.examQuestionId} className="border-b pb-4">
                         <ExamQuestionItem
                             question={question}
+                            examPaperId = {examPaperId}
                             isExpanded={expandedQuestionId === question.examQuestionId}
                             onToggle={() => toggleExpand(question.examQuestionId)}
                         />

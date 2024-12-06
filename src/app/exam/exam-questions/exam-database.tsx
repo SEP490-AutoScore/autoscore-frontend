@@ -71,8 +71,17 @@ const DatabaseInfoComponent: FC<DatabaseInfoProps> = ({ examPaperId }) => {
             <div className="space-y-4">
                 <Card className="bg-white shadow-md rounded-lg border border-gray-200">
                     <CardContent className="p-4 text-sm text-gray-700 space-y-4">
-                        <div className="text-center text-gray-500">
-                            <AddDatabaseForm examPaperId={examPaperId} onAddSuccess={fetchDatabase} />
+                        {/* Flex container cho nội dung bên trái và nút bên phải */}
+                        <div className="flex justify-between items-center">
+                            {/* Phần bên trái hiển thị thông tin về DB nếu đã được thêm */}
+                            <div className="text-gray-500">
+                                <p className="mt-2 text-sm">No related database information found for this exam paper.</p>
+                            </div>
+
+                            {/* Phần bên phải chứa nút thêm database */}
+                            <div className="flex justify-end">
+                                <AddDatabaseForm examPaperId={examPaperId} onAddSuccess={fetchDatabase} />
+                            </div>
                         </div>
                     </CardContent>
                 </Card>
