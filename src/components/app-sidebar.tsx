@@ -135,17 +135,28 @@ const data = {
       ],
     },
     {
+      title: "Order",
+      url: "!!",
+      allowedRoles: ["ADMIN", "EXAMINER", "LECTURER", "HEAD_OF_DEPARTMENT"],
+      icon: NotebookPen,
+      items: [
+        {
+          title: "Subjects",
+          url: "/subjects",
+          permission: "VIEW_EXAM",
+        },
+        {
+          title: "Semesters",
+          url: "/semesters",
+          permission: "VIEW_EXAM",
+        },
+      ],
+    },
+    {
       title: "Setting",
       url: "/ai-api-keys",
       allowedRoles: ["ADMIN", "EXAMINER", "LECTURER", "HEAD_OF_DEPARTMENT"],
       icon: Settings,
-      items: [],
-    },
-    {
-      title: "Grading",
-      url: "/grading",
-      allowedRoles: ["ADMIN", "EXAMINER", "LECTURER", "HEAD_OF_DEPARTMENT"],
-      icon: NotebookPen,
       items: [],
     },
   ],

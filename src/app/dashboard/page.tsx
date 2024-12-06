@@ -6,7 +6,9 @@ import { BarChartComponent } from "./bar-chart";
 import { useState, useEffect } from "react";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { TableStudentComponent } from "./table-student";
-
+import { LineChartComponent } from "./line-chart";
+import { PieChartComponent } from "./pie-chart";
+import { BarChartCustomLabelComponent } from "./bar-chart-custom-label";
 export default function Page() {
   const Header = useHeader({
     breadcrumbLink: "/dashboard",
@@ -25,10 +27,7 @@ export default function Page() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-   // Generate years from current year to 10 years ago
-   const currentYear = new Date().getFullYear();
-   const years = Array.from({ length: 11 }, (_, index) => (currentYear - index).toString());
- 
+
    const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
      setYear(event.target.value);
    };
@@ -201,7 +200,20 @@ export default function Page() {
             <TableStudentComponent /> {/* This will render the table of top students */}
           </div>
 
+          {/* Line Chart Component */}
+          <div className="col-span-6">
+            <LineChartComponent /> {/* Render the new LineChartComponent */}
+          </div>
 
+          <div className="col-span-6">
+            <PieChartComponent /> {/* Render the new LineChartComponent */}
+          </div>
+
+          <div className="col-span-6">
+            <BarChartCustomLabelComponent /> {/* Render the new LineChartComponent */}
+          </div>
+  
+          
           {/* <div className="col-span-4">
             <LineChartComponent />
           </div>
