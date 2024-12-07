@@ -33,6 +33,7 @@ interface Account {
 
 export const columns: ColumnDef<Account>[] = [
   {
+    accessorKey: "email",
     header: "Name",
     cell: ({ row }) => {
       return ( // Bạn cần return JSX từ đây

@@ -1,10 +1,38 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
+
+  /* Thanh cuộn chung */
+  ::-webkit-scrollbar {
+    width: 8px;
+    /* Độ rộng của thanh cuộn dọc */
+    height: 8px;
+    /* Độ rộng của thanh cuộn ngang */
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #ffffff;
+    /* Màu nền của track */
+    border-radius: 4px;
+    /* Bo góc */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #ff8e29;
+    /* Màu của thanh cuộn */
+    border-radius: 4px;
+    /* Bo góc */
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background:  #ff8e29;
+    /* Màu thanh cuộn khi hover */
+  }
 }
 
 @layer base {
@@ -15,7 +43,7 @@
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 28, 100%, 58%; 
+    --primary: 28, 100%, 58%;
     --primary-foreground: 0 0% 98%;
     --secondary: 159, 68%, 48%;
     --secondary-foreground: 240 5.9% 10%;
@@ -43,6 +71,7 @@
     --sidebar-border: 29, 98%, 79%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 100%;
@@ -83,6 +112,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
