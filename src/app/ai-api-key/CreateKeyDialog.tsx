@@ -57,7 +57,7 @@ export const CreateKeyDialog = ({ onClose, open }: { onClose: () => void; open: 
         if (responseData.aiApiKeyId) {
           notify({
             title: "Success",
-            description: `API Key created successfully! ID: ${responseData.aiApiKeyId}`,
+            description: `API Key created successfully!`,
             variant: "default",
           });
         }

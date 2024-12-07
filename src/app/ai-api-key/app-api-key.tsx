@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 import { DataTable } from "@/app/ai-api-key/data-table";
-import { AIApiKey, createColumns, updateSelectedKey } from "@/app/ai-api-key/columns";
+import { AIApiKey, createColumns, updateSelectedKey, deleteAIApiKey } from "@/app/ai-api-key/columns";
 
 import { DialogComponent } from "@/app/ai-api-key/DialogComponent";
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 import { AIApiKeysSkeleton } from "@/app/ai-api-key/ai-api-key-skeleton";
 import { Button } from "@/components/ui/button";
 import { CreateKeyDialog } from "@/app/ai-api-key/CreateKeyDialog";
+import { useToastNotification } from "@/hooks/use-toast-notification";
+import ViewDetailDialog from "./AIApiKeyDetail";
 
 export async function getAIApiKeys(): Promise<AIApiKey[]> {
-
 
   const token = localStorage.getItem("jwtToken");
 
@@ -49,6 +50,19 @@ export default function AIApiKeysPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [showDialog, setShowDialog] = useState(false);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const notify = useToastNotification();
+
+  const [viewDetailDialogOpen, setViewDetailDialogOpen] = useState(false);
+  const [selectedAiApiKeyId, setSelectedAiApiKeyId] = useState<number | null>(null);
+
+  const handleViewDetail = async (aiApiKeyId: number): Promise<void> => {
+    setSelectedAiApiKeyId(aiApiKeyId);
+    setViewDetailDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setViewDetailDialogOpen(false);
+  };
 
   const fetchData = useCallback(async () => {
     try {
@@ -71,15 +85,42 @@ export default function AIApiKeysPage() {
       setData((prevData) =>
         prevData.map((key) =>
           key.aiApiKeyId === aiApiKeyId ? { ...key, selected: true } : { ...key, selected: false }
-        )
-      );
+        ));
+      notify({
+        title: "Successfully",
+        description: "Select key successfully!",
+        variant: "default",
+      });
+
     } catch (error) {
-      console.error("Error selecting key:", error);
+      notify({
+        title: "Successfully",
+        description: "Select key successfully!",
+        variant: "default",
+      });
       fetchData();
     }
   }, [fetchData]);
 
-  const columns = createColumns(handleSelectKey);
+  const handleDeleteKey = useCallback(async (aiApiKeyId: number) => {
+    try {
+      await deleteAIApiKey(aiApiKeyId);
+      setData((prevData) => prevData.filter((key) => key.aiApiKeyId !== aiApiKeyId));
+      notify({
+        title: "Successfully",
+        description: "Successfully!",
+        variant: "default",
+      });
+    } catch (error) {
+      notify({
+        title: "Failure",
+        description: "You are not owned this key",
+        variant: "destructive",
+      });
+    }
+  }, []);
+
+  const columns = createColumns(handleSelectKey, handleDeleteKey, handleViewDetail);
 
   if (loading) {
     return <AIApiKeysSkeleton />;
@@ -89,11 +130,9 @@ export default function AIApiKeysPage() {
     <div className="container mx-auto">
       <div className="mb-4 flex justify-end gap-x-2">
 
-
         <Button variant="outline" onClick={() => setShowDialog(true)}>
           Show question ask AI
         </Button>
-
 
         <Button variant="outline" onClick={() => setShowCreateDialog(true)}>
           Create new key
@@ -108,11 +147,20 @@ export default function AIApiKeysPage() {
         <CreateKeyDialog
           open={showCreateDialog}
           onClose={() => {
-            setShowCreateDialog(false); 
-            fetchData(); 
+            setShowCreateDialog(false);
+            fetchData();
           }}
         />
       )}
+
+      {selectedAiApiKeyId !== null && (
+        <ViewDetailDialog
+          aiApiKeyId={selectedAiApiKeyId}
+          open={viewDetailDialogOpen}
+          onClose={handleCloseDialog}
+        />
+      )}
+
 
     </div>
 

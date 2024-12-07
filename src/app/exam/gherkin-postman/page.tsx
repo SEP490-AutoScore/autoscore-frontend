@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Repeat, Settings2 } from "lucide-react";
 import PostmanDialog from "./PostmanDialog";
-import GhekrinDialog, { GherkinDialog } from "./GherkinDialog";
+import { GherkinDialog } from "./GherkinDialog";
 import { useDeleteGherkin } from "./useDeleteGherkin";
 import { useGenerateGherkin } from "./useGenerateGherkin";
 import { useGenerateGherkinMore } from "./useGenerateGherkinMore";
@@ -89,28 +89,26 @@ const GherkinPostmanPage: React.FC = () => {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(requests), // Dữ liệu gửi đi
+          body: JSON.stringify(requests),
           
         }
       );
-      console.log("Request body:", JSON.stringify(requests));
+
       if (response.ok) 
         notify({
           title: "Successfully",
           description: "Scores have been successfully saved!",
-          variant: "destructive",
+          variant: "default",
       });
    
     }catch (error) {
   
     } finally {
-      setLoading(false); // Kết thúc trạng thái loading
+      setLoading(false); 
     }
   
   };
   
-
-
   useEffect(() => {
     if (selectedQuestionId) {
       setStoredQuestionId(selectedQuestionId);
@@ -126,11 +124,6 @@ const GherkinPostmanPage: React.FC = () => {
     breadcrumbPage_3: "Gherkin Postman",
     stateGive: { examId: examId },
   });
-
-
-
-
-
 
   const toggleGherkinSelection = (gherkinScenarioId: number) => {
     if (!gherkinScenarioId) return;
@@ -150,8 +143,6 @@ const GherkinPostmanPage: React.FC = () => {
     );
   };
 
-
-
   const togglePostmanSelectionCalculationMode = (postmanForGradingId: number) => {
     if (!postmanForGradingId || confirmedIds.includes(postmanForGradingId)) return;
     setSelectedPostmansCalculationMode((prevSelected) =>
@@ -164,21 +155,17 @@ const GherkinPostmanPage: React.FC = () => {
     if (selectedPostmansCalculationMode.length === 0) return;
 
     const newColor = getRandomColor(Object.values(groupColors));
-    const newGroupId = confirmedPostmansCalculationMode.length; // ID nhóm mới dựa trên thứ tự
+    const newGroupId = confirmedPostmansCalculationMode.length; 
 
     setGroupColors((prev) => ({
       ...prev,
-      [newGroupId]: newColor, // Gán màu cho nhóm mới
+      [newGroupId]: newColor, 
     }));
 
-    setConfirmedIds((prev) => [...prev, ...selectedPostmansCalculationMode]); // Thêm vào danh sách xác nhận
-    setConfirmedPostmansCalculationMode((prev) => [...prev, selectedPostmansCalculationMode]); // Thêm nhóm mới
-    setSelectedPostmansCalculationMode([]); // Reset danh sách chọn
+    setConfirmedIds((prev) => [...prev, ...selectedPostmansCalculationMode]); 
+    setConfirmedPostmansCalculationMode((prev) => [...prev, selectedPostmansCalculationMode]); 
+    setSelectedPostmansCalculationMode([]); 
   };
-
-
-
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -196,7 +183,7 @@ const GherkinPostmanPage: React.FC = () => {
         });
 
         if (!dataResponse.ok) {
-          throw new Error("Lỗi khi gọi API cho data");
+          throw new Error("Error");
         }
 
         const Data = await dataResponse.json();
@@ -213,14 +200,14 @@ const GherkinPostmanPage: React.FC = () => {
         });
 
         if (!questionsResponse.ok) {
-          throw new Error("Lỗi khi gọi API cho questions");
+          throw new Error("Error call API for questions");
         }
 
         const questionsData = await questionsResponse.json();
         setQuestions(questionsData);
 
       } catch (error) {
-        console.error("Lỗi khi gọi API:", error);
+        console.error("Error call API:", error);
       } finally {
         setLoading(false);
       }
@@ -229,8 +216,6 @@ const GherkinPostmanPage: React.FC = () => {
     fetchData();
   }, [token, examPaperId]);
 
-
-
   if (!examPaperId) {
     return (
       <Alert variant="destructive">
@@ -238,7 +223,6 @@ const GherkinPostmanPage: React.FC = () => {
         <AlertDescription>Missing required information. Please go back.</AlertDescription>
       </Alert>
     );
-
   }
 
   const fetchGherkinPostmanPairs = async (questionId: number) => {
@@ -255,7 +239,7 @@ const GherkinPostmanPage: React.FC = () => {
       );
 
       if (!response.ok) {
-        throw new Error("Lỗi khi gọi API lấy cặp Gherkin và Postman");
+        throw new Error("Error call API");
       }
       const result = await response.json();
 

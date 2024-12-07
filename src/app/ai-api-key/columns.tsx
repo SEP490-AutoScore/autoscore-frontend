@@ -2,9 +2,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
-
-
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +10,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { useToastNotification } from "@/hooks/use-toast-notification";
+import ViewDetailDialog from "./AIApiKeyDetail";
 
 export type AIApiKey = {
   aiApiKeyId: number;
@@ -29,8 +30,6 @@ export type AIApiKey = {
 
 export async function updateSelectedKey(aiApiKeyId: number): Promise<AIApiKey> {
 
-
-
   const token = localStorage.getItem("jwtToken");
   if (!token) {
     throw new Error("JWT token not found.");
@@ -46,11 +45,11 @@ export async function updateSelectedKey(aiApiKeyId: number): Promise<AIApiKey> {
     },
   });
 
-  // Kiểm tra mã trạng thái phản hồi
   if (!response.ok) {
-    const errorText = await response.text(); // Đọc phản hồi dưới dạng văn bản
+    const errorText = await response.text();
     throw new Error(`Error updating selected status: ${errorText}`);
   }
+
 
   try {
     const data = await response.json();
@@ -60,102 +59,139 @@ export async function updateSelectedKey(aiApiKeyId: number): Promise<AIApiKey> {
   }
 };
 
+export async function deleteAIApiKey(aiApiKeyId: number): Promise<void> {
 
-export const createColumns = (handleSelectKey: (aiApiKeyId: number) => Promise<void>): ColumnDef<AIApiKey>[] => [
-  {
-    accessorKey: "aiName",
-    header: "AI Name",
-  },
-  {
-    accessorKey: "aiApiKey",
-    header: "API Key",
-    cell: ({ row }) => {
-      const apiKey = row.getValue("aiApiKey") as string;
-      return <div>{apiKey.slice(0, 15)}...</div>;
-    },
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => {
-      const status = row.getValue("status") as boolean;
-      return <div>{status ? "Active" : "Inactive"}</div>;
-    },
-  },
+  const token = localStorage.getItem("jwtToken");
+  if (!token) {
+    throw new Error("JWT token not found.");
+  }
 
-  {
-    accessorKey: "createdAt",
-    header: "Created At",
-    cell: ({ row }) => {
-      const date = new Date(row.getValue("createdAt"));
-      return <div>{date.toLocaleString()}</div>;
-    },
-  },
+  const url = `${BASE_URL}${API_ENDPOINTS.deleteAIApiKey}/${aiApiKeyId}`;
 
-  {
-    accessorKey: "updatedAt",
-    header: "Updated At",
-    cell: ({ row }) => {
-      const date = new Date(row.getValue("updatedAt"));
-      return <div>{date.toLocaleString()}</div>;
+  const response = await fetch(url, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
-  },
-  {
-    accessorKey: "fullName",
-    header: "Full Name",
-    cell: ({ row }) => {
-      const fullName = row.getValue("fullName") as string;
-      return <div>{fullName}</div>;
-    },
-  },
+  });
 
-  {
-    accessorKey: "shared",
-    header: "Shared",
-    cell: ({ row }) => {
-      const shared = row.getValue("shared") as boolean;
-      return <div>{shared ? "Yes" : "No"}</div>;
-    },
-  },
-  {
-    accessorKey: "selected",
-    header: "Selected",
-    cell: ({ row }) => {
-      const selected = row.getValue("selected") as boolean;
-      return <div>{selected ? "Selected" : ""}</div>;
-    },
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const aiApiKey = row.original;
+  if (!response.ok) {
 
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(aiApiKey.aiApiKey)}
-            >
-              Copy API Key
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuItem>Delete</DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => handleSelectKey(aiApiKey.aiApiKeyId)}
-            >
-              Select this key
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+    const errorText = await response.text();
+    throw new Error(`Error deleting API Key: ${errorText}`);
+  }
+
+}
+
+export const createColumns = (
+  handleSelectKey: (aiApiKeyId: number) => Promise<void>,
+  handleDeleteKey: (aiApiKeyId: number) => Promise<void>,
+  handleViewDetail: (aiApiKeyId: number) => Promise<void>
+): ColumnDef<AIApiKey>[] => {
+  return [
+
+    {
+      accessorKey: "aiName",
+      header: "AI Name",
     },
-  },
-];
+    {
+      accessorKey: "aiApiKey",
+      header: "API Key",
+      cell: ({ row }) => {
+        const apiKey = row.getValue("aiApiKey") as string;
+        return <div>{apiKey.slice(0, 15)}...</div>;
+      },
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const status = row.getValue("status") as boolean;
+        return <div>{status ? "Active" : "Inactive"}</div>;
+      },
+    },
+
+    {
+      accessorKey: "createdAt",
+      header: "Created At",
+      cell: ({ row }) => {
+        const date = new Date(row.getValue("createdAt"));
+        return <div>{date.toLocaleString()}</div>;
+      },
+    },
+
+    {
+      accessorKey: "updatedAt",
+      header: "Updated At",
+      cell: ({ row }) => {
+        const date = new Date(row.getValue("updatedAt"));
+        return <div>{date.toLocaleString()}</div>;
+      },
+    },
+    {
+      accessorKey: "fullName",
+      header: "Full Name",
+      cell: ({ row }) => {
+        const fullName = row.getValue("fullName") as string;
+        return <div>{fullName}</div>;
+      },
+    },
+
+    {
+      accessorKey: "shared",
+      header: "Shared",
+      cell: ({ row }) => {
+        const shared = row.getValue("shared") as boolean;
+        return <div>{shared ? "Yes" : "No"}</div>;
+      },
+    },
+    {
+      accessorKey: "selected",
+      header: "Selected",
+      cell: ({ row }) => {
+        const selected = row.getValue("selected") as boolean;
+        return <div>{selected ? "Selected" : ""}</div>;
+      },
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const aiApiKey = row.original;
+
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(aiApiKey.aiApiKey)}
+              >
+                Copy API Key
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => handleViewDetail(aiApiKey.aiApiKeyId)}>
+                View detail
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleDeleteKey(aiApiKey.aiApiKeyId)}
+              >
+                Delete
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleSelectKey(aiApiKey.aiApiKeyId)}
+              >
+                Select this key
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+    },
+  ];
+};
