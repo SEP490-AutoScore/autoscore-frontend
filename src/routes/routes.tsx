@@ -6,6 +6,7 @@ import ProtectedRoute from "./ProtectedRoute";
 
 import Login from "@/app/authentication/login/page";
 import Dashboard from "@/app/dashboard/page";
+import Analysic from "@/app/analysis/page";
 import Exams from "@/app/exam/overview/page";
 import ScoresPage from "@/app/score/scores/page";
 import ScoresOverviewPage from "@/app/score/overview/page";
@@ -30,6 +31,8 @@ import Semester from "@/app/semester/semesters/page";
 import Subject from "@/app/semester/subjects/page";
 import Positions from "@/app/authentication/position/overview/page";
 
+
+
 const AppRoutes = () => {
   return (
     <AuthProvider>
@@ -44,6 +47,7 @@ const AppRoutes = () => {
           }
         >
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="analysis" element={<Analysic />} />
           <Route path="exams" element={<Exams />} />
           <Route path="scores-overview/scores" element={<ScoresPage />} />
           <Route path="scores-overview" element={<ScoresOverviewPage />} />
