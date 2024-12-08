@@ -10,6 +10,7 @@ import { Alert } from "@/components/ui/alert";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface PostmanDialogProps {
     onClose: () => void;
@@ -165,8 +166,9 @@ export const PostmanDialog: React.FC<PostmanDialogProps> = ({ postmanId, storedQ
 
 
     return (
-        <DialogContent className="p-8 bg-white shadow-lg rounded-lg max-w-7xl mx-auto">
-           
+        <DialogContent className="p-8 bg-white shadow-lg rounded-lg max-w-7xl mx-auto max-h-[80vh] overflow-y-auto">
+
+
             <DialogHeader>
                 <DialogTitle className="text-xl font-semibold">Postman Details</DialogTitle>
                 <DialogDescription className="text-sm text-muted-foreground">
@@ -197,14 +199,11 @@ export const PostmanDialog: React.FC<PostmanDialogProps> = ({ postmanId, storedQ
                             <p className="text-sm">
                                 <strong>Total Tests:</strong> {postmanData.totalPmTest}
                             </p>
-                            <pre className="text-sm bg-gray-100 p-4 rounded overflow-auto w-full h-48 border border-gray-300 resize-y">
-                                {JSON.stringify(JSON.parse(postmanData.fileCollectionPostman), null, 2)}
-                            </pre>
                             <p className="text-sm">
                                 <strong>Question Content:</strong>
                             </p>
 
-                            {/* Hiển thị thông báo nếu examQuestionId là null */}
+                
                             {postmanData.examQuestionId === null && (
                                 <p className="text-red-500 text-sm font-medium">
                                     Need to select a question.
@@ -215,7 +214,7 @@ export const PostmanDialog: React.FC<PostmanDialogProps> = ({ postmanId, storedQ
                             <select
                                 value={postmanData.examQuestionId || ""}
                                 onChange={handleQuestionChange}
-                                className="border border-gray-300 rounded-md p-2 w-full"
+                                className="w-full border border-gray-300 rounded-md p-2 "
                                 disabled={postmanData.examQuestionId !== null}
                             >
                                 <option value="" disabled>
@@ -227,6 +226,15 @@ export const PostmanDialog: React.FC<PostmanDialogProps> = ({ postmanId, storedQ
                                     </option>
                                 ))}
                             </select>
+                            
+
+                            <CardContent >
+
+                            <pre className="text-sm whitespace-pre-wrap bg-gray-200 p-2 rounded">
+                        {JSON.stringify(JSON.parse(postmanData.fileCollectionPostman), null, 2)}
+                    </pre>
+  </CardContent>
+                           
                         </>
                     )}
                 </div>
@@ -238,7 +246,7 @@ export const PostmanDialog: React.FC<PostmanDialogProps> = ({ postmanId, storedQ
                 onClick={submitUpdate}
                 disabled={isSubmitting}
                 variant="outline"
-                className="w-full py-3 text-lg font-semibold shadow-md focus:ring-2 focus:ring-400"
+                  className="w-full py-3 text-lg font-semibold shadow-md focus:ring-2 focus:ring-400 mt-4"
             >
                 {isSubmitting ? "Submitting..." : "Submit"}
             </Button>

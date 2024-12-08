@@ -27,7 +27,10 @@ const Page: React.FC = () => {
   const { examId, examPaperId } = location.state || {};
 
   const [postmanData, setPostmanData] = useState<any[]>([]);
-  const [draggedNodeId, setDraggedNodeId] = useState<number | null>(null);
+  // const [draggedNodeId, setDraggedNodeId] = useState<number | null>(null);
+
+  const [selectedNodeIds, setSelectedNodeIds] = useState<Set<number>>(new Set());
+
   const token = localStorage.getItem("jwtToken");
   const [, setSelectedAction] = useState<string>("");
   const [showPopup, setShowPopup] = useState<boolean>(false);
@@ -51,6 +54,34 @@ const Page: React.FC = () => {
     breadcrumbPage_3: "Postman For Grading",
     stateGive: { examId: examId },
   });
+
+    // Hàm bỏ chọn tất cả các node
+    const clearSelection = () => {
+      setSelectedNodeIds(new Set());
+    };
+  
+    // Thêm useEffect để xử lý click ra ngoài
+    useEffect(() => {
+      // Hàm kiểm tra click ra ngoài các node
+      const handleClickOutside = (event: MouseEvent) => {
+        // Kiểm tra xem click có nằm ngoài các nodeRefs hay không
+        const isClickInside = Object.values(nodeRefs.current).some(
+          (node) => node && node.contains(event.target as Node)
+        );
+  
+        if (!isClickInside) {
+          clearSelection(); // Nếu không, bỏ chọn tất cả các node
+        }
+      };
+  
+      // Gắn sự kiện click vào document khi component được render
+      document.addEventListener("click", handleClickOutside);
+  
+      // Dọn dẹp sự kiện khi component unmount
+      return () => {
+        document.removeEventListener("click", handleClickOutside);
+      };
+    }, []); // Chạy 1 lần khi component mount
 
   useEffect(() => {
     const fetchData = async () => {
@@ -169,7 +200,7 @@ const Page: React.FC = () => {
       updateDTOs.push({
         postmanForGradingId: sortedNode.postmanForGradingId,
         postmanFunctionName: sortedNode.postmanFunctionName,
-        scoreOfFunction: sortedNode.scoreOfFunction,
+        // scoreOfFunction: sortedNode.scoreOfFunction,
         postmanForGradingParentId: sortedNode.postmanForGradingParentId,
 
       });
@@ -291,9 +322,6 @@ const Page: React.FC = () => {
     }
   };
 
-
-
-
   const mergeAllFilePostman = async () => {
     if (!examPaperId) {
       notify({
@@ -345,8 +373,6 @@ const Page: React.FC = () => {
       });
     }
   };
-
-
 
   const confirmFilePostman = async () => {
     if (!examPaperId) {
@@ -400,7 +426,6 @@ const Page: React.FC = () => {
     }
   };
 
-
   const getChildrenNodes = (parentId: number, allNodes: any[]) => {
     return allNodes
       .slice(1) // Bỏ qua phần tử đầu tiên trong danh sách
@@ -408,24 +433,179 @@ const Page: React.FC = () => {
   };
 
 
-  const moveNodeToNewParent = (draggedNodeId: number, targetNodeId: number) => {
-    const updatedNodes = [...postmanData];
-
-    // Cập nhật cha của node bị kéo
-    updatedNodes.forEach((node) => {
-      if (node.postmanForGradingId === draggedNodeId) {
-        node.postmanForGradingParentId = targetNodeId;
-      }
+// Xử lý sự kiện click để chọn hoặc bỏ chọn node
+const handleNodeClick = (nodeId: number) => {
+  // Kiểm tra nếu node là Root của tree (id = 0)
+  if (nodeId === 0) {
+    notify({
+      title: "Error",
+      description: "Cannot select the root node.",
+      variant: "destructive",
     });
+    return; // Nếu là node root, không cho chọn và thoát khỏi hàm
+  }
 
+  setSelectedNodeIds((prevSelectedIds) => {
+    const newSelectedIds = new Set(prevSelectedIds);
+    if (newSelectedIds.has(nodeId)) {
+      newSelectedIds.delete(nodeId); // Nếu đã chọn thì bỏ chọn
+    } else {
+      newSelectedIds.add(nodeId); // Nếu chưa chọn thì chọn
+    }
+    return newSelectedIds;
+  });
+};
+
+  
+  
+
+  // const moveNodesToNewParent = (draggedNodeId: number, targetNodeId: number) => {
+  //   const updatedNodes = [...postmanData];
+
+  //   // Cập nhật cha của node bị kéo
+  //   updatedNodes.forEach((node) => {
+  //     if (node.postmanForGradingId === draggedNodeId) {
+  //       node.postmanForGradingParentId = targetNodeId;
+  //     }
+  //   });
+
+  //   setPostmanData(updatedNodes);
+
+  // };
+
+  // const moveNodesToNewParent = (selectedNodeIds: Set<number>, targetNodeId: number) => {
+  //   const updatedNodes = [...postmanData];
+  
+  //   // Di chuyển tất cả các node đã chọn
+  //   selectedNodeIds.forEach((nodeId) => {
+  //     // Cập nhật parentId cho mỗi node đã chọn
+  //     updatedNodes.forEach((node) => {
+  //       if (node.postmanForGradingId === nodeId) {
+  //         node.postmanForGradingParentId = targetNodeId;
+  //       }
+  //     });
+  
+  //     // Di chuyển các node con (nếu có) tới node mới
+  //     const moveChildrenRecursive = (parentId: number) => {
+  //       updatedNodes.forEach((node) => {
+  //         if (node.postmanForGradingParentId === parentId) {
+  //           node.postmanForGradingParentId = targetNodeId; // Cập nhật node con
+  //           moveChildrenRecursive(node.postmanForGradingId); // Đệ quy để di chuyển node con của node này
+  //         }
+  //       });
+  //     };
+  //     moveChildrenRecursive(nodeId);
+  //   });
+  
+  //   setPostmanData(updatedNodes); // Cập nhật lại dữ liệu
+  // };
+
+  // const moveNodesToNewParent = (selectedNodeIds: Set<number>, targetNodeId: number) => {
+  //   const updatedNodes = [...postmanData];
+  
+  //   // Lấy node đầu tiên trong danh sách selectedNodeIds (để di chuyển)
+  //   const firstSelectedNodeId = [...selectedNodeIds][0];
+  
+  //   // Hàm di chuyển tất cả các node con đệ quy, giữ nguyên quan hệ cha-con
+  //   const moveChildrenRecursive = (parentId: number, newParentId: number) => {
+  //     updatedNodes.forEach((node) => {
+  //       if (node.postmanForGradingParentId === parentId) {
+  //         node.postmanForGradingParentId = newParentId; // Cập nhật parentId cho node con
+  //         moveChildrenRecursive(node.postmanForGradingId, newParentId); // Đệ quy di chuyển các node con của node này
+  //       }
+  //     });
+  //   };
+  
+  //   // Kiểm tra nếu node đang cố di chuyển vào chính nó hoặc vào node con của nó
+  //   if (isAncestor(firstSelectedNodeId, targetNodeId, postmanData)) {
+  //     notify({
+  //       title: "Error",
+  //       description: "Cannot move parent node into its child.",
+  //       variant: "destructive",
+  //     });
+  //     return;
+  //   }
+  
+  //   // Di chuyển node cha vào targetNodeId
+  //   updatedNodes.forEach((node) => {
+  //     if (node.postmanForGradingId === firstSelectedNodeId) {
+  //       node.postmanForGradingParentId = targetNodeId; // Di chuyển node chính
+  //     }
+  //   });
+  
+  //   // Di chuyển tất cả các node con của node đầu tiên vào targetNodeId và giữ mối quan hệ cha con
+  //   moveChildrenRecursive(firstSelectedNodeId, firstSelectedNodeId); // Di chuyển các node con nhưng giữ chúng là con của draggedNodeId
+  
+  //   // Cập nhật lại dữ liệu
+  //   setPostmanData(updatedNodes);
+  // };
+
+  const moveNodesToNewParent = (selectedNodeIds: Set<number>, targetNodeId: number) => {
+    const updatedNodes = [...postmanData];
+  
+    // Hàm di chuyển tất cả các node con đệ quy, giữ nguyên quan hệ cha-con
+    const moveChildrenRecursive = (parentId: number, newParentId: number) => {
+      updatedNodes.forEach((node) => {
+        if (node.postmanForGradingParentId === parentId) {
+          node.postmanForGradingParentId = newParentId; // Cập nhật parentId cho node con
+          moveChildrenRecursive(node.postmanForGradingId, newParentId); // Đệ quy di chuyển các node con của node này
+        }
+      });
+    };
+  
+    // Kiểm tra nếu các node đã chọn không có mối quan hệ cha-con
+    const hasParentChildRelationship = Array.from(selectedNodeIds).some((draggedNodeId) => {
+      return Array.from(selectedNodeIds).some((otherNodeId) => {
+        // Kiểm tra nếu một node là cha của node khác
+        return draggedNodeId !== otherNodeId && isAncestor(draggedNodeId, otherNodeId, postmanData);
+      });
+    });
+  
+    // Nếu không có mối quan hệ cha-con, tất cả các node sẽ trở thành con của targetNodeId
+    if (!hasParentChildRelationship) {
+      selectedNodeIds.forEach((nodeId) => {
+        updatedNodes.forEach((node) => {
+          if (node.postmanForGradingId === nodeId) {
+            node.postmanForGradingParentId = targetNodeId; // Đặt targetNodeId làm cha của node
+          }
+        });
+      });
+    } else {
+      // Di chuyển node đầu tiên vào targetNodeId
+      const firstSelectedNodeId = [...selectedNodeIds][0];
+  
+      // Kiểm tra nếu node đang cố di chuyển vào chính nó hoặc vào node con của nó
+      if (isAncestor(firstSelectedNodeId, targetNodeId, postmanData)) {
+        notify({
+          title: "Error",
+          description: "Cannot move parent node into its child.",
+          variant: "destructive",
+        });
+        return;
+      }
+  
+      // Di chuyển node cha vào targetNodeId
+      updatedNodes.forEach((node) => {
+        if (node.postmanForGradingId === firstSelectedNodeId) {
+          node.postmanForGradingParentId = targetNodeId; // Di chuyển node chính
+        }
+      });
+  
+      // Di chuyển tất cả các node con của node đầu tiên vào targetNodeId và giữ mối quan hệ cha con
+      moveChildrenRecursive(firstSelectedNodeId, firstSelectedNodeId); // Di chuyển các node con nhưng giữ chúng là con của draggedNodeId
+    }
+  
+    // Cập nhật lại dữ liệu
     setPostmanData(updatedNodes);
-
-
-
-
-
   };
+  
+  
+  
+  
+  
 
+  
+  
 
   const updateNodeOrder = (parentId: number, nodeId: number, targetId: number, position: "moveBelowNode") => {
     const updatedNodes = [...postmanData];
@@ -461,20 +641,57 @@ const Page: React.FC = () => {
 
 
 
+  // const handleDrop = (targetId: number, action: "moveToNode" | "moveBelowNode") => {
+  //   if (draggedNodeId === null) return;
+
+
+  //   if (action === "moveToNode") {
+  //     if (draggedNodeId === targetId) {
+
+  //       notify({
+  //         title: "Error",
+  //         description: "Cannot move node into itself.",
+  //         variant: "destructive",
+  //       });
+
+  //       setDraggedNodeId(null);
+  //       return;
+  //     }
+
+  //     // Kiểm tra nếu node cha đang cố di chuyển vào node con
+  //     else if (isAncestor(draggedNodeId, targetId, postmanData)) {
+  //       notify({
+  //         title: "Error",
+  //         description: "Cannot move parent node into its child.",
+  //         variant: "destructive",
+  //       });
+  //       setDraggedNodeId(null);
+  //       return;
+  //     }
+  //     moveNodeToNewParent(draggedNodeId, targetId);
+  //   } else {
+  //     const parentId = postmanData.find((node) => node.postmanForGradingId === targetId)?.postmanForGradingParentId;
+  //     if (parentId !== undefined) {
+  //       updateNodeOrder(parentId, draggedNodeId, targetId, action);
+  //     }
+  //   }
+
+  //   setDraggedNodeId(null); // Reset trạng thái kéo
+  // };
   const handleDrop = (targetId: number, action: "moveToNode" | "moveBelowNode") => {
-    if (draggedNodeId === null) return;
+    if (selectedNodeIds.size === 0) return; // Nếu không có node nào được chọn thì không làm gì
+  
+   // Xử lý với hành động "moveToNode"
+   if (action === "moveToNode") {
 
-
-    if (action === "moveToNode") {
+    for (let draggedNodeId of selectedNodeIds) {
+      // Kiểm tra nếu node đang cố di chuyển vào chính nó
       if (draggedNodeId === targetId) {
-
         notify({
           title: "Error",
           description: "Cannot move node into itself.",
           variant: "destructive",
         });
-
-        setDraggedNodeId(null);
         return;
       }
 
@@ -485,44 +702,91 @@ const Page: React.FC = () => {
           description: "Cannot move parent node into its child.",
           variant: "destructive",
         });
-        setDraggedNodeId(null);
         return;
       }
-      moveNodeToNewParent(draggedNodeId, targetId);
-    } else {
-      const parentId = postmanData.find((node) => node.postmanForGradingId === targetId)?.postmanForGradingParentId;
-      if (parentId !== undefined) {
-        updateNodeOrder(parentId, draggedNodeId, targetId, action);
+
+    
+    }
+      // Di chuyển tất cả các node đã chọn và các node con của nó
+      moveNodesToNewParent(selectedNodeIds, targetId);
+  }
+    // Xử lý với hành động "moveBelowNode" chỉ khi chọn 1 node
+    if (action === "moveBelowNode") {
+      if (selectedNodeIds.size > 1) {
+        notify({
+          title: "Error",
+          description: "You can only move one node at a time using 'move below node'.",
+          variant: "destructive",
+        });
+        return; // Nếu có nhiều hơn 1 node, không thực hiện di chuyển
       }
+  
+      // Di chuyển node và các node con của nó xuống dưới node cha mới
+      selectedNodeIds.forEach((draggedNodeId) => {
+        const parentId = postmanData.find((node) => node.postmanForGradingId === targetId)?.postmanForGradingParentId;
+        if (parentId !== undefined) {
+          updateNodeOrder(parentId, draggedNodeId, targetId, action);
+        }
+      });
+    }
+  
+    setSelectedNodeIds(new Set()); // Reset danh sách node đã chọn sau khi di chuyển
+  };
+
+    // Hàm xử lý bắt đầu kéo
+    // const handleDragStart = (nodeId: number) => {
+    //   setIsDragging(true); // Đánh dấu bắt đầu kéo
+    // };
+  
+    // Hàm xử lý kết thúc kéo
+    // const handleDragEnd = () => {
+    //   setIsDragging(false); // Đánh dấu kết thúc kéo
+    // };
+  
+  
+// Hàm kiểm tra xem một node có phải tổ tiên của một node khác hay không
+const isAncestor = (ancestorId: number, descendantId: number, allNodes: any[]): boolean => {
+  let currentNode = allNodes.find((node) => node.postmanForGradingId === descendantId);
+  const visited = new Set<number>(); // Theo dõi các node đã duyệt để tránh vòng lặp vô hạn
+
+  while (currentNode) {
+    if (visited.has(currentNode.postmanForGradingId)) {
+      console.error("Circular reference detected in postmanData!");
+      return false; // Trả về false nếu phát hiện vòng lặp
+    }
+    visited.add(currentNode.postmanForGradingId);
+
+    // Kiểm tra xem node hiện tại có phải là tổ tiên của node không
+    if (currentNode.postmanForGradingParentId === ancestorId) {
+      return true; // Nếu tìm thấy ancestor
     }
 
-    setDraggedNodeId(null); // Reset trạng thái kéo
-  };
+    // Chuyển sang node cha
+    currentNode = allNodes.find((node) => node.postmanForGradingId === currentNode.postmanForGradingParentId);
+  }
+  return false; // Không tìm thấy ancestor
+};
 
 
   // Hàm kiểm tra xem một node có phải tổ tiên của một node khác hay không
-  const isAncestor = (ancestorId: number, descendantId: number, allNodes: any[]): boolean => {
-    let currentNode = allNodes.find((node) => node.postmanForGradingId === descendantId);
-    const visited = new Set<number>(); // Theo dõi các node đã duyệt để tránh vòng lặp vô hạn
+  // const isAncestor = (ancestorId: number, descendantId: number, allNodes: any[]): boolean => {
+  //   let currentNode = allNodes.find((node) => node.postmanForGradingId === descendantId);
+  //   const visited = new Set<number>(); // Theo dõi các node đã duyệt để tránh vòng lặp vô hạn
 
-    while (currentNode) {
-      if (visited.has(currentNode.postmanForGradingId)) {
-        console.error("Circular reference detected in postmanData!");
-        return false; // Trả về false nếu phát hiện vòng lặp
-      }
-      visited.add(currentNode.postmanForGradingId);
+  //   while (currentNode) {
+  //     if (visited.has(currentNode.postmanForGradingId)) {
+  //       console.error("Circular reference detected in postmanData!");
+  //       return false; // Trả về false nếu phát hiện vòng lặp
+  //     }
+  //     visited.add(currentNode.postmanForGradingId);
 
-      if (currentNode.postmanForGradingParentId === ancestorId) {
-        return true; // Nếu tìm thấy ancestor
-      }
-      currentNode = allNodes.find((node) => node.postmanForGradingId === currentNode.postmanForGradingParentId);
-    }
-    return false; // Không tìm thấy ancestor
-  };
-
-
-
-
+  //     if (currentNode.postmanForGradingParentId === ancestorId) {
+  //       return true; // Nếu tìm thấy ancestor
+  //     }
+  //     currentNode = allNodes.find((node) => node.postmanForGradingId === currentNode.postmanForGradingParentId);
+  //   }
+  //   return false; // Không tìm thấy ancestor
+  // };
 
 
 
@@ -532,110 +796,122 @@ const Page: React.FC = () => {
       (a, b) => a.postmanForGradingOrder - b.postmanForGradingOrder
     );
 
-    const handleDragStart = () => {
-      setDraggedNodeId(parent.postmanForGradingId);
-    };
+    // const handleDragStart = () => {
+    //   setDraggedNodeId(parent.postmanForGradingId);
+    //   // setIsDragging(true);
+    // };
 
-    const handleScoreChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.trim();
+    const isSelected = selectedNodeIds.has(parent.postmanForGradingId);
 
-      // Nếu giá trị rỗng, cập nhật điểm số thành null hoặc giá trị mặc định
-      if (value === "") {
-        const updatedNodes = postmanData.map((node) =>
-          node.postmanForGradingId === parent.postmanForGradingId
-            ? { ...node, scoreOfFunction: null } // Hoặc giá trị mặc định
-            : node
-        );
-        setPostmanData(updatedNodes);
-        return;
-      }
+  //   return (
+  //     <div
 
-      // Kiểm tra giá trị hợp lệ
-      if (isNaN(parseFloat(value))) {
-        return;
-      }
+  //       ref={(el) => {
+  //         if (el) nodeRefs.current[parent.postmanForGradingId] = el; // Gán ref cho từng node
+  //       }}
+  //     >
+  //       <ul className="ml-10 ">
+  //         <li key={parent.postmanForGradingId} className="mt-2">
+  //           {/* Node chính */}
+  //           <div
+  //             draggable
+  //             onDragStart={handleDragStart}
+  //             onDrop={(e) => {
+  //               e.preventDefault();
+  //               handleDrop(parent.postmanForGradingId, "moveToNode");
+  //             }}
+  //             onDragOver={(e) => e.preventDefault()}
+  //             className="p-3 rounded-lg cursor-pointer border border-gray-300"
+  //           >
+  //             {/* Hiển thị thông tin node */}
+  //             <div className="flex items-center space-x-2">
+  //               <span className="font-semibold">{parent.postmanFunctionName}</span>
 
-      const newScore = parseFloat(value);
+  //               <span className="text-sm text-gray-600">
+  //                 (Score of function: {parent.scoreOfFunction})
+  //               </span>
+                
+  //               <span className="text-sm text-gray-600">
+  //                 (test cases: {parent.totalPmTest ?? "0"} )
+  //               </span>
+  //               <span className="text-sm text-gray-600">
+  //                 (ID: {parent.postmanForGradingId})
+  //               </span>
+  //               <span className="text-sm text-gray-600">
+  //                 (Parent ID: {parent.postmanForGradingParentId ?? "Root"})
+  //               </span>
 
-      // Cập nhật node trong danh sách
-      const updatedNodes = postmanData.map((node) =>
-        node.postmanForGradingId === parent.postmanForGradingId
-          ? { ...node, scoreOfFunction: newScore }
-          : node
-      );
+  //             </div>         
 
-      setPostmanData(updatedNodes);
-    };
+  //           </div>
 
-    return (
-      <div
+  //           {/* Div dưới */}
+  //           <div
+  //             className="bg-gray-50 h-4 mt-2 rounded-md"
+  //             onDragOver={(e) => e.preventDefault()}
+  //             onDrop={() => handleDrop(parent.postmanForGradingId, "moveBelowNode")}
+  //           ></div>
 
-        ref={(el) => {
-          if (el) nodeRefs.current[parent.postmanForGradingId] = el; // Gán ref cho từng node
-        }}
-      >
-        <ul className="ml-10 list-disc">
-          <li key={parent.postmanForGradingId} className="mt-2">
-            {/* Node chính */}
-            <div
-              draggable
-              onDragStart={handleDragStart}
-              onDrop={(e) => {
-                e.preventDefault();
-                handleDrop(parent.postmanForGradingId, "moveToNode");
-              }}
-              onDragOver={(e) => e.preventDefault()}
-              className="p-3 rounded-lg cursor-pointer border border-gray-300"
-            >
-              {/* Hiển thị thông tin node */}
-              <div className="flex items-center space-x-2">
-                <span className="font-semibold">{parent.postmanFunctionName}</span>
-                <span className="text-sm text-gray-600">
-                  ({parent.totalPmTest ?? "0"} test cases)
-                </span>
-                <span className="text-sm text-gray-600">
-                  (ID: {parent.postmanForGradingId})
-                </span>
-                <span className="text-sm text-gray-600">
-                  (Parent ID: {parent.postmanForGradingParentId ?? "Root"})
-                </span>
 
-              </div>
 
-              {/* Hiển thị và chỉnh sửa điểm số */}
-              <div className="mt-2">
-                <label className="text-sm text-gray-600">
-                  Score:
-                  <input
-                    type="number"
+  //           {/* Đệ quy render các node con */}
+  //           {children.map((child) => renderTree(child, allNodes))}
 
-                    value={parent.scoreOfFunction}
-                    onChange={handleScoreChange}
-                    className="ml-2 border border-gray-300 rounded-md p-1 w-20"
-                  />
-                </label>
-              </div>
+  //         </li>
+  //       </ul>
+
+  //     </div>
+  //   );
+  // };
+
+  return (
+    <div
+      ref={(el) => {
+        if (el) nodeRefs.current[parent.postmanForGradingId] = el; // Gán ref cho từng node
+   
+      }}
+    >
+      <ul className="ml-10">
+        <li key={parent.postmanForGradingId} className="mt-2">
+          {/* Node chính */}
+          <div
+            draggable
+            // onDragStart={handleDragStart}
+            onDrop={(e) => {
+              e.preventDefault();
+              handleDrop(parent.postmanForGradingId, "moveToNode");
+            }}
+            onDragOver={(e) => e.preventDefault()}
+            className={`p-3 rounded-lg cursor-pointer border ${isSelected ? "border-orange-500" : "border-gray-300"}`}
+            onClick={() => handleNodeClick(parent.postmanForGradingId)} // Thêm sự kiện click
+          >
+         
+            {/* Hiển thị thông tin node */}
+            <div className="flex items-center space-x-2">
+              <span className="font-semibold">{parent.postmanFunctionName}</span>
+              <span className="text-sm text-gray-600">(Score of function: {parent.scoreOfFunction})</span>
+              <span className="text-sm text-gray-600">(test cases: {parent.totalPmTest ?? "0"} )</span>
+              <span className="text-sm text-gray-600">(ID: {parent.postmanForGradingId})</span>
+              <span className="text-sm text-gray-600">(Parent ID: {parent.postmanForGradingParentId ?? "Root"})</span>
             </div>
+          </div>
+  
+          {/* Div dưới */}
+          <div
+            className="bg-gray-50 h-4 mt-2 rounded-md"
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={() => handleDrop(parent.postmanForGradingId, "moveBelowNode")}
+          ></div>
+  
+          {/* Đệ quy render các node con */}
+          {children.map((child) => renderTree(child, allNodes))}
+        </li>
+      </ul>
+    </div>
+  );
+};
 
-            {/* Div trên */}
-            <div
-              className="bg-gray-200 h-4 mt-2 rounded-md"
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={() => handleDrop(parent.postmanForGradingId, "moveBelowNode")}
-            ></div>
-
-
-
-            {/* Đệ quy render các node con */}
-            {children.map((child) => renderTree(child, allNodes))}
-
-          </li>
-        </ul>
-
-      </div>
-    );
-  };
-
+  
   return (
     <SidebarInset>
       {Header}
@@ -682,12 +958,49 @@ const Page: React.FC = () => {
 
           }
 
-          leftBottom={
-            <div className="p-4 space-y-4">
-              {/* Heading with smaller font size */}
-              <h1 className="text-xl font-semibold text-gray-800">Info main file postman </h1>
+          // leftBottom={
+          //   <div className="p-4 space-y-4">
+          //     {/* Heading with smaller font size */}
+          //     <h1 className="text-xl font-semibold text-gray-800">Info main file postman </h1>
 
-              {/* Display isConfirmFile and totalItem when button is clicked */}
+          //     {/* Display isConfirmFile and totalItem when button is clicked */}
+          //     {isConfirmFile !== null && totalItem !== null ? (
+          //       <div className="space-y-2">
+          //         <p className="text-sm text-gray-700">
+          //           <strong className="font-semibold">Is Confirmed File: </strong>
+          //           {isConfirmFile ? "Yes" : "Not yet"}
+          //         </p>
+          //         <p className="text-sm text-gray-700">
+          //           <strong className="font-semibold">Total Function: </strong> {totalItem}
+          //         </p>
+          //         <Button
+          //           variant="outline"
+          //           className="mb-4"
+          //           onClick={() => setShowFilePostmanDialog(true)}
+          //         >
+          //           Show File Collection Data
+          //         </Button>
+          //         <Button
+          //           variant="outline"
+          //           className="mb-4"
+          //           onClick={() => setShowLogRunPostmanDialog(true)}
+          //         >
+          //           Show log File Collection Data
+          //         </Button>
+
+          //       </div>
+          //     ) : (
+          //       <Skeleton className="w-full h-32 bg-gray-200 rounded-lg" />
+          //     )}
+          //   </div>
+          // }
+
+          leftBottom={
+            <div 
+              className="p-4 space-y-4"
+              onClick={clearSelection} // Khi click vào leftBottom, bỏ chọn tất cả các node
+            >
+              <h1 className="text-xl font-semibold text-gray-800">Info main file postman</h1>
               {isConfirmFile !== null && totalItem !== null ? (
                 <div className="space-y-2">
                   <p className="text-sm text-gray-700">
@@ -711,14 +1024,12 @@ const Page: React.FC = () => {
                   >
                     Show log File Collection Data
                   </Button>
-
                 </div>
               ) : (
                 <Skeleton className="w-full h-32 bg-gray-200 rounded-lg" />
               )}
             </div>
           }
-
 
 
 

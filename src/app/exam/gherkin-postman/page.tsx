@@ -252,12 +252,12 @@ const GherkinPostmanPage: React.FC = () => {
     }
   };
 
-  const { deleteGherkin } = useDeleteGherkin({ selectedGherkins, fetchGherkinPostmanPairs, storedQuestionId, token, onLoadingChange: setLoading, });
+  const { deleteGherkin } = useDeleteGherkin({ selectedGherkins, fetchGherkinPostmanPairs, storedQuestionId, token, onLoadingChange: setLoading, examPaperId});
   const { generateGherkin } = useGenerateGherkin(token, storedQuestionId, fetchGherkinPostmanPairs, setLoading);
   const { generateGherkinMore } = useGenerateGherkinMore(token, storedQuestionId, fetchGherkinPostmanPairs, setLoading);
   const { generatePostmanScript } = useGeneratePostmanScript(token, selectedGherkins, storedQuestionId, fetchGherkinPostmanPairs, setLoading);
   const { generatePostmanScriptMore } = useGeneratePostmanScriptMore(token, selectedGherkins, storedQuestionId, fetchGherkinPostmanPairs, setLoading);
-  const { deletePostman } = useDeletePostman(selectedPostmans, token, storedQuestionId, fetchGherkinPostmanPairs, setLoading);
+  const { deletePostman } = useDeletePostman(selectedPostmans, token, storedQuestionId, fetchGherkinPostmanPairs, setLoading, examPaperId );
 
   const handleActionChange = async (action: string) => {
     setSelectedAction(action);
@@ -536,9 +536,11 @@ const GherkinPostmanPage: React.FC = () => {
                   <p className="text-sm">
                     Total PM Tests: {item.postman?.totalPmTest}
                   </p>
+                  
                   <pre className="text-sm whitespace-pre-wrap bg-gray-200 p-2 rounded">
                     {JSON.stringify(JSON.parse(item.postman.fileCollectionPostman), null, 2)}
                   </pre>
+
                   <p className="text-sm">
                     Status: {item.postman?.status ? "Active" : "Inactive"}
                   </p>
@@ -724,6 +726,7 @@ const GherkinPostmanPage: React.FC = () => {
           onClose={() => setIsNewGherkinDialogOpen(false)}
           questionId={storedQuestionId}
           fetchGherkinPostmanPairs={fetchGherkinPostmanPairs}
+          questionDetails={questions.find((q) => q.examQuestionId === storedQuestionId) || null} // Pass question details
         />
       </Dialog>
 

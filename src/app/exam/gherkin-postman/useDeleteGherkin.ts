@@ -7,6 +7,7 @@ interface UseDeleteGherkinProps {
     storedQuestionId: number | null;
     token: string | null;
     onLoadingChange: (isLoading: boolean) => void;
+    examPaperId: number | null;
 
 }
 
@@ -16,6 +17,7 @@ export const useDeleteGherkin = ({
     storedQuestionId,
     token,
     onLoadingChange,
+    examPaperId,
 }: UseDeleteGherkinProps) => {
     const notify = useToastNotification();
 
@@ -34,7 +36,7 @@ export const useDeleteGherkin = ({
             const gherkinIdsQuery = selectedGherkins.join(",");
 
             const response = await fetch(
-                `${BASE_URL}${API_ENDPOINTS.deleteGherkin}?gherkinScenarioIds=${gherkinIdsQuery}`,
+                `${BASE_URL}${API_ENDPOINTS.deleteGherkin}?gherkinScenarioIds=${gherkinIdsQuery}&examPaperId=${examPaperId}`,
                 {
                     method: "DELETE",
                     headers: {
@@ -69,7 +71,7 @@ export const useDeleteGherkin = ({
             }  else {
                 setTimeout(() => {
                     window.location.reload();
-                }, 500); 
+                }, 0); 
             }
         } catch (error) {
             notify({
