@@ -3,6 +3,7 @@
 import { TrendingUp } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, XAxis, Tooltip, Legend } from "recharts"
 import { useEffect, useState } from "react"
+import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 
 import {
   Card,
@@ -44,7 +45,7 @@ export function BarChartStackedComponent({ examPaperId }: { examPaperId: string 
 
       try {
         const response = await fetch(
-          `http://localhost:8080/api/score/analyze-log-each-test?examPaperId=${examPaperId}`,
+          `${BASE_URL}${API_ENDPOINTS.analyzeLogEachTest}?examPaperId=${examPaperId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

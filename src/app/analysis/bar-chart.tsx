@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 
 import {
   Card,
@@ -46,7 +47,7 @@ export function BarChartComponent({ examPaperId }: { examPaperId: string }) {
 
       try {
         const response = await fetch(
-          `http://localhost:8080/api/score/student-scores?examPaperId=${examPaperId}`,
+          `${BASE_URL}${API_ENDPOINTS.studentScoresBarChart}?examPaperId=${examPaperId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

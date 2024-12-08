@@ -10,14 +10,18 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
+import { useToastNotification } from "@/hooks/use-toast-notification";
 
 export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: boolean }) => {
   const [popupData, setPopupData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [isEditing, setIsEditing] = useState<number | null>(null); // Track the editing item ID
+  const [editedContent, setEditedContent] = useState<string>(""); // Track the updated content
+  const notify = useToastNotification();
 
   useEffect(() => {
-    if (!open) return; 
+    if (!open) return;
 
     const fetchPopupData = async () => {
       const token = localStorage.getItem("jwtToken");
@@ -53,6 +57,62 @@ export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: 
     fetchPopupData();
   }, [open]);
 
+  const handleEdit = (contentId: number, currentContent: string) => {
+    setIsEditing(contentId);
+    setEditedContent(currentContent);
+  };
+
+  const handleSave = async (contentId: number) => {
+    const token = localStorage.getItem("jwtToken");
+    if (!token) {
+      notify({
+        title: "Error",
+        description: "JWT token not found.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch(`${BASE_URL}${API_ENDPOINTS.updateQuestionAskAiContent}/${contentId}/question`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editedContent),
+      });
+
+      if (response.ok) {
+        notify({
+          title: "Success",
+          description: "Question content updated successfully.",
+          variant: "default",
+        });
+        setPopupData((prev) =>
+          prev.map((item) =>
+            item.contentId === contentId ? { ...item, questionAskAiContent: editedContent } : item
+          )
+        );
+        setIsEditing(null);
+        setEditedContent("");
+      } else {
+        const errorData = await response.json();
+        notify({
+          title: "Error",
+          description: `Failed to update content: ${errorData.message}`,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      notify({
+        title: "Error",
+        description: "An unexpected error occurred while updating the content.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <Dialog open={open}>
       <DialogContent className="p-6 bg-white shadow-lg rounded-lg max-w-4xl mx-auto">
@@ -79,7 +139,43 @@ export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: 
               {popupData.map((item) => (
                 <li key={item.contentId} className="p-4 border rounded-lg bg-gray-50">
                   <p className="font-bold text-sm mb-2">{item.purpose}</p>
-                  <p className="text-sm">{item.questionAskAiContent}</p>
+                  {isEditing === item.contentId ? (
+                    <div>
+                      <textarea
+                        value={editedContent}
+                        onChange={(e) => setEditedContent(e.target.value)}
+                        className="w-full h-32 p-2 border rounded resize-y"
+                        placeholder="Enter your text here"
+                      />
+
+                      <div className="flex justify-end mt-2 space-x-2">
+                        <Button
+                          onClick={() => handleSave(item.contentId)}
+                          variant="default"
+                          className="text-sm"
+                        >
+                          Save
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            setIsEditing(null);
+                            setEditedContent("");
+                          }}
+                          variant="outline"
+                          className="text-sm"
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <p
+                      onDoubleClick={() => handleEdit(item.contentId, item.questionAskAiContent)}
+                      className="text-sm cursor-pointer hover:bg-gray-100"
+                    >
+                      {item.questionAskAiContent}
+                    </p>
+                  )}
                 </li>
               ))}
             </ul>

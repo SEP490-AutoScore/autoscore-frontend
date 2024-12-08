@@ -49,10 +49,7 @@ export const API_ENDPOINTS = {
   plagiarism: "/api/score/code-plagiarism",
   exportScore: "/api/score/export",
   createExam: "/api/exam/",
-  examCount: "/api/exam/count", 
-  examcountByGradingAt: "/api/exam/countByGradingAt",
-  examcountByGradingAtPassed: "/api/exam/countByGradingAtPassed",
-  examCountByGradingAtPassedAndSemester: "/api/exam/countByGradingAtPassedAndSemester",
+
 
   //Score
   topStudents: "/api/score/top-students", 
@@ -70,11 +67,11 @@ export const API_ENDPOINTS = {
   // API Key
   updateSelectedKey: "/api/ai_api_keys/update-selected-key",
   aiApiKeys: "/api/ai_api_keys",
-  showQuestionAskAi: "/api/content",
   createAiApiKeys: "/api/ai_api_keys",
   updateAiApiKey: "/api/ai_api_keys",
   deleteAIApiKey: "/api/ai_api_keys",
   getAIApiKeyDetail: "/api/ai_api_keys",
+  getAllAINames: "/api/ai_api_keys/ai-names",
 
   // Gherkin
   generateGherkin: "/api/gherkin_scenario/generate_gherkin_format",
@@ -102,6 +99,11 @@ export const API_ENDPOINTS = {
   getPostmanById: "/api/postman-grading",
   updateExamQuestion: "/api/postman-grading/update-exam-question",
   saveCalculateScores: "/api/postman-grading/calculate-scores",
+
+  //prompt ai
+  showQuestionAskAi: "/api/content",
+  updateQuestionAskAiContent: "/api/content",
+
   //side
   getSubject: "/api/subject",
   getSemester: "/api/semester",
@@ -119,9 +121,19 @@ export const API_ENDPOINTS = {
   getStudent: "/api/students",
 
   //dashboard
+  examCount: "/api/exam/count", 
+  examcountByGradingAt: "/api/exam/countByGradingAt",
+  examcountByGradingAtPassed: "/api/exam/countByGradingAtPassed",
+  examCountByGradingAtPassedAndSemester: "/api/exam/countByGradingAtPassedAndSemester",
   totalStudents: "/api/score/total-students",
   studentsWithZeroScore: "/api/score/students-with-zero-score",
   studentsWithScoreGreaterThanZero: "/api/score/students-with-score-greater-than-zero",
   studentScores: "/api/score/student-scores",
+
+  //analysis
+  studentScoresBarChart: "/api/score/student-scores",
+  analyzeLogOnePass: "/api/score/analyze-log-one-pass",
+  analyzeLogAllPass: "/api/score/analyze-log-all-pass",
+  analyzeLogEachTest: "/api/score/analyze-log-each-test",
 
 };

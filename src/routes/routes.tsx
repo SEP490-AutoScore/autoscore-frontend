@@ -21,7 +21,7 @@ import ExamQuestions from "@/app/exam/exam-questions/page";
 import Roles from "@/app/authentication/role/overview/page";
 import RoleDetail from "@/app/authentication/role/detail/page";
 import Accounts from "@/app/authentication/account/overview/page";
-import AIApiKeysPage from "@/app/ai-api-key/page";
+import AIApiKeys from "@/app/ai-api-key/page";
 import ExamPapersOverview from "@/app/exam/exam-paper-overview/page";
 import ExamPaperDetail from "@/app/exam/exam-paper-overview/exam-paper-detail";
 import Grading from "@/app/score/grading-process/page";
@@ -64,7 +64,7 @@ const AppRoutes = () => {
           <Route path="accounts" element={<Accounts />} />
           <Route path="exam-papers" element={<ExamPapersOverview />} />
           <Route path="exam-papers/exam-questions" element={<ExamPaperDetail />} />
-          <Route path="ai-api-keys" element={<AIApiKeysPage />} />
+          <Route path="ai-api-keys" element={<AIApiKeys />} />
           <Route path="grading" element={<Grading />} />
           <Route path="grading/students" element={<StudentsList />} />
           <Route path="organizations" element={<Organization />} />
