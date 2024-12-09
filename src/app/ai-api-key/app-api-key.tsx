@@ -14,10 +14,6 @@ export async function getAIApiKeys(): Promise<AIApiKey[]> {
 
   const token = localStorage.getItem("jwtToken");
 
-  if (!token) {
-    throw new Error("JWT token not found.");
-  }
-
   const response = await fetch(`${BASE_URL}${API_ENDPOINTS.aiApiKeys}`, {
     method: "GET",
     headers: {
@@ -45,6 +41,7 @@ export async function getAIApiKeys(): Promise<AIApiKey[]> {
     selected: item.selected,
   }));
 }
+
 export default function AIApiKeysPage() {
   const [data, setData] = useState<AIApiKey[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -54,6 +51,7 @@ export default function AIApiKeysPage() {
 
   const [viewDetailDialogOpen, setViewDetailDialogOpen] = useState(false);
   const [selectedAiApiKeyId, setSelectedAiApiKeyId] = useState<number | null>(null);
+
 
   const handleViewDetail = async (aiApiKeyId: number): Promise<void> => {
     setSelectedAiApiKeyId(aiApiKeyId);
@@ -158,6 +156,7 @@ export default function AIApiKeysPage() {
           aiApiKeyId={selectedAiApiKeyId}
           open={viewDetailDialogOpen}
           onClose={handleCloseDialog}
+          onUpdateSuccess={fetchData}
         />
       )}
 

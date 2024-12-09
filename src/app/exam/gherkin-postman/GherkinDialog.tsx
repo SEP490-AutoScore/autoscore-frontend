@@ -156,6 +156,7 @@ export const GherkinDialog: React.FC<GherkinDialogProps> = ({ gherkinScenarioId,
                                 }
                                 rows={5} // Adjust rows based on expected content size
                                 placeholder="Enter Gherkin Data here..."
+                                style={{ fontSize: '1rem' }} 
                    
                             />
 

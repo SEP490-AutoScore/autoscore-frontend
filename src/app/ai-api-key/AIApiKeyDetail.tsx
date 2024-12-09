@@ -10,6 +10,7 @@ type ViewDetailDialogProps = {
   aiApiKeyId: number;
   open: boolean;
   onClose: () => void;
+  onUpdateSuccess: () => void;
 };
 
 export type AIApiKey = {
@@ -24,14 +25,20 @@ export type AIApiKey = {
     shared: boolean;
   };
 
-const ViewDetailDialog = ({ aiApiKeyId, open, onClose }: ViewDetailDialogProps) => {
+const ViewDetailDialog = ({ aiApiKeyId, open, onClose, onUpdateSuccess }: ViewDetailDialogProps) => {
   const [aiApiKey, setAiApiKey] = useState<AIApiKey | null>(null);
+  const [updatedApiKey, setUpdatedApiKey] = useState<string | null>(null);
+  const [shared, setShared] = useState<boolean>(false);
   const notify = useToastNotification();
 
   const fetchApiKeyDetail = async () => {
     const token = localStorage.getItem("jwtToken");
     if (!token) {
-      alert("JWT token not found.");
+      notify({
+        title: "Error",
+        description: "JWT token not found.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -47,6 +54,9 @@ const ViewDetailDialog = ({ aiApiKeyId, open, onClose }: ViewDetailDialogProps) 
       if (response.ok) {
         const data = await response.json();
         setAiApiKey(data);
+        setUpdatedApiKey(data.aiApiKey); // Initialize for editing
+        setShared(data.shared);
+
       } else {
         const errorData = await response.json();
         notify({
@@ -65,12 +75,68 @@ const ViewDetailDialog = ({ aiApiKeyId, open, onClose }: ViewDetailDialogProps) 
     }
   };
 
+  const handleSave = async () => {
+    const token = localStorage.getItem("jwtToken");
+    if (!token || !aiApiKey) {
+      notify({
+        title: "Error",
+        description: "JWT token or aiApiKey not found.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+        // Chuẩn bị URL với các tham số
+    const queryParams = new URLSearchParams({
+      aiApiKey: updatedApiKey || "",
+      shared: shared.toString(),
+    });
+
+    const response = await fetch(
+    `${BASE_URL}${API_ENDPOINTS.updateAiApiKey}/${aiApiKeyId}?${queryParams.toString()}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+     
+      },
+    }
+  );
+
+      if (response.ok) {
+        notify({
+          title: "Success",
+          description: "API Key updated successfully.",
+          variant: "default",
+        });
+    
+        onUpdateSuccess(); // Gọi onUpdateSuccess khi cập nhật thành công
+        onClose(); 
+      } else {
+        const errorData = await response.json();
+        notify({
+          title: "Error",
+          description: errorData.message || "Failed to update API Key.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error updating API Key:", error);
+      notify({
+        title: "Error",
+        description: "You are not own this key",
+        variant: "destructive",
+      });
+    }
+  };
+
+
   useEffect(() => {
     if (open && aiApiKeyId) {
       fetchApiKeyDetail();
     }
   }, [open, aiApiKeyId]);
-
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="p-6 bg-white shadow-lg rounded-lg max-w-4xl mx-auto">
@@ -97,29 +163,20 @@ const ViewDetailDialog = ({ aiApiKeyId, open, onClose }: ViewDetailDialogProps) 
               <label className="block text-sm font-medium">API Key</label>
               <input
                 type="text"
-                value={aiApiKey.aiApiKey}
                 readOnly
+                value={updatedApiKey || ""}
+                onChange={(e) => setUpdatedApiKey(e.target.value)}
                 className="border border-gray-300 rounded-md p-2 w-full"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium">Full Name</label>
+              <label className="block text-sm font-medium">Shared</label>
               <input
-                type="text"
-                value={aiApiKey.fullName}
-                readOnly
-                className="border border-gray-300 rounded-md p-2 w-full"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium">Status</label>
-              <input
-                type="text"
-                value={aiApiKey.status ? "Active" : "Inactive"}
-                readOnly
-                className="border border-gray-300 rounded-md p-2 w-full"
+                type="checkbox"
+                checked={shared}
+                onChange={(e) => setShared(e.target.checked)}
+              className="peer h-5 w-5 border-2 border-gray-300 rounded-md checked:bg-orange-500 checked:border-orange-500 transition-all duration-200"
               />
             </div>
 
@@ -127,7 +184,7 @@ const ViewDetailDialog = ({ aiApiKeyId, open, onClose }: ViewDetailDialogProps) 
               <label className="block text-sm font-medium">Created At</label>
               <input
                 type="text"
-                value={new Date(aiApiKey.createdAt).toLocaleString()}
+                value={aiApiKey.createdAt ? new Date(aiApiKey.createdAt).toLocaleString() : "N/A"}
                 readOnly
                 className="border border-gray-300 rounded-md p-2 w-full"
               />
@@ -137,7 +194,7 @@ const ViewDetailDialog = ({ aiApiKeyId, open, onClose }: ViewDetailDialogProps) 
               <label className="block text-sm font-medium">Updated At</label>
               <input
                 type="text"
-                value={new Date(aiApiKey.updatedAt).toLocaleString()}
+                value={aiApiKey.updatedAt ? new Date(aiApiKey.updatedAt).toLocaleString() : "N/A"}
                 readOnly
                 className="border border-gray-300 rounded-md p-2 w-full"
               />
@@ -148,6 +205,9 @@ const ViewDetailDialog = ({ aiApiKeyId, open, onClose }: ViewDetailDialogProps) 
         )}
 
         <div className="mt-6 flex justify-end space-x-2">
+          <Button variant="default" onClick={handleSave}>
+            Save
+          </Button>
           <Button variant="outline" onClick={onClose}>
             Close
           </Button>
