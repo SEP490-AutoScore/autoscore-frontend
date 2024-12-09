@@ -88,7 +88,7 @@ const DatabaseInfoComponent: FC<DatabaseInfoProps> = ({ examPaperId }) => {
             </div>
         );
     }
-
+  
     const imageSrc = `data:image/png;base64,${database.databaseImage}`;
 
     return (

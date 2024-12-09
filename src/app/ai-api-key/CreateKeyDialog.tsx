@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect  } from "react";
 import {
   Dialog,
   DialogContent,
@@ -13,18 +13,80 @@ import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 export const CreateKeyDialog = ({ onClose, open }: { onClose: () => void; open: boolean }) => {
   const notify = useToastNotification();
   const [form, setForm] = useState({
-    aiName: "GEMINI",
+    aiName: "",
     aiApiKey: "",
     shared: false,
   });
+  const [aiNames, setAiNames] = useState<string[]>([]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+
+ 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const target = e.target;
+  
+    if (target instanceof HTMLInputElement && target.type === "checkbox") {
+      // Handle checkbox specifically
+      setForm((prev) => ({
+        ...prev,
+        [target.name]: target.checked, // `checked` is valid for checkboxes
+      }));
+    } else {
+      // Handle other input types like text or select
+      setForm((prev) => ({
+        ...prev,
+        [target.name]: target.value, // `value` is valid for text and select
+      }));
+    }
   };
+  
+  
+
+
+  useEffect(() => {
+    const fetchAINames = async () => {
+      try {
+        const token = localStorage.getItem("jwtToken");
+        if (!token) {
+          alert("JWT token not found.");
+          return;
+        }
+  
+        const response = await fetch(`${BASE_URL}${API_ENDPOINTS.getAllAINames}`, {
+          method: "GET",  // Proper placement of the method
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          setAiNames(data);  // Store AI Names in the state
+          setForm((prev) => ({
+            ...prev,
+            aiName: data[0],  // Set the first AI name as the default value
+          }));
+        } else {
+          notify({
+            title: "Error",
+            description: "Failed to fetch AI names.",
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching AI names:", error);
+        notify({
+          title: "Error",
+          description: "An unexpected error occurred while fetching AI names.",
+          variant: "destructive",
+        });
+      }
+    };
+  
+    if (open) {
+      fetchAINames();  // Fetch AI names when the dialog is open
+    }
+  }, [open, notify]);
+  
 
   const handleSubmit = async () => {
     if (!form.aiApiKey.trim()) {
@@ -35,7 +97,11 @@ export const CreateKeyDialog = ({ onClose, open }: { onClose: () => void; open: 
       });
       return;
     }
-
+  
+    const payload = {
+      ...form,
+      shared: form.shared ?? false, 
+    };
     try {
       const token = localStorage.getItem("jwtToken");
       if (!token) {
@@ -49,24 +115,33 @@ export const CreateKeyDialog = ({ onClose, open }: { onClose: () => void; open: 
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
+       
       });
-
+      
       if (response.ok) {
-        const responseData = await response.json();
-        if (responseData.aiApiKeyId) {
+        const responseText = await response.text(); 
+
+        if (responseText === "Create successfully") {
           notify({
             title: "Success",
-            description: `API Key created successfully! ID: ${responseData.aiApiKeyId}`,
+            description: "API Key created successfully!",
             variant: "default",
           });
+          onClose(); // Đóng dialog sau khi thành công
+        } else {
+          notify({
+            title: "Warning",
+            description: responseText || "Unexpected response received.",
+            variant: "destructive",
+          });
         }
-        onClose();
       } else {
-        const errorData = await response.json();
+        // Xử lý lỗi khi response không OK
+        const errorText = await response.text(); // Có thể nhận lỗi dạng plain text
         notify({
           title: "Error",
-          description: errorData.message || "Failed to create API Key.",
+          description: errorText || "Failed to create API Key.",
           variant: "destructive",
         });
       }
@@ -91,17 +166,21 @@ export const CreateKeyDialog = ({ onClose, open }: { onClose: () => void; open: 
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* AI Name */}
-          <div>
+         {/* AI Name */}
+         <div>
             <label className="block text-sm font-medium">AI Name</label>
-            <input
-              type="text"
+            <select
               name="aiName"
               value={form.aiName}
               onChange={handleChange}
               className="border border-gray-300 rounded-md p-2 w-full"
-              disabled
-            />
+            >
+              {aiNames.map((name) => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* API Key */}

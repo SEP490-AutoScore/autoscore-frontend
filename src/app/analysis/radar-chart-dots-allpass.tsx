@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { TrendingUp } from "lucide-react";
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts";
+import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 
 import {
   Card,
@@ -45,7 +46,7 @@ export function RadarChartDotsAllPassComponent({ examPaperId }: { examPaperId: s
 
       try {
         const response = await fetch(
-          `http://localhost:8080/api/score/analyze-log-all-pass?examPaperId=${examPaperId}`,
+          `${BASE_URL}${API_ENDPOINTS.analyzeLogAllPass}?examPaperId=${examPaperId}`,
           {
             method: "GET",
             headers: {

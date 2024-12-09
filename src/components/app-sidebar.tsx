@@ -158,7 +158,7 @@ const data = {
       allowedRoles: ["ADMIN", "EXAMINER", "LECTURER", "HEAD_OF_DEPARTMENT"],
       icon: Settings,
       items: [],
-    },
+    },    
   ],
 };
 

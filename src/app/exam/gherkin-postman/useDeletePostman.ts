@@ -7,7 +7,8 @@ export const useDeletePostman = (
     token: string | null,
     storedQuestionId: number | null,
     fetchGherkinPostmanPairs: (questionId: number) => void,
-    setLoading: (loading: boolean) => void
+    setLoading: (loading: boolean) => void,
+    examPaperId: number | null
 ) => {
     const [loading, setLoadingState] = useState(false);
     const notify = useToastNotification();
@@ -27,7 +28,8 @@ export const useDeletePostman = (
 
             // Make DELETE request to delete selected Postman scripts
             const response = await fetch(
-                `${BASE_URL}${API_ENDPOINTS.deletePostman}?postmanForGradingIds=${selectedPostmans.join(',')}`,
+                `${BASE_URL}${API_ENDPOINTS.deletePostman}?postmanForGradingIds=${selectedPostmans.join(',')}&examPaperId=${examPaperId}`
+,
                 {
                     method: "DELETE",
                     headers: {
@@ -62,7 +64,7 @@ export const useDeletePostman = (
             } else {
                 setTimeout(() => {
                     window.location.reload();
-                }, 500); 
+                }, 0); 
             }
         } catch (error) {
             notify({
