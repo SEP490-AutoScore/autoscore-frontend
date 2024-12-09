@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import { ExamPaperCard } from "./card-exam-paper";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { CreateExamPaperForm } from "./create-exam-paper-form"; // Adjust the import path
 import {
   Card,
@@ -14,14 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Plus } from "lucide-react";
 import { NotFoundPage } from "@/app/authentication/error/page";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 interface Important {
   importantId: number;
@@ -148,32 +139,13 @@ export function ExamPaperList({
               This is a list of all the exam papers in this exam.
             </CardDescription>
           </div>
-          <div className="flex items-center space-x-2">
-            <Dialog>
-              <DialogTrigger asChild>
-                <TooltipProvider delayDuration={0}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="p-2.5 h-10 w-10 rounded-full border-primary text-primary hover:text-white hover:bg-primary"
-                      >
-                        <Plus className="h-6 w-6" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Add Exam Paper</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </DialogTrigger>
-              <CreateExamPaperForm
-                examId={examId}
-                importants={importants}
-                subjectId={subjectId}
-                onSuccess={handleFormSuccess}
-                onError={handleFormError}
-              />
-            </Dialog>
-          </div>
+          <CreateExamPaperForm
+            examId={examId}
+            importants={importants}
+            subjectId={subjectId}
+            onSuccess={handleFormSuccess}
+            onError={handleFormError}
+          />
         </CardHeader>
         <Separator />
         <CardContent>
