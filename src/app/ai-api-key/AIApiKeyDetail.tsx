@@ -154,7 +154,7 @@ const ViewDetailDialog = ({ aiApiKeyId, open, onClose, onUpdateSuccess }: ViewDe
               <input
                 type="text"
                 value={aiApiKey.aiName}
-                readOnly
+                disabled
                 className="border border-gray-300 rounded-md p-2 w-full"
               />
             </div>
@@ -163,8 +163,9 @@ const ViewDetailDialog = ({ aiApiKeyId, open, onClose, onUpdateSuccess }: ViewDe
               <label className="block text-sm font-medium">API Key</label>
               <input
                 type="text"
-                readOnly
-                value={updatedApiKey || ""}
+                disabled
+                // value={updatedApiKey || ""}
+                value={updatedApiKey ? `${updatedApiKey.slice(0, 15)}...` : ""}
                 onChange={(e) => setUpdatedApiKey(e.target.value)}
                 className="border border-gray-300 rounded-md p-2 w-full"
               />
@@ -185,7 +186,7 @@ const ViewDetailDialog = ({ aiApiKeyId, open, onClose, onUpdateSuccess }: ViewDe
               <input
                 type="text"
                 value={aiApiKey.createdAt ? new Date(aiApiKey.createdAt).toLocaleString() : "N/A"}
-                readOnly
+                disabled
                 className="border border-gray-300 rounded-md p-2 w-full"
               />
             </div>
@@ -195,7 +196,7 @@ const ViewDetailDialog = ({ aiApiKeyId, open, onClose, onUpdateSuccess }: ViewDe
               <input
                 type="text"
                 value={aiApiKey.updatedAt ? new Date(aiApiKey.updatedAt).toLocaleString() : "N/A"}
-                readOnly
+                disabled
                 className="border border-gray-300 rounded-md p-2 w-full"
               />
             </div>

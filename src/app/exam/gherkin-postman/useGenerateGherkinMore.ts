@@ -4,13 +4,14 @@ import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 export const useGenerateGherkinMore = (
   token: string | null,
   storedQuestionId: number | null,
+  selectedGherkinIds: number[] | null,
   fetchGherkinPostmanPairs: (questionId: number) => void,
   setLoading: (loading: boolean) => void
 ) => {
   const notify = useToastNotification();
 
   const generateGherkinMore = async () => {
-    if (!token || !storedQuestionId) {
+    if (!token || !storedQuestionId || !selectedGherkinIds || selectedGherkinIds.length === 0) {
       notify({
         title: "Validation Error",
         description: "Please choose 1 question before generating Gherkin.",
@@ -36,6 +37,7 @@ export const useGenerateGherkinMore = (
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
+          body: JSON.stringify(selectedGherkinIds), 
         }
       );
 
@@ -50,7 +52,7 @@ export const useGenerateGherkinMore = (
 
       const result = await response.text();
 
-      if (result === "Generate gherkin successfully!") {
+      if (result === "Generate gherkin more successfully!") {
         notify({
           title: "Success",
           description: "Generated Gherkin format successfully!",

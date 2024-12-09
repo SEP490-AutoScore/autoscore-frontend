@@ -73,6 +73,7 @@ const ImpostFilePostmanPopup: React.FC<ImpostFilePostmanPopupProps> = ({
             description: "File imported successfully.",
             variant: "default",
           });
+          window.location.reload();
           onClose(); 
         } else {
           showToast({
