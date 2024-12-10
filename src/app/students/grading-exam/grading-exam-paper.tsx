@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input"; // Assuming you have an Input component
+import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";// Assuming you have an Input component
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface ExamPaperIdDialogButtonProps {
@@ -10,9 +10,7 @@ interface ExamPaperIdDialogButtonProps {
 
 const ExamPaperIdDialogButton: React.FC<ExamPaperIdDialogButtonProps> = ({ examPaperId }) => {
   const [examType, setExamType] = useState<string>("ASSIGNMENT");
-  const [numberDeploy, setNumberDeploy] = useState<number>(1);
-  const [memory, setMemory] = useState<number>(0);
-  const [processors, setProcessors] = useState<number>(0);
+  const [numberDeploy] = useState<number>(1);
   const [isOpen, setIsOpen] = useState<boolean>(false); // State to control dialog visibility
   const token = localStorage.getItem("jwtToken");
 
@@ -30,13 +28,13 @@ const ExamPaperIdDialogButton: React.FC<ExamPaperIdDialogButtonProps> = ({ examP
       examPaperId,
       examType,
       organizationId: 0, // Replace with actual organizationId if applicable
-      numberDeploy,
-      memory_Megabyte: memory,
-      processors,
+      numberDeploy: 1,
+      memory_Megabyte: 0,
+      processors: 0,
     };
 
     try {
-      const response = await fetch("http://localhost:8080/api/grading/exam", {
+      const response = await fetch(`${BASE_URL}${API_ENDPOINTS.grading}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -89,42 +87,6 @@ const ExamPaperIdDialogButton: React.FC<ExamPaperIdDialogButtonProps> = ({ examP
                 <SelectItem value="EXAM">EXAM</SelectItem>
               </SelectContent>
             </Select>
-          </div>
-
-          {/* Number Deploy */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium">Number Deploy</label>
-            <Input
-              type="number"
-              value={numberDeploy}
-              onChange={(e) => setNumberDeploy(Math.max(1, Number(e.target.value)))}
-              min={1}
-              className="w-full"
-            />
-          </div>
-
-          {/* Memory (MB) */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium">Memory (MB)</label>
-            <Input
-              type="number"
-              value={memory}
-              onChange={(e) => setMemory(Number(e.target.value))}
-              min={0}
-              className="w-full"
-            />
-          </div>
-
-          {/* Processors */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium">Processors</label>
-            <Input
-              type="number"
-              value={processors}
-              onChange={(e) => setProcessors(Number(e.target.value))}
-              min={0}
-              className="w-full"
-            />
           </div>
         </div>
 

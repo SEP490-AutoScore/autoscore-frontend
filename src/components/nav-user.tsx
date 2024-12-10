@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, ChevronsUpDown, LogOut, UserCog } from "lucide-react";
+import { ChevronsUpDown, LogOut, UserCog } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -18,7 +18,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { CommandShortcut } from "@/components/ui/command";
 import { useCookie } from "@/hooks/use-cookie";
 import Notification from "@/components/notification/notification-sidebar"
 

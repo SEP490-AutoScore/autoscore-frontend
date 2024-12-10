@@ -136,4 +136,8 @@ export const API_ENDPOINTS = {
   analyzeLogAllPass: "/api/score/analyze-log-all-pass",
   analyzeLogEachTest: "/api/score/analyze-log-each-test",
 
+  //notification
+  notification: "/api/notifications",
+  grading : "/api/grading/exam"
+
 };
