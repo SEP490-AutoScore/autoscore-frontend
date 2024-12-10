@@ -104,8 +104,8 @@ export const API_ENDPOINTS = {
   calculateScores: "/api/postman-grading/calculate",
 
   //prompt ai
-  showQuestionAskAi: "/api/content",
-  updateQuestionAskAiContent: "/api/content",
+  showQuestionAskAi: "/api/aiprompt",
+  updateQuestionAskAiContent: "/api/aiprompt",
 
   //side
   getSubject: "/api/subject",

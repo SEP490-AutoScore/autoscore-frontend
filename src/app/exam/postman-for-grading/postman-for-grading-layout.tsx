@@ -9,7 +9,7 @@ interface LayoutProps {
 
 const PostmanForGradingLayout: React.FC<LayoutProps> = ({ top, leftTop, leftBottom, right }) => {
   return (
-    <div className="p-8">
+    <div className="p-8 max-w-full">
       {/* Header */}
       {top && <div>{top}</div>} 
    

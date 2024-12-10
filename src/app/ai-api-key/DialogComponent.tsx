@@ -17,7 +17,7 @@ export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState<number | null>(null); // Track the editing item ID
-  const [editedContent, setEditedContent] = useState<string>(""); // Track the updated content
+  const [editedAIPrompt, setEditedAIPrompt] = useState<string>(""); // Track the updated content
   const notify = useToastNotification();
 
   useEffect(() => {
@@ -57,12 +57,12 @@ export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: 
     fetchPopupData();
   }, [open]);
 
-  const handleEdit = (contentId: number, currentContent: string) => {
-    setIsEditing(contentId);
-    setEditedContent(currentContent);
+  const handleEdit = (aiPromptId: number, currentAIPrompt: string) => {
+    setIsEditing(aiPromptId);
+    setEditedAIPrompt(currentAIPrompt);
   };
 
-  const handleSave = async (contentId: number) => {
+  const handleSave = async (aiPromptId: number) => {
     const token = localStorage.getItem("jwtToken");
     if (!token) {
       notify({
@@ -74,13 +74,13 @@ export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: 
     }
 
     try {
-      const response = await fetch(`${BASE_URL}${API_ENDPOINTS.updateQuestionAskAiContent}/${contentId}/question`, {
+      const response = await fetch(`${BASE_URL}${API_ENDPOINTS.updateQuestionAskAiContent}/${aiPromptId}/question`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(editedContent),
+        body: JSON.stringify(editedAIPrompt),
       });
 
       if (response.ok) {
@@ -91,11 +91,11 @@ export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: 
         });
         setPopupData((prev) =>
           prev.map((item) =>
-            item.contentId === contentId ? { ...item, questionAskAiContent: editedContent } : item
+            item.aiPromptId === aiPromptId ? { ...item, questionAskAiContent: editedAIPrompt } : item
           )
         );
         setIsEditing(null);
-        setEditedContent("");
+        setEditedAIPrompt("");
       } else {
         const errorData = await response.json();
         notify({
@@ -137,20 +137,20 @@ export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: 
           <div className="overflow-y-auto max-h-96 mt-4">
             <ul className="space-y-4">
               {popupData.map((item) => (
-                <li key={item.contentId} className="p-4 border rounded-lg bg-gray-50">
+                <li key={item.aiPromptId} className="p-4 border rounded-lg bg-gray-50">
                   <p className="font-bold text-sm mb-2">{item.purpose}</p>
-                  {isEditing === item.contentId ? (
+                  {isEditing === item.aiPromptId ? (
                     <div>
                       <textarea
-                        value={editedContent}
-                        onChange={(e) => setEditedContent(e.target.value)}
+                        value={editedAIPrompt}
+                        onChange={(e) => setEditedAIPrompt(e.target.value)}
                         className="w-full h-32 p-2 border rounded resize-y"
                         placeholder="Enter your text here"
                       />
 
                       <div className="flex justify-end mt-2 space-x-2">
                         <Button
-                          onClick={() => handleSave(item.contentId)}
+                          onClick={() => handleSave(item.aiPromptId)}
                           variant="default"
                           className="text-sm"
                         >
@@ -159,7 +159,7 @@ export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: 
                         <Button
                           onClick={() => {
                             setIsEditing(null);
-                            setEditedContent("");
+                            setEditedAIPrompt("");
                           }}
                           variant="outline"
                           className="text-sm"
@@ -170,7 +170,7 @@ export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: 
                     </div>
                   ) : (
                     <p
-                      onDoubleClick={() => handleEdit(item.contentId, item.questionAskAiContent)}
+                      onDoubleClick={() => handleEdit(item.aiPromptId, item.questionAskAiContent)}
                       className="text-sm cursor-pointer hover:bg-gray-100"
                     >
                       {item.questionAskAiContent}

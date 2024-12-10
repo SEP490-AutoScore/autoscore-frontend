@@ -78,7 +78,7 @@ const GherkinPostmanPage: React.FC = () => {
     );
   };
 
-  
+
   useEffect(() => {
     const fetchData = async () => {
       if (!token) {
@@ -164,12 +164,12 @@ const GherkinPostmanPage: React.FC = () => {
     }
   };
 
-  const { deleteGherkin } = useDeleteGherkin({ selectedGherkins, fetchGherkinPostmanPairs, storedQuestionId, token, onLoadingChange: setLoading, examPaperId});
+  const { deleteGherkin } = useDeleteGherkin({ selectedGherkins, fetchGherkinPostmanPairs, storedQuestionId, token, onLoadingChange: setLoading, examPaperId });
   const { generateGherkin } = useGenerateGherkin(token, storedQuestionId, fetchGherkinPostmanPairs, setLoading);
   const { generateGherkinMore } = useGenerateGherkinMore(token, storedQuestionId, selectedGherkins, fetchGherkinPostmanPairs, setLoading);
   const { generatePostmanScript } = useGeneratePostmanScript(token, selectedGherkins, storedQuestionId, fetchGherkinPostmanPairs, setLoading);
-  const { generatePostmanScriptMore } = useGeneratePostmanScriptMore(token, selectedGherkins, storedQuestionId, fetchGherkinPostmanPairs, setLoading);
-  const { deletePostman } = useDeletePostman(selectedPostmans, token, storedQuestionId, fetchGherkinPostmanPairs, setLoading, examPaperId );
+  const { generatePostmanScriptMore } = useGeneratePostmanScriptMore(token, selectedPostmans, storedQuestionId, fetchGherkinPostmanPairs, setLoading);
+  const { deletePostman } = useDeletePostman(selectedPostmans, token, storedQuestionId, fetchGherkinPostmanPairs, setLoading, examPaperId);
 
   const handleActionChange = async (action: string) => {
     setSelectedAction(action);
@@ -177,20 +177,20 @@ const GherkinPostmanPage: React.FC = () => {
     if (action === "handleGenerateGherkin") {
       await generateGherkin();
     }
-      else if (action === "selectAllGherkin") {
-        const allGherkinIds = data
-          .filter((item: any) => item.gherkin?.gherkinScenarioId)
-          .map((item: any) => item.gherkin.gherkinScenarioId);
-    
-        setSelectedGherkins(allGherkinIds);
-        notify({
-          title: "Gherkin Selection",
-          description: "All Gherkin scenarios have been selected.",
-          variant: "default",
-        });
-       
+    else if (action === "selectAllGherkin") {
+      const allGherkinIds = data
+        .filter((item: any) => item.gherkin?.gherkinScenarioId)
+        .map((item: any) => item.gherkin.gherkinScenarioId);
 
-    }    else if (action === "deselectAllGherkin") {
+      setSelectedGherkins(allGherkinIds);
+      notify({
+        title: "Gherkin Selection",
+        description: "All Gherkin scenarios have been selected.",
+        variant: "default",
+      });
+
+
+    } else if (action === "deselectAllGherkin") {
       setSelectedGherkins([]);  // Bỏ chọn tất cả Gherkin
       notify({
         title: "Gherkin Selection",
@@ -198,31 +198,31 @@ const GherkinPostmanPage: React.FC = () => {
         variant: "default",
       });
     }
-    
+
     else if (action === "selectAllPostman") {
       const allPostmanIds = data
         .filter((item: any) => item.postman?.postmanForGradingId)
         .map((item: any) => item.postman.postmanForGradingId);
-  
-        setSelectedPostmans(allPostmanIds);
+
+      setSelectedPostmans(allPostmanIds);
       notify({
         title: "Postman Selection",
         description: "All Postman script info have been selected.",
         variant: "default",
       });
-     
 
-  }
-  else if (action === "deselectAllPostman") {
-    setSelectedPostmans([]);  // Bỏ chọn tất cả Gherkin
-    notify({
-      title: "Postman Selection",
-      description: "All Postman script info have been deselected.",
-      variant: "default",
-    });
-  }
 
-  else if (action === "handleGenerateGherkinMore") {
+    }
+    else if (action === "deselectAllPostman") {
+      setSelectedPostmans([]);  // Bỏ chọn tất cả Gherkin
+      notify({
+        title: "Postman Selection",
+        description: "All Postman script info have been deselected.",
+        variant: "default",
+      });
+    }
+
+    else if (action === "handleGenerateGherkinMore") {
       await generateGherkinMore();
     }
     else if (action === "newGherkinData") {
@@ -374,25 +374,6 @@ const GherkinPostmanPage: React.FC = () => {
   };
 
 
-  const randomColors = [
-    'border-red-500',
-    'border-yellow-500',
-    'border-blue-500',
-    'border-purple-500',
-    'border-pink-500',
-    'border-teal-500',
-    'border-indigo-500',
-    'border-lime-500',
-    'border-amber-500',
-  ];
-
-  const getRandomColor = (existingColors: string[]): string => {
-    const availableColors = randomColors.filter(color => !existingColors.includes(color));
-    return availableColors[Math.floor(Math.random() * availableColors.length)];
-  };
-
-
-
   const gherkinContent = loading ? (
     <Skeleton className="h-64 w-full" />
   ) : (
@@ -446,11 +427,11 @@ const GherkinPostmanPage: React.FC = () => {
         return (
           <Card
             key={index}
-            className={`mb-4 resize-y overflow-auto cursor-pointer ${isSelected? "border-2 border-orange-500" : 'border'
+            className={`mb-4 resize-y overflow-auto cursor-pointer ${isSelected ? "border-2 border-orange-500" : 'border'
               }`}
             onClick={() => togglePostmanSelection(item.postman?.postmanForGradingId)
             }
-        >
+          >
             <CardHeader>
               <CardTitle>
                 Postman Function: {item.postman?.postmanFunctionName}
@@ -463,15 +444,15 @@ const GherkinPostmanPage: React.FC = () => {
                     Score of function: {item.postman?.scoreOfFunction}
                   </p>
                   <p className="text-sm">
-  Score Percentage: {parseFloat((item.postman?.scorePercentage ?? 0).toFixed(1))} %
-</p>
+                    Score Percentage: {parseFloat((item.postman?.scorePercentage ?? 0).toFixed(1))} %
+                  </p>
 
 
-                  
+
                   <p className="text-sm">
                     Total PM Tests: {item.postman?.totalPmTest}
                   </p>
-                  
+
                   <pre className="text-sm whitespace-pre-wrap bg-gray-200 p-2 rounded">
                     {JSON.stringify(JSON.parse(item.postman.fileCollectionPostman), null, 2)}
                   </pre>
@@ -495,13 +476,10 @@ const GherkinPostmanPage: React.FC = () => {
 
 
   return (
-
-    <SidebarInset>
+    <SidebarInset className="overflow-x-hidden">
       {Header}
-      <div className="w-full border border-gray-200  rounded-lg">
-
+      <div className="w-full border border-gray-200 rounded-lg" style={{ marginLeft: "1rem", marginRight: "1rem", marginBottom: "1rem", maxWidth: "calc(100% - 2rem)" }}>
         <GherkinPostmanLayout
-
           topleft={
 
             <>
@@ -515,26 +493,21 @@ const GherkinPostmanPage: React.FC = () => {
                     <Settings2 className="h-4 w-4" />
                     List action
                   </Button>
-
                 </DropdownMenuTrigger>
-
-
                 <DropdownMenuContent className="w-50">
                   <DropdownMenuLabel>List action for gherkin</DropdownMenuLabel>
                   <DropdownMenuItem onClick={() => handleActionChange("selectAllGherkin")}>
                     Select all gherkin
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleActionChange("deselectAllGherkin")}>
-  Deselect all gherkin
-</DropdownMenuItem>
-
+                    Deselect all gherkin
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleActionChange("handleGenerateGherkin")}>
                     Generate Gherkin
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleActionChange("handleGenerateGherkinMore")}>
                     Generate Gherkin More
                   </DropdownMenuItem>
-
                   <DropdownMenuItem onClick={() => handleActionChange("deleteGherkin")}>
                     Delete Gherkin
                   </DropdownMenuItem>
@@ -544,20 +517,14 @@ const GherkinPostmanPage: React.FC = () => {
                   <DropdownMenuItem onClick={() => handleActionChange("getGherkinById")}>
                     Show Gherkin Details
                   </DropdownMenuItem>
-
-
-                  
                   <DropdownMenuSeparator />
-                 
                   <DropdownMenuLabel>List action for postman</DropdownMenuLabel>
                   <DropdownMenuItem onClick={() => handleActionChange("selectAllPostman")}>
                     Select all postman
                   </DropdownMenuItem>
-
                   <DropdownMenuItem onClick={() => handleActionChange("deselectAllPostman")}>
-  Deselect all Postman
-</DropdownMenuItem>
-
+                    Deselect all Postman
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleActionChange("generatePostmanScript")}>
                     Generate Postman Script
                   </DropdownMenuItem>
@@ -570,12 +537,7 @@ const GherkinPostmanPage: React.FC = () => {
                   <DropdownMenuItem onClick={() => handleActionChange("getPostmanById")}>
                     Show Postman Details
                   </DropdownMenuItem>
-
                   <DropdownMenuSeparator />
-
-
-
-
                 </DropdownMenuContent>
               </DropdownMenu>
 
@@ -590,7 +552,7 @@ const GherkinPostmanPage: React.FC = () => {
             </>
 
           }
-    
+
 
           middle={
             <>

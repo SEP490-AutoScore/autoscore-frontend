@@ -806,7 +806,7 @@ const isAncestor = (ancestorId: number, descendantId: number, allNodes: any[]): 
   return (
     <SidebarInset>
       {Header}
-      <div className="w-full border border-gray-200  rounded-lg">
+      <div className="w-full border border-gray-200 rounded-lg" style={{ marginLeft: "1rem", marginRight: "1rem", marginBottom: "1rem", maxWidth: "calc(100% - 2rem)" }}>
         <PostmanForGradingLayout
           top={
             <div>
