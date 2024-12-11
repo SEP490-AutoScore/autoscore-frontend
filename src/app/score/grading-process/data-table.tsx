@@ -1,7 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import React from "react";
-import { Input } from "@/components/ui/input";
 
 import {
   ColumnDef,
@@ -91,16 +90,16 @@ export function DataTable<TData, TValue>({
         </div>
       </div>
       <div className="flex items-center py-4">
-        <Input
+        {/* <Input
           placeholder="Filter by exam code..."
           value={
-            (table.getColumn("examPaperCode")?.getFilterValue() as string) ?? ""
+            (table.getColumn("")?.getFilterValue() as string) ?? ""
           }
           onChange={(event) =>
-            table.getColumn("examPaperCode")?.setFilterValue(event.target.value)
+            table.getColumn("")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
-        />
+        /> */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">

@@ -11,10 +11,12 @@ import {
   DialogTitle,
   DialogClose,
 } from "@/components/ui/dialog";
+import { useToastNotification } from "@/hooks/use-toast-notification";
 
 interface Subject {
   subjectId: number;
   subjectName: string;
+  subjectCode: string;
 }
 
 interface Important {
@@ -36,6 +38,7 @@ export const CreateExamPaperDialog: React.FC<CreateExamPaperDialogProps> = ({
   const [selectedSubject, setSelectedSubject] = React.useState<number | null>(
     null
   );
+  const showToast = useToastNotification();
   const [subjects, setSubjects] = React.useState<Subject[]>([]);
   const [importants, setImportants] = React.useState<Important[]>([]);
   const [selectedImportants, setSelectedImportants] = React.useState<Set<number>>(
@@ -105,13 +108,19 @@ export const CreateExamPaperDialog: React.FC<CreateExamPaperDialogProps> = ({
 
   const handleSubmit = async () => {
     if (!examPaperCode || duration <= 0 || !selectedSubject) {
-      setError("Please fill out all fields correctly.");
-      return;
+      showToast({
+        title: "Create fail",
+        description: "Create new exam paper fail",
+        variant: "destructive",
+      });
     }
+  
     try {
-      const examId = 0;
+      const examId = 0; // Giá trị mặc định hoặc có thể thay đổi tùy logic
+      const subjectId = selectedSubject; // Lấy id của subject đã chọn từ selectedSubject
+      console.log(selectedSubject)
       const response = await fetch(
-        `${BASE_URL}${API_ENDPOINTS.getExamInfo}/new`,
+        `${BASE_URL}${API_ENDPOINTS.getExamPaperInfo}/new`,
         {
           method: "POST",
           headers: {
@@ -121,18 +130,23 @@ export const CreateExamPaperDialog: React.FC<CreateExamPaperDialogProps> = ({
           body: JSON.stringify({
             examPaperCode,
             examId,
+            subjectId, // Truyền subjectId vào body
             duration,
             instruction,
             importantIdList: Array.from(selectedImportants),
           }),
         }
       );
-
+  
       if (!response.ok) {
         throw new Error("Failed to create exam paper");
       }
-
-      alert("Exam paper created successfully!");
+  
+      showToast({
+        title: "Create success",
+        description: "Create new exam paper success",
+        variant: "destructive",
+      });
       setExamPaperCode("");
       setDuration(0);
       setInstruction("");
@@ -140,12 +154,13 @@ export const CreateExamPaperDialog: React.FC<CreateExamPaperDialogProps> = ({
       setSelectedSubject(null);
       setImportants([]);
       setSelectedImportants(new Set());
-
+  
       if (onExamPaperCreated) onExamPaperCreated();
     } catch (err: any) {
       setError(err.message);
     }
   };
+  
 
   return (
     <Dialog>

@@ -6,10 +6,10 @@ import { DataTable } from "@/app/students/grading-list/data-table";
 import { ErrorPage } from "@/app/authentication/error/page";
 import { DataTableSkeleton } from "@/app/students/grading-list/data-skeleton";
 
-async function getData(sourceId: number) {
+async function getData(examPaperId: number) {
   try {
     const response = await fetch(
-      `${BASE_URL}${API_ENDPOINTS.getStudent}?sourceId=${sourceId}`,
+      `${BASE_URL}${API_ENDPOINTS.getStudent}?examPaperId=${examPaperId}`,
       {
         method: "GET",
         headers: {
@@ -35,25 +35,25 @@ async function getData(sourceId: number) {
     return [];
   }
 }
-export default function ScorePage({ sourceId }: { sourceId: number }) {
+export default function ScorePage({ examPaperId }: { examPaperId: number }) {
   const [data, setData] = useState<Student[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setLoading(true);
-    getData(sourceId)
+    getData(examPaperId)
       .then((fetchedData) => {
         setData(fetchedData);
         setError(null);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-    if (!sourceId) {
+    if (!examPaperId) {
       console.error("Source id is undefined!");
       return;
     }
-  }, [sourceId]);
+  }, [examPaperId]);
 
   if (loading) {
     return <DataTableSkeleton />;
@@ -64,8 +64,8 @@ export default function ScorePage({ sourceId }: { sourceId: number }) {
   }
 
   return <>
-    <div className="flex p-4 pt-0">
-      <DataTable columns={columns} data={data} />;
+    <div className="flex flex-col p-4 pt-0">
+      <DataTable columns={columns} data={data} examPaperId={examPaperId} />
     </div>
 
   </>

@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 import { useToastNotification } from "@/hooks/use-toast-notification";
+import { useNavigate } from "react-router-dom";
 
 interface FolderUploadPopoverProps {
   onClose: () => void;
@@ -28,6 +29,7 @@ const FolderUploadPopover: React.FC<FolderUploadPopoverProps> = ({
   const [progress, setProgress] = useState<number>(0); // Giá trị thanh Progress
   const [isUploading, setIsUploading] = useState(false); // Trạng thái đang upload
   const showToast = useToastNotification();
+  const navigate = useNavigate();
   const token = localStorage.getItem("jwtToken");
 
   useEffect(() => {
@@ -90,6 +92,8 @@ const FolderUploadPopover: React.FC<FolderUploadPopoverProps> = ({
           description: "File uploaded successfully",
           variant: "default",
         });
+        onClose();
+        navigate("/exams/exam-papers", { state: { examId, onSourceReload: true } });
       } catch (error) {
         console.error("Error uploading file:", error);
         showToast({

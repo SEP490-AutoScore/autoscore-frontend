@@ -1,8 +1,9 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import React from "react";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { NoResultPage } from '@/app/authentication/error/page';
+import { NoResultPage } from "@/app/authentication/error/page";
+import FileUploadPopover from "@/components/file-upload";
 import {
   ColumnDef,
   SortingState,
@@ -33,18 +34,21 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Settings2 } from "lucide-react";
+import { Settings2, Upload } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  examId: number;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  examId,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [isUploadOpen, setIsUploadOpen] = useState(false); // State để điều khiển modal
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -81,7 +85,7 @@ export function DataTable<TData, TValue>({
   };
 
   return (
-    <div className="w-full border border-gray-200 p-8 rounded-lg">
+    <div className="w-full">
       <div className="flex items-center justify-between space-y-2">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Students</h2>
@@ -89,6 +93,7 @@ export function DataTable<TData, TValue>({
             Here's a list of students for this exam!
           </p>
         </div>
+        <Button onClick={() => setIsUploadOpen(true)} variant={"outline"}><Upload className="h-4 w-4" />Upload File</Button>
       </div>
       <div className="flex items-center py-4">
         <Input
@@ -143,7 +148,8 @@ export function DataTable<TData, TValue>({
               <TableRow key={headerGroup.id} className="h-16">
                 {headerGroup.headers.map((header, index) => {
                   return (
-                    <TableHead key={header.id}
+                    <TableHead
+                      key={header.id}
                       className={`${index === 0 ? "pl-4" : ""}`}
                     >
                       {header.isPlaceholder
@@ -167,8 +173,12 @@ export function DataTable<TData, TValue>({
                   className="py-3 border-0 hover:bg-primary hover:text-primary-foreground"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}
-                      className={`${cell.column.id === "studentCode" ? "pl-4" : ""} py-3`}>
+                    <TableCell
+                      key={cell.id}
+                      className={`${
+                        cell.column.id === "studentCode" ? "pl-4" : ""
+                      } py-3`}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -213,6 +223,13 @@ export function DataTable<TData, TValue>({
           Next
         </Button>
       </div>
+      {/* Hiển thị modal FileUpload */}
+      {isUploadOpen && (
+        <FileUploadPopover
+          onClose={() => setIsUploadOpen(false)}
+          examId={examId}
+        />
+      )}
     </div>
   );
 }

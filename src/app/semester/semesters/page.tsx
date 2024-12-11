@@ -1,18 +1,17 @@
 import { useHeader } from "@/hooks/use-header";
 import { SidebarInset } from "@/components/ui/sidebar";
-import Students from "./app-students";
+import SemesterOverview from "@/app/semester/semesters/semester-overview";
 
 export default function Page() {
   const Header = useHeader({
-    breadcrumbLink: "/exams",
-    breadcrumbPage: "Exams Overview",
-    breadcrumbPage_2: "Students",
+    breadcrumbLink: "/scores-overview",
+    breadcrumbPage: "Scores Overview",
   });
   return (
     <SidebarInset>
       {Header}
       <div className="flex p-4 pt-0">
-        <Students />
+        <SemesterOverview />
       </div>
     </SidebarInset>
   );

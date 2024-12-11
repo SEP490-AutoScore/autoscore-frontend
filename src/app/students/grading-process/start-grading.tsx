@@ -6,13 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToastNotification } from "@/hooks/use-toast-notification";
+import { BASE_URL } from "@/config/apiConfig";
 
 interface SelectedStudentDialogProps {
     open: boolean;
     onClose: () => void;
     studentIds: number[];
     examPaperId: number;
-    organizationId: number;
+    organizationId: number | 0;
 }
 
 export function StartGrading({
@@ -31,7 +32,7 @@ export function StartGrading({
     const handleSubmit = async () => {
         const requestBody = {
             listStudent: studentIds,
-            examPaperId,
+            examPaperId : examPaperId,
             examType,
             organizationId,
             numberDeploy,
@@ -40,7 +41,7 @@ export function StartGrading({
         };
 
         try {
-            const response = await fetch("http://localhost:8080/api/grading", {
+            const response = await fetch(`${BASE_URL}/api/grading`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("jwtToken")}`, },
                 body: JSON.stringify(requestBody),

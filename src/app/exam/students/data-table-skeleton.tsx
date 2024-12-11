@@ -2,7 +2,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 export function DataTableSkeleton() {
   return (
-    <div className="w-full border border-gray-200 p-8 rounded-lg">
+    <div>
       {/* Header */}
       <div className="flex items-center justify-between space-y-2 mb-4">
         <div>

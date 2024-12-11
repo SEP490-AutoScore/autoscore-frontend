@@ -8,28 +8,25 @@ import { useHeader } from "@/hooks/use-header";
 import ExamQuestionsList from "./exam-questions";
 import InfoComponent from "./instruction";
 import Database from "./exam-database";
+import GradingProcess from "@/app/students/grading-process/grading-bar"
+import Grading from "@/app/students/grading-exam/grading-exam-paper"
+
 interface Subject {
     subjectId: number;
     subjectName: string;
     subjectCode: string;
 }
 
-interface Semester {
-    semesterId: number;
-    semesterName: string;
-    semesterCode: string;
-}
-
 interface ExamPaper {
     examPaperId: number;
     examPaperCode: string;
+    examId: number;
     importants: any[];
     isUsed: boolean;
     status: string;
     instruction: string;
     duration: number;
-    subject: Subject | null; // Subject can be null
-    semester: Semester | null; // Semester can be null
+    subject: Subject; // Subject can be null
 }
 
 export default function ExamPaperDetails() {
@@ -81,6 +78,7 @@ export default function ExamPaperDetails() {
                 // Set examPaper with exam data, including subject and semester
                 setExamPaper((prevState) => ({
                     ...prevState,
+                    examId: data.examId,
                     examPaperId: data.examPaperId,
                     examPaperCode: data.examPaperCode,
                     importants: data.importants,
@@ -89,7 +87,6 @@ export default function ExamPaperDetails() {
                     instruction: data.instruction,
                     duration: data.duration,
                     subject: data.subject || null,
-                    semester: data.semester || null,
                 }));
             })
             .catch((err) => setError(err.message))
@@ -158,6 +155,10 @@ export default function ExamPaperDetails() {
             {Header}
             <div className="space-y-6 p-6">
                 {examPaper && <ExamPaperInfo examPaper={examPaper} />}
+            </div>
+            <div className="space-y-6 p-6">
+                <Grading examPaperId={examPaperId}/>
+                <GradingProcess examPaperId={examPaperId} />
             </div>
             <div className="space-y-6 p-6">
                 <InfoComponent examPaperId={examPaperId} />
