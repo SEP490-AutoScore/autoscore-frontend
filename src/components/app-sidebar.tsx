@@ -135,7 +135,7 @@ const data = {
       ],
     },
     {
-      title: "Order",
+      title: "Other",
       url: "!!",
       allowedRoles: ["ADMIN", "EXAMINER", "LECTURER", "HEAD_OF_DEPARTMENT"],
       icon: NotebookPen,

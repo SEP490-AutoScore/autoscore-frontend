@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, ChevronsUpDown, LogOut, UserCog } from "lucide-react";
+import { ChevronsUpDown, LogOut, UserCog } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -18,8 +18,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { CommandShortcut } from "@/components/ui/command";
 import { useCookie } from "@/hooks/use-cookie";
+import Notification from "@/components/notification/notification-sidebar"
 
 export function NavUser({
   user,
@@ -82,28 +82,20 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <Link to="#@" className="sidebar-link" onClick={() => setSelectedItem("#@")}>
-                <DropdownMenuItem className={`sidebar-link cursor-pointer ${
-                      selectedItem === "#@"
-                        ? "bg-primary text-primary-foreground"
-                        : ""
-                    }`}>
+                <DropdownMenuItem className={`sidebar-link cursor-pointer ${selectedItem === "#@"
+                  ? "bg-primary text-primary-foreground"
+                  : ""
+                  }`}>
                   <UserCog />
                   Profile
                 </DropdownMenuItem>
               </Link>
               <Link to="##@" className="sidebar-link" onClick={() => setSelectedItem("##@")}>
-                <DropdownMenuItem className={`sidebar-link cursor-pointer ${
-                      selectedItem === "##@"
-                        ? "bg-primary text-primary-foreground"
-                        : ""
-                    }`}>
-                  <Bell />
-                  Notifications
-                  <CommandShortcut>
-                    <div className="flex aspect-square size-6 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-                      10
-                    </div>
-                  </CommandShortcut>
+                <DropdownMenuItem className={`sidebar-link cursor-pointer ${selectedItem === "##@"
+                  ? "bg-primary text-primary-foreground"
+                  : ""
+                  }`}>
+                  <Notification />
                 </DropdownMenuItem>
               </Link>
             </DropdownMenuGroup>

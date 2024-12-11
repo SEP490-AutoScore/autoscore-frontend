@@ -73,6 +73,9 @@ export const API_ENDPOINTS = {
   getAIApiKeyDetail: "/api/ai_api_keys",
   getAllAINames: "/api/ai_api_keys/ai-names",
 
+  //Log
+  exportLog: "/api/log/export",
+
   // Gherkin
   generateGherkin: "/api/gherkin_scenario/generate_gherkin_format",
   generateGherkinMore: "/api/gherkin_scenario/generate_gherkin_format_more",
@@ -98,11 +101,11 @@ export const API_ENDPOINTS = {
   confirmFilePostman: "/api/exam-paper/confirmFilePostman",
   getPostmanById: "/api/postman-grading",
   updateExamQuestion: "/api/postman-grading/update-exam-question",
-  saveCalculateScores: "/api/postman-grading/calculate-scores",
+  calculateScores: "/api/postman-grading/calculate",
 
   //prompt ai
-  showQuestionAskAi: "/api/content",
-  updateQuestionAskAiContent: "/api/content",
+  showQuestionAskAi: "/api/aiprompt",
+  updateQuestionAskAiContent: "/api/aiprompt",
 
   //side
   getSubject: "/api/subject",
@@ -135,5 +138,9 @@ export const API_ENDPOINTS = {
   analyzeLogOnePass: "/api/score/analyze-log-one-pass",
   analyzeLogAllPass: "/api/score/analyze-log-all-pass",
   analyzeLogEachTest: "/api/score/analyze-log-each-test",
+
+  //notification
+  notification: "/api/notifications",
+  grading : "/api/grading/exam"
 
 };

@@ -51,6 +51,51 @@ export function ExamPaperCard({
   const token = localStorage.getItem("jwtToken");
   const showToast = useToastNotification();
 
+  const handleExportLog = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}${API_ENDPOINTS.exportLog}?examPaperId=${examPaper.examPaperId}`, {
+        method: "POST", 
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,  
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to export log.");
+      }
+
+    // Debug header Content-Disposition
+    const contentDisposition = response.headers.get("Content-Disposition");
+    console.log("Content-Disposition header:", contentDisposition);
+
+    const fileName = contentDisposition
+      ?.split("filename=")[1]
+      ?.replace(/"/g, "")
+      ?.trim();
+
+    console.log("Parsed filename:", fileName);
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+
+    link.download = fileName || "log.txt";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    console.error("Error exporting log:", error);
+    showToast({
+      title: "Error.",
+      description: "Failed to export the log. Please try again later.",
+      actionText: "OK",
+      variant: "destructive",
+    });
+  }
+};
   const handleDownloadWord = async () => {
     try {
       const response = await fetch(
@@ -132,6 +177,19 @@ export function ExamPaperCard({
                   <TooltipContent>View Paper Details</TooltipContent>
                 </Tooltip>
               </TooltipProvider>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    className="p-4 h-10 w-10 border rounded-full border-primary text-primary bg-white hover:bg-primary hover:text-white transition-colors duration-200"
+                    onClick={handleExportLog}
+                  >
+                    <Download />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Export Log</TooltipContent>
+              </Tooltip>
+
               <TooltipProvider delayDuration={0}>
                 <Tooltip>
                   <TooltipTrigger asChild>

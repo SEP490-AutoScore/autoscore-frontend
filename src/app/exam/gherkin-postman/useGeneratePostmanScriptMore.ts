@@ -4,7 +4,7 @@ import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 
 export const useGeneratePostmanScriptMore = (
     token: string | null,
-    selectedGherkins: number[],
+    selectedPostmans: number[],
     storedQuestionId: number | null,
     fetchGherkinPostmanPairs: (questionId: number) => void,
     setLoading: (loading: boolean) => void
@@ -13,10 +13,10 @@ export const useGeneratePostmanScriptMore = (
     const notify = useToastNotification();
 
     const generatePostmanScriptMore = async () => {
-        if (!selectedGherkins.length) {
+        if (!selectedPostmans.length) {
             notify({
                 title: "No Selection",
-                description: "Please select at least one Gherkin Scenario.",
+                description: "Please select at least one Postman script.",
                 variant: "default",
             });
             return;
@@ -32,9 +32,9 @@ export const useGeneratePostmanScriptMore = (
 
         try {
             setLoading(true);
-            for (const gherkinScenarioId of selectedGherkins) {
+            for (const postmanForGradingId of selectedPostmans) {
                 const response = await fetch(
-                    `${BASE_URL}${API_ENDPOINTS.generatePostmanMore}?gherkinScenarioId=${gherkinScenarioId}`,
+                    `${BASE_URL}${API_ENDPOINTS.generatePostmanMore}?postmanForGradingId=${postmanForGradingId}`,
                     {
                         method: "POST",
                         headers: {
