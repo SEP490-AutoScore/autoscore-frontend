@@ -34,6 +34,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Settings2 } from "lucide-react";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -88,15 +89,25 @@ export function DataTable<TData, TValue>({
             Here's a list of accounts for this campus!
           </p>
         </div>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              variant="outline"
+              className="ml-auto text-primary border-primary rounded-full px-6"
+            >
+              Add New
+            </Button>
+          </DialogTrigger>
+        </Dialog>
       </div>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter by exam code..."
+          placeholder="Filter by email.."
           value={
-            (table.getColumn("examCode")?.getFilterValue() as string) ?? ""
+            (table.getColumn("email")?.getFilterValue() as string) ?? ""
           }
           onChange={(event) =>
-            table.getColumn("examCode")?.setFilterValue(event.target.value)
+            table.getColumn("email")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
