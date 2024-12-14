@@ -49,6 +49,7 @@ export function BarChartComponent({ examPaperId }: { examPaperId: string }) {
         const response = await fetch(
           `${BASE_URL}${API_ENDPOINTS.studentScoresBarChart}?examPaperId=${examPaperId}`,
           {
+            method: 'GET',
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -66,8 +67,10 @@ export function BarChartComponent({ examPaperId }: { examPaperId: string }) {
           score: item.totalScore,
         }));
         setChartData(mappedData);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        if(err instanceof Error){
+          setError(err.message)
+        }else setError("An error occurred while fetching data.")
       } finally {
         setLoading(false);
       }
@@ -81,7 +84,7 @@ export function BarChartComponent({ examPaperId }: { examPaperId: string }) {
       <CardHeader>
         <CardTitle>Student Scores</CardTitle>
         <CardDescription>
-          Scores for exam paper ID: {examPaperId}
+          Scores for exam paper:
         </CardDescription>
       </CardHeader>
       <CardContent>

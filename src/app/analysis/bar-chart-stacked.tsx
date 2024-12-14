@@ -36,6 +36,13 @@ export function BarChartStackedComponent({ examPaperId }: { examPaperId: string 
 
   useEffect(() => {
     const fetchChartData = async () => {
+      if (!examPaperId) {
+        setChartData([])
+        setLoading(false)
+        return
+      }
+      setLoading(true);
+      setError(null);
       const token = localStorage.getItem("jwtToken");
       if (!token) {
         setError("JWT token not found.");
@@ -62,15 +69,16 @@ export function BarChartStackedComponent({ examPaperId }: { examPaperId: string 
           setError("Failed to fetch data.");
         }
       } catch (error) {
-        setError("An error occurred while fetching data.");
+        setError("An error occurred while fetching data." + error);
       } finally {
         setLoading(false);
       }
     };
 
-    if (examPaperId) {
-      fetchChartData();
-    }
+    // if (examPaperId) {
+    //   fetchChartData();
+    // }
+    fetchChartData();
   }, [examPaperId]);
 
   const formatChartData = (data: Record<string, Record<string, number>>) => {
@@ -119,11 +127,27 @@ export function BarChartStackedComponent({ examPaperId }: { examPaperId: string 
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex justify-center items-center h-[400px]">
+            <p>Loading...</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex justify-center items-center h-[400px]">
+            <p className="text-red-500">{error}</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
@@ -158,11 +182,18 @@ export function BarChartStackedComponent({ examPaperId }: { examPaperId: string 
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+      <div className="flex gap-2 font-medium leading-none">
+          {chartData.length > 0 ? (
+            <>Trending up by 5.2% this month <TrendingUp className="h-4 w-4" /></>
+          ) : (
+            'No data available for analysis'
+          )}
         </div>
         <div className="leading-none text-muted-foreground">
-          Showing test case pass counts for each function
+          {chartData.length > 0 
+            ? 'Showing test case pass counts for each function'
+            : 'Select an exam paper to view test case pass counts'
+          }
         </div>
       </CardFooter>
     </Card>
