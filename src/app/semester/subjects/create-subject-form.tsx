@@ -52,7 +52,7 @@ const CreateSubjectDialog: React.FC = () => {
       {/* Nút mở dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          <Button variant="default">Create New Subject</Button>
+          <Button variant="outline" className='ml-auto text-primary border-primary rounded-full px-6'>Create New Subject</Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>

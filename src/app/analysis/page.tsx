@@ -18,10 +18,17 @@ export default function Page() {
     breadcrumbPage: "Dashboard",
   });
 
-  const [selectedExamPaper, setSelectedExamPaper] = useState<string | null>(null);
+  const [selectedExamPaper, setSelectedExamPaper] = useState<string | null>(
+    null
+  );
   const [totalStudents, setTotalStudents] = useState<number | null>(null);
-  const [studentsWithZeroScore, setStudentsWithZeroScore] = useState<number | null>(null);
-  const [studentsWithScoreGreaterThanZero, setStudentsWithScoreGreaterThanZero] = useState<number | null>(null);
+  const [studentsWithZeroScore, setStudentsWithZeroScore] = useState<
+    number | null
+  >(null);
+  const [
+    studentsWithScoreGreaterThanZero,
+    setStudentsWithScoreGreaterThanZero,
+  ] = useState<number | null>(null);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -52,14 +59,18 @@ export default function Page() {
         );
 
         if (!response.ok) {
-          throw new Error(`Error fetching total students: ${response.statusText}`);
+          throw new Error(
+            `Error fetching total students: ${response.statusText}`
+          );
         }
 
         const data = await response.text(); // API trả về dạng plaintext
         setTotalStudents(Number(data)); // Chuyển dữ liệu thành số
         setLoading(false);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        }else setError("An error occurred while fetching data.")
         setLoading(false);
       }
     };
@@ -93,14 +104,18 @@ export default function Page() {
         );
 
         if (!response.ok) {
-          throw new Error(`Error fetching students with zero score: ${response.statusText}`);
+          throw new Error(
+            `Error fetching students with zero score: ${response.statusText}`
+          );
         }
 
         const data = await response.text();
         setStudentsWithZeroScore(Number(data));
         setLoading(false);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        }else setError("An error occurred while fetching data.")
         setLoading(false);
       }
     };
@@ -134,14 +149,18 @@ export default function Page() {
         );
 
         if (!response.ok) {
-          throw new Error(`Error fetching students with score > 0: ${response.statusText}`);
+          throw new Error(
+            `Error fetching students with score > 0: ${response.statusText}`
+          );
         }
 
         const data = await response.text();
         setStudentsWithScoreGreaterThanZero(Number(data));
         setLoading(false);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        }else setError("An error occurred while fetching data.")
         setLoading(false);
       }
     };
@@ -149,86 +168,82 @@ export default function Page() {
     fetchStudentsWithScoreGreaterThanZero();
   }, [selectedExamPaper]);
 
-
   const handleSelect = (examPaperId: string) => {
     setSelectedExamPaper(examPaperId);
   };
   return (
     <SidebarInset>
       {Header}
-      <div className="p-4 pt-0">
-        <div className="grid grid-cols-8 gap-6">
-
-          <div className="col-span-2">
+      <div className="p-4 pt-0 space-y-6">
+        <div className="grid grid-cols-4 gap-6">
+          <div className="col-span-4">
             <DropdownList onSelect={handleSelect} />
           </div>
 
-
           {/* Thông tin tổng học sinh */}
-          <div className="col-span-2">
-            <CardHeaderAnalysis
-              title="Total Students"
-              content=""
-              description={
-                loading
-                  ? "Loading total students..."
-                  : error
+
+          <div className="col-span-4 md:col-span-4 grid grid-cols-3 gap-6">
+            <div className="col-span-3 md:col-span-1">
+              <CardHeaderAnalysis
+                title="Total Students"
+                content="Student Statistics"
+                description={
+                  loading
+                    ? "Loading total students..."
+                    : error
                     ? `Error: ${error}`
                     : totalStudents !== null
-                      ? ` ${totalStudents}`
-                      : "Overview"
-              }
-              icon={Book}
-            />
-          </div>
+                    ? `Total Students: ${totalStudents}`
+                    : "Overview"
+                }
+                icon={Book}
+              />
+            </div>
 
-
-          {/* Thông tin học sinh điểm 0 */}
-          <div className="col-span-2">
-            <CardHeaderAnalysis
-              title="Total students 0 point"
-              content=""
-              description={
-                loading
-                  ? "Loading zero score data..."
-                  : error
+            {/* Thông tin học sinh điểm 0 */}
+            <div className="col-span-3 md:col-span-1">
+              <CardHeaderAnalysis
+                title="Students with Zero Score"
+                content="Student Statistics"
+                description={
+                  loading
+                    ? "Loading zero score data..."
+                    : error
                     ? `Error: ${error}`
                     : studentsWithZeroScore !== null
-                      ? ` ${studentsWithZeroScore}`
-                      : "Overview"
-              }
-              icon={Book}
-            />
-          </div>
+                    ? `Zero Score: ${studentsWithZeroScore}`
+                    : "Overview"
+                }
+                icon={Book}
+              />
+            </div>
 
-
-
-          {/* Thông tin học sinh điểm > 0 */}
-          <div className="col-span-2">
-            <CardHeaderAnalysis
-              title="Total students than 0 point"
-              content=""
-              description={
-                loading
-                  ? "Loading score data..."
-                  : error
+            {/* Thông tin học sinh điểm > 0 */}
+            <div className="col-span-3 md:col-span-1">
+              <CardHeaderAnalysis
+                title="Students with Score > 0"
+                content="Student Statistics"
+                description={
+                  loading
+                    ? "Loading score data..."
+                    : error
                     ? `Error: ${error}`
                     : studentsWithScoreGreaterThanZero !== null
-                      ? ` ${studentsWithScoreGreaterThanZero}`
-                      : "Overview"
-              }
-              icon={Book}
-            />
+                    ? `Score > 0: ${studentsWithScoreGreaterThanZero}`
+                    : "Overview"
+                }
+                icon={Book}
+              />
+            </div>
 
           </div>
+        </div>
 
 
-  {/* score each student */}
-          <div className="col-span-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="col-span-1">
 
             <BarChartComponent examPaperId={selectedExamPaper || ""} />
-
-
           </div>
 
 
@@ -244,33 +259,25 @@ export default function Page() {
 
           {/* pass 1 phần */}
 
-          <div className="col-span-2">
+
+          <div className="col-span-1">
 
             <RadarChartDotsComponent examPaperId={selectedExamPaper || ""} />
-
-
           </div>
 
-            {/* ko pass phần nào */}
 
-            <div className="col-span-2">
+          {/* pass toàn phần */}
+          <div className="col-span-1">
+            <RadarChartDotsAllPassComponent
+              examPaperId={selectedExamPaper || ""}
+            />
+          </div>
 
-<RadarChartDotsNoPassComponent examPaperId={selectedExamPaper || ""} />
-
-
-</div>
-
-         
- {/* phản hồi api từng sinh viên */}
-
-<div className="col-span-2">
-  <BarChartMultipleComponent examPaperId={selectedExamPaper || ""} />
-</div>
-        
-
+          <div className="col-span-1">
+            <BarChartStackedComponent examPaperId={selectedExamPaper || ""} />
+          </div>
 
         </div>
-
       </div>
     </SidebarInset>
   );
