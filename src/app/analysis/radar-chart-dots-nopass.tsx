@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AlertTriangle, TrendingUp } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 
@@ -27,39 +27,26 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-const placeholderData = [
-  { functionName: "Function A", passCount: 0 },
-  { functionName: "Function B", passCount: 0 },
-  { functionName: "Function C", passCount: 0 },
-]
-
-export function RadarChartDotsAllPassComponent({ examPaperId }: { examPaperId: string }) {
+export function RadarChartDotsNoPassComponent({ examPaperId }: { examPaperId: string }) {
   const [chartData, setChartData] = useState<{ functionName: string; passCount: number }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isPlaceholderData, setIsPlaceholderData] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!examPaperId) {
-        setChartData(placeholderData)
-        setIsPlaceholderData(true)
-        return
-      }
       setLoading(true);
       setError(null);
 
       const token = localStorage.getItem("jwtToken");
       if (!token) {
         setError("JWT token not found.");
-        setIsPlaceholderData(true)
         setLoading(false);
         return;
       }
 
       try {
         const response = await fetch(
-          `${BASE_URL}${API_ENDPOINTS.analyzeLogAllPass}?examPaperId=${examPaperId}`,
+          `${BASE_URL}${API_ENDPOINTS.noPass}?examPaperId=${examPaperId}`,
           {
             method: "GET",
             headers: {
@@ -77,17 +64,9 @@ export function RadarChartDotsAllPassComponent({ examPaperId }: { examPaperId: s
           functionName: key,
           passCount: value as number, // Ensure type safety
         }));
-        setChartData(formattedData.length > 0 ? formattedData : placeholderData);
-        setIsPlaceholderData(formattedData.length === 0);
-      } catch (err: unknown) {
-        // setError(err.message || "An unexpected error occurred.");
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("An unexpected error occurred.");
-        }
-        setChartData(placeholderData)
-        setIsPlaceholderData(true);
+        setChartData(formattedData);
+      } catch (err: any) {
+        setError(err.message || "An unexpected error occurred.");
       } finally {
         setLoading(false);
       }
@@ -118,23 +97,20 @@ export function RadarChartDotsAllPassComponent({ examPaperId }: { examPaperId: s
   }
 
 
-  const displayData = chartData.length > 0 ? chartData : placeholderData
-
-
   return (
     <Card>
       <CardHeader className="">
-        <CardTitle>Pass All Pmtest</CardTitle>
+        <CardTitle>No Pass Any Pmtest</CardTitle>
         <CardDescription>
-        Students passing all pmtest.
+        Students not passing pmtest.
         </CardDescription>
       </CardHeader>
       <CardContent className="pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-video max-h-[250px]"
+          className="mx-auto aspect-square max-h-[250px]"
         >
-          <RadarChart data={displayData}>
+          <RadarChart data={chartData}>
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <PolarAngleAxis dataKey="functionName" />
             <PolarGrid />
@@ -150,31 +126,7 @@ export function RadarChartDotsAllPassComponent({ examPaperId }: { examPaperId: s
           </RadarChart>
         </ChartContainer>
       </CardContent>
-
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          {/* Data fetched successfully <TrendingUp className="h-4 w-4" /> */}
-          {loading ? (
-            "Loading data..."
-          ) : error ? (
-            <>
-              <AlertTriangle className="h-4 w-4 text-yellow-500" />
-              Error: {error}
-            </>
-          ) : isPlaceholderData ? (
-            <>
-              <AlertTriangle className="h-4 w-4 text-yellow-500" />
-              No data available. Showing placeholder data.
-            </>
-          ) : (
-            <>
-              <TrendingUp className="h-4 w-4 text-green-500" />
-               {chartData.length} function{chartData.length !== 1 ? 's' : ''}
-            </>
-          )}
-        </div>
-      </CardFooter>
-
+    
     </Card>
   );
 }

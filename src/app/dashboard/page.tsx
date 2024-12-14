@@ -1,7 +1,7 @@
 import { useHeader } from "@/hooks/use-header";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { CardHeaderDashboard } from "./card-header";
-import { Book } from "lucide-react";
+import { Book, BookCheck, BookUser, Frame, LucideBookCheck, MenuSquare, SquareSigma, TestTubeDiagonal } from "lucide-react";
 import { BarChartComponent } from "./bar-chart";
 import { useState, useEffect } from "react";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
@@ -176,6 +176,7 @@ export default function Page() {
       {Header}
       <div className="p-4 pt-0">
         <div className="grid grid-cols-6 gap-6">
+
           <div className="col-span-2">
             <CardHeaderDashboard
               title="Total Exams"
@@ -188,11 +189,13 @@ export default function Page() {
               }
               description="Total number of exams."
               icon={Book}
+
             />
           </div>
 
           <div className="col-span-2">
             <CardHeaderDashboard
+
               title="Exams Grading Over Time"
               content={
                 loading
@@ -203,11 +206,13 @@ export default function Page() {
               }
               description="Number of exams passed the current time."
               icon={Book}
+
             />
           </div>
 
           <div className="col-span-2">
             <CardHeaderDashboard
+
               title="Exams Grading At Passed"
               content={
                 loading
@@ -218,6 +223,7 @@ export default function Page() {
               }
               description="Number of exams is passed."
               icon={Book}
+
             />
           </div>
           <div className="col-span-3 grid grid-cols-2">
@@ -250,6 +256,7 @@ export default function Page() {
               {/* Render the new LineChartComponent */}
             </div>
           </div>
+
         </div>
         {/* <div className="col-span-4">
             <LineChartComponent />
@@ -263,6 +270,7 @@ export default function Page() {
           <div className="col-span-2">
             <PieChartComponent />
           </div> */}
+
       </div>
     </SidebarInset>
   );

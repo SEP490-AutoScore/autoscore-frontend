@@ -1,7 +1,6 @@
 "use client";
 
 import { ChevronsUpDown, LogOut, UserCog } from "lucide-react";
-import { Link } from "react-router-dom";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -42,7 +41,6 @@ export function NavUser({
   const { isMobile } = useSidebar();
   const { deleteCookie } = useCookie();
   const [openDialog, setOpenDialog] = useState(false);
-  const handleCloseDialog = () => setOpenDialog(false);
   const handleLogout = () => {
     localStorage.clear();
     deleteCookie("refreshToken");
@@ -104,21 +102,11 @@ export function NavUser({
                   <UserCog />
                   Profile
                 </DropdownMenuItem>
-                <Link
-                  to="##@"
-                  className="sidebar-link"
-                  onClick={() => setSelectedItem("##@")}
-                >
                   <DropdownMenuItem
-                    className={`sidebar-link cursor-pointer ${
-                      selectedItem === "##@"
-                        ? "bg-primary text-primary-foreground"
-                        : ""
-                    }`}
+                    className={`sidebar-link cursor-pointer`}
                   >
                     <Notification />
                   </DropdownMenuItem>
-                </Link>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem

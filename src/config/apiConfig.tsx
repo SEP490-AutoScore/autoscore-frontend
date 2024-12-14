@@ -145,8 +145,10 @@ export const API_ENDPOINTS = {
   studentScoresBarChart: "/api/score/student-scores",
   analyzeLogOnePass: "/api/score/analyze-log-one-pass",
   analyzeLogAllPass: "/api/score/analyze-log-all-pass",
+
   analyzeLogEachTest: "/api/score/analyze-log-each-test",
   dropdownList: "/api/exam/list-exam-exampaper",
+
 
   //notification
   notification: "/api/notifications",

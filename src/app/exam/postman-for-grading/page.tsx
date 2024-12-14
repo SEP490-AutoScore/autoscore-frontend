@@ -167,9 +167,7 @@ const Page: React.FC = () => {
     else if (action === "mergeAllFilePostman") {
       mergeAllFilePostman();
     }
-    // else if (action === "confirmFilePostman") {
-    //   confirmFilePostman();
-    // }
+ 
   };
 
   const handleShowOrder = () => {
@@ -185,86 +183,13 @@ const Page: React.FC = () => {
       const node = postmanData.find((n) => n.postmanForGradingId === id);
       return {
         ...node,
-        order: index + 1, // Gắn thêm thứ tự mới
+        order: index + 1, // // Append new order
       };
     });
 
-    return sortedNodes; // Trả về danh sách node đã sắp xếp
+    return sortedNodes; // // Returns the sorted list of nodes
   };
 
-
-  // const updateListFunction = async () => {
-  //   if (!examPaperId) {
-  //     notify({
-  //       title: "Error",
-  //       description: "Exam Paper ID is missing.",
-  //       variant: "destructive",
-  //     });
-  //     return;
-  //   }
-
-  //   const sortedNodes = handleShowOrder();
-  //   const updateDTOs: any[] = [];
-  //   for (const sortedNode of sortedNodes) {
-  //     updateDTOs.push({
-  //       postmanForGradingId: sortedNode.postmanForGradingId,
-  //       postmanFunctionName: sortedNode.postmanFunctionName,
-  //       // scoreOfFunction: sortedNode.scoreOfFunction,
-  //       postmanForGradingParentId: sortedNode.postmanForGradingParentId,
-
-  //     });
-  //   }
-
-
-  //   try {
-  //     const response = await fetch(`${BASE_URL}${API_ENDPOINTS.updatePostmanGrading}`, {
-  //       method: "PUT",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //       body: JSON.stringify({
-  //         examPaperId,
-  //         updateDTOs,
-  //       }),
-  //     });
-
-  //     if (response.ok) {
-  //       const result = await response.text();
-
-
-  //       if (result.includes("Successfully")) {
-  //         notify({
-  //           title: "Successfully",
-  //           description: "Update successfully.",
-  //           variant: "default",
-  //         });
-  //         setReloadData(true);
-  //       } else {
-  //         notify({
-  //           title: "Error",
-  //           description: "Something went wrong. Please reload page",
-  //           variant: "default",
-  //         });
-  //       }
-  //     } else {
-  //       const errorMessage = await response.text();
-  //       notify({
-  //         title: "Error",
-  //         description: `Something went wrong. Please reload page${errorMessage}`,
-  //         variant: "destructive",
-  //       });
-
-  //     }
-  //   } catch (error) {
-  //     notify({
-  //       title: "Error!",
-  //       description: `Something went wrong. Please reload page${error}`,
-  //       variant: "destructive",
-  //     });
-
-  //   }
-  // };
 
   const exportFilePostman = async () => {
     if (!examPaperId) {
@@ -290,23 +215,23 @@ const Page: React.FC = () => {
         const data = await response.json();
 
         if (data.info) {
-          // Nếu có thông tin trả về, thông báo thành công
+        
           notify({
             title: "Successfully",
             description: `Exported Postman Collection Sucessfully`,
             variant: "default",
           });
 
-          // Tạo file từ response và lưu vào máy người dùng
+     
           const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
           const url = URL.createObjectURL(blob);
           const a = document.createElement("a");
           a.href = url;
-          a.download = `${data.info.name}.json`; // Đặt tên file cho collection
+          a.download = `${data.info.name}.json`; 
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
-          URL.revokeObjectURL(url); // Hủy URL sau khi tải xuống
+          URL.revokeObjectURL(url); 
         } else {
           notify({
             title: "Error",
@@ -384,58 +309,6 @@ const Page: React.FC = () => {
     }
   };
 
-  // const confirmFilePostman = async () => {
-  //   if (!examPaperId) {
-  //     notify({
-  //       title: "Error",
-  //       description: "Exam Paper ID is missing.",
-  //       variant: "destructive",
-  //     });
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await fetch(`${BASE_URL}${API_ENDPOINTS.confirmFilePostman}/${examPaperId}`, {
-  //       method: "PUT",
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-
-  //     if (response.ok) {
-  //       const result = await response.text();
-
-  //       if (result.includes("Successfully")) {
-  //         notify({
-  //           title: "Success",
-  //           description: `Confirm file successfully`,
-  //           variant: "default",
-  //         });
-  //         setReloadData(true);
-  //       } else {
-  //         notify({
-  //           title: "Error",
-  //           description: "Confirm failed. Unexpected response.",
-  //           variant: "destructive",
-  //         });
-  //       }
-  //     } else {
-  //       const errorMessage = await response.text();
-  //       notify({
-  //         title: "Error",
-  //         description: `Confirm failed. ${errorMessage}`,
-  //         variant: "destructive",
-  //       });
-  //     }
-  //   } catch (error) {
-  //     notify({
-  //       title: "Error!",
-  //       description: `An error occurred: ${error}`,
-  //       variant: "destructive",
-  //     });
-  //   }
-  // };
-
   const updateAndConfirmFilePostman = async () => {
     if (!examPaperId) {
       notify({
@@ -446,7 +319,7 @@ const Page: React.FC = () => {
       return;
     }
   
-    // Gọi hàm updateListFunction trước
+    // Call the updateListFunction function first
     const sortedNodes = handleShowOrder();
     const updateDTOs: any[] = sortedNodes.map((node) => ({
       postmanForGradingId: node.postmanForGradingId,
@@ -486,7 +359,7 @@ const Page: React.FC = () => {
   
   
   
-      // Gọi confirmFilePostman sau khi update thành công
+      // Call confirmFilePostman after successful update
       const confirmResponse = await fetch(`${BASE_URL}${API_ENDPOINTS.confirmFilePostman}/${examPaperId}`, {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}` },
@@ -522,7 +395,7 @@ const Page: React.FC = () => {
     } catch (error) {
       notify({
         title: "Something went wrong",
-        description: "Please Calculate Scores before Confirm",
+        description: `Please Calculate Scores before Confirm.. ${error}`,
         variant: "destructive",
       });
       throw new Error(`Confirm failed: ${error}, `);
@@ -774,7 +647,9 @@ const isAncestor = (ancestorId: number, descendantId: number, allNodes: any[]): 
             <div className="flex items-center space-x-2 overflow-x-auto whitespace-nowrap">
               <span className="font-semibold">{parent.postmanFunctionName}</span>
               <span className="text-sm text-gray-600">{parent.endPoint}</span>
-              <span className="text-sm text-gray-600">Score: {parent.scoreOfFunction}</span>
+              <span className="text-sm text-gray-600">
+  Score: {parseFloat((parent.scoreOfFunction ?? 0).toFixed(2))}
+</span>
               <span className="text-sm text-gray-600">
   Percentage: {parseFloat((parent.scorePercentage ?? 0).toFixed(1))} %
 </span>
@@ -847,9 +722,7 @@ const isAncestor = (ancestorId: number, descendantId: number, allNodes: any[]): 
                 <DropdownMenuItem onClick={() => handleActionChange("updateAndConfirmFilePostman")}>
                   Confirm order priority of tree
                 </DropdownMenuItem>
-                {/* <DropdownMenuItem onClick={() => handleActionChange("confirmFilePostman")}>
-                  Confirm file postman
-                </DropdownMenuItem> */}
+          
               
                 
               </DropdownMenuContent>
