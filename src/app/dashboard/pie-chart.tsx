@@ -84,12 +84,13 @@ export function PieChartComponent() {
 
         // Map API data to chart format
         const formattedData: ChartDataItem[] = [
-          { name: "Excellent (9-10)", value: data.excellent, fill: chartConfig.excellent.color },
-          { name: "Good (8-9)", value: data.good, fill: chartConfig.good.color },
-          { name: "Fair (5-8)", value: data.fair, fill: chartConfig.fair.color },
-          { name: "Poor (4-5)", value: data.poor, fill: chartConfig.poor.color },
-          { name: "Bad (0-4)", value: data.bad, fill: chartConfig.bad.color },
+          { name: "Excellent (9-10)", value: data.excellent, fill: chartConfig.excellent.color || '#000' },
+          { name: "Good (8-9)", value: data.good, fill: chartConfig.good.color || '#000' },
+          { name: "Fair (5-8)", value: data.fair, fill: chartConfig.fair.color || '#000' },
+          { name: "Poor (4-5)", value: data.poor, fill: chartConfig.poor.color || '#000' },
+          { name: "Bad (0-4)", value: data.bad, fill: chartConfig.bad.color || '#000' },
         ];
+        
 
         setChartData(formattedData);
         setLoading(false);
