@@ -35,6 +35,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Settings2 } from "lucide-react";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { DialogCreateAccount } from "../create/dialog"
+import { checkPermission } from "@/hooks/use-auth";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -94,10 +96,12 @@ export function DataTable<TData, TValue>({
             <Button
               variant="outline"
               className="ml-auto text-primary border-primary rounded-full px-6"
+              disabled={!checkPermission({ permission: "CREATE_ACCOUNT" })}
             >
               Add New
             </Button>
           </DialogTrigger>
+          <DialogCreateAccount />
         </Dialog>
       </div>
       <div className="flex items-center py-4">
@@ -172,7 +176,7 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="border-0 hover:bg-primary hover:text-primary-foreground"
+                  className="border-0 hover:bg-primary hover:text-primary-foreground "
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
