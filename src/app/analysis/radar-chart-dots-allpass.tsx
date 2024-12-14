@@ -22,7 +22,7 @@ import {
 
 const chartConfig = {
   passCount: {
-    label: "Pass Count",
+    label: "Count",
     color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig;
@@ -80,15 +80,29 @@ export function RadarChartDotsAllPassComponent({ examPaperId }: { examPaperId: s
   }
 
   if (error) {
-    return <p>Error: {error}</p>;
+    return (
+      <Card>
+        <CardHeader className="items-center">
+          <CardTitle>Radar Chart - Pass Analysis</CardTitle>
+          <CardDescription>
+            No data available for the analysis.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="pb-0 flex justify-center items-center h-full">
+          <p>No data available for this exam paper.</p>
+        </CardContent>
+     
+      </Card>
+    );
   }
+
 
   return (
     <Card>
-      <CardHeader className="items-center">
-        <CardTitle>Radar Chart - Pass Analysis</CardTitle>
+      <CardHeader className="">
+        <CardTitle>Pass All Pmtest</CardTitle>
         <CardDescription>
-          Analyzing pass count for each function
+        Students passing all pmtest.
         </CardDescription>
       </CardHeader>
       <CardContent className="pb-0">
@@ -102,7 +116,7 @@ export function RadarChartDotsAllPassComponent({ examPaperId }: { examPaperId: s
             <PolarGrid />
             <Radar
               dataKey="passCount"
-              fill="var(--color-passCount)"
+              fill="#FF8D29"
               fillOpacity={0.6}
               dot={{
                 r: 4,
@@ -112,11 +126,7 @@ export function RadarChartDotsAllPassComponent({ examPaperId }: { examPaperId: s
           </RadarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          Data fetched successfully <TrendingUp className="h-4 w-4" />
-        </div>
-      </CardFooter>
+    
     </Card>
   );
 }

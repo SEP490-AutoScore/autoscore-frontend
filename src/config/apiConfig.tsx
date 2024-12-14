@@ -137,7 +137,8 @@ export const API_ENDPOINTS = {
   studentScoresBarChart: "/api/score/student-scores",
   analyzeLogOnePass: "/api/score/analyze-log-one-pass",
   analyzeLogAllPass: "/api/score/analyze-log-all-pass",
-  analyzeLogEachTest: "/api/score/analyze-log-each-test",
+  noPass: "/api/score/analyze-log-fail-all",
+  plagiarismBarChart: "/api/score/get-plagiarism-percentage",
 
   //notification
   notification: "/api/notifications",

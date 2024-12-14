@@ -3,12 +3,14 @@ import { SidebarInset } from "@/components/ui/sidebar";
 import { CardHeaderAnalysis } from "./card-header";
 import { Book } from "lucide-react";
 import { BarChartComponent } from "./bar-chart";
-import { BarChartStackedComponent } from "./bar-chart-stacked";
+
 import { RadarChartDotsComponent } from "./radar-chart-dots";
 import { RadarChartDotsAllPassComponent } from "./radar-chart-dots-allpass";
+import { RadarChartDotsNoPassComponent } from "./radar-chart-dots-nopass";
 import { DropdownList } from "./dropdown-list";
 import { useState, useEffect } from "react";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
+import { BarChartMultipleComponent } from "./bar-chart-multiple";
 
 export default function Page() {
   const Header = useHeader({
@@ -166,14 +168,14 @@ export default function Page() {
           <div className="col-span-2">
             <CardHeaderAnalysis
               title="Total Students"
-              content="Student Statistics"
+              content=""
               description={
                 loading
                   ? "Loading total students..."
                   : error
                     ? `Error: ${error}`
                     : totalStudents !== null
-                      ? `Total Students: ${totalStudents}`
+                      ? ` ${totalStudents}`
                       : "Overview"
               }
               icon={Book}
@@ -184,15 +186,15 @@ export default function Page() {
           {/* Thông tin học sinh điểm 0 */}
           <div className="col-span-2">
             <CardHeaderAnalysis
-              title="Students with Zero Score"
-              content="Student Statistics"
+              title="Total students 0 point"
+              content=""
               description={
                 loading
                   ? "Loading zero score data..."
                   : error
                     ? `Error: ${error}`
                     : studentsWithZeroScore !== null
-                      ? `Zero Score: ${studentsWithZeroScore}`
+                      ? ` ${studentsWithZeroScore}`
                       : "Overview"
               }
               icon={Book}
@@ -204,15 +206,15 @@ export default function Page() {
           {/* Thông tin học sinh điểm > 0 */}
           <div className="col-span-2">
             <CardHeaderAnalysis
-              title="Students with Score > 0"
-              content="Student Statistics"
+              title="Total students than 0 point"
+              content=""
               description={
                 loading
                   ? "Loading score data..."
                   : error
                     ? `Error: ${error}`
                     : studentsWithScoreGreaterThanZero !== null
-                      ? `Score > 0: ${studentsWithScoreGreaterThanZero}`
+                      ? ` ${studentsWithScoreGreaterThanZero}`
                       : "Overview"
               }
               icon={Book}
@@ -221,6 +223,7 @@ export default function Page() {
           </div>
 
 
+  {/* score each student */}
           <div className="col-span-2">
 
             <BarChartComponent examPaperId={selectedExamPaper || ""} />
@@ -228,10 +231,18 @@ export default function Page() {
 
           </div>
 
+
+
+           {/* pass toàn phần */}
+           <div className="col-span-2">
+
+<RadarChartDotsAllPassComponent examPaperId={selectedExamPaper || ""} />
+
+
+</div>
+
+
           {/* pass 1 phần */}
-
-
-
 
           <div className="col-span-2">
 
@@ -240,21 +251,22 @@ export default function Page() {
 
           </div>
 
-          {/* pass toàn phần */}
-          <div className="col-span-2">
+            {/* ko pass phần nào */}
 
-            <RadarChartDotsAllPassComponent examPaperId={selectedExamPaper || ""} />
+            <div className="col-span-2">
 
-
-          </div>
-
-          <div className="col-span-2">
-
-            <BarChartStackedComponent examPaperId={selectedExamPaper || ""} />
+<RadarChartDotsNoPassComponent examPaperId={selectedExamPaper || ""} />
 
 
-          </div>
+</div>
 
+         
+ {/* phản hồi api từng sinh viên */}
+
+<div className="col-span-2">
+  <BarChartMultipleComponent examPaperId={selectedExamPaper || ""} />
+</div>
+        
 
 
         </div>

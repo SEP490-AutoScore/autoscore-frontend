@@ -1,7 +1,7 @@
 import { useHeader } from "@/hooks/use-header";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { CardHeaderDashboard } from "./card-header";
-import { Book } from "lucide-react";
+import { Book, BookCheck, BookUser, Frame, LucideBookCheck, MenuSquare, SquareSigma, TestTubeDiagonal } from "lucide-react";
 import { BarChartComponent } from "./bar-chart";
 import { useState, useEffect } from "react";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
@@ -154,33 +154,33 @@ export default function Page() {
     <SidebarInset>
       {Header}
       <div className="p-4 pt-0">
-        <div className="grid grid-cols-8 gap-6">
+        <div className="grid grid-cols-6 gap-6">
         
 
           <div className="col-span-2">
             <CardHeaderDashboard
               title="Total Exams"
-              content={loading ? "Loading..." : examCount !== null ? examCount.toString() : "Error"}
+              content={loading ? "Loading..." : examCount !== null ? examCount.toString() : ""}
               description="Total number of EXAM type exams."
-              icon={Book}
+              icon={MenuSquare}
             />
           </div>
 
           <div className="col-span-2">
             <CardHeaderDashboard
-              title="Exams Grading Over Time"
-              content={loading ? "Loading..." : examGradingAtCount !== null ? examGradingAtCount.toString() : "Error"}
-              description="Number of exams where gradingAt has passed the current time."
-              icon={Book}
+              title="Unprocessed Exams Count"
+              content={loading ? "Loading..." : examGradingAtCount !== null ? examGradingAtCount.toString() : ""}
+              description="Total number of ungraded exams"
+              icon={BookUser}
             />
           </div>
 
           <div className="col-span-2">
             <CardHeaderDashboard
-              title="Exams Grading At Passed"
-              content={loading ? "Loading..." : examGradingAtPassedCount !== null ? examGradingAtPassedCount.toString() : "Error"}
-              description="Number of exams where gradingAt is passed."
-              icon={Book}
+              title="Exams Successfully Graded"
+              content={loading ? "Loading..." : examGradingAtPassedCount !== null ? examGradingAtPassedCount.toString() : ""}
+              description="Total number of graded exams"
+              icon={BookCheck}
             />
           </div>
 
@@ -201,31 +201,18 @@ export default function Page() {
           </div>
 
           {/* Line Chart Component */}
-          <div className="col-span-6">
+          <div className="col-span-2">
             <LineChartComponent /> {/* Render the new LineChartComponent */}
           </div>
 
-          <div className="col-span-6">
+          <div className="col-span-2">
             <PieChartComponent /> {/* Render the new LineChartComponent */}
           </div>
 
-          <div className="col-span-6">
+          <div className="col-span-2">
             <BarChartCustomLabelComponent /> {/* Render the new LineChartComponent */}
           </div>
   
-          
-          {/* <div className="col-span-4">
-            <LineChartComponent />
-          </div>
-          <div className="col-span-4 border border-gray-200 p-4 rounded-lg shadow">
-            <DataTableDemo />
-          </div>
-          <div className="col-span-2">
-            <BarChartHorizontalComponent />
-          </div>
-          <div className="col-span-2">
-            <PieChartComponent />
-          </div> */}
         </div>
       </div>
     </SidebarInset>

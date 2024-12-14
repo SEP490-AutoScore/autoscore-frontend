@@ -137,11 +137,11 @@ export function ExamPaperCard({
       <Card
         key={examPaper.examPaperId}
         className="shadow-none hover:shadow-md cursor-pointer"
-        onClick={() =>
-          navigate("/exams/exam-papers/exam-questions", {
-            state: { examId, examPaperId: examPaper.examPaperId },
-          })
-        }
+        // onClick={() =>
+        //   navigate("/exams/exam-papers/exam-questions", {
+        //     state: { examId, examPaperId: examPaper.examPaperId },
+        //   })
+        // }
       >
         <CardContent className="p-4 w-full">
           <div className="flex justify-between items-center">

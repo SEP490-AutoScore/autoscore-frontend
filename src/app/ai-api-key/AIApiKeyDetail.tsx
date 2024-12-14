@@ -27,7 +27,6 @@ export type AIApiKey = {
 
 const ViewDetailDialog = ({ aiApiKeyId, open, onClose, onUpdateSuccess }: ViewDetailDialogProps) => {
   const [aiApiKey, setAiApiKey] = useState<AIApiKey | null>(null);
-  const [updatedApiKey, setUpdatedApiKey] = useState<string | null>(null);
   const [shared, setShared] = useState<boolean>(false);
   const notify = useToastNotification();
 
@@ -54,7 +53,7 @@ const ViewDetailDialog = ({ aiApiKeyId, open, onClose, onUpdateSuccess }: ViewDe
       if (response.ok) {
         const data = await response.json();
         setAiApiKey(data);
-        setUpdatedApiKey(data.aiApiKey); // Initialize for editing
+
         setShared(data.shared);
 
       } else {
@@ -89,7 +88,7 @@ const ViewDetailDialog = ({ aiApiKeyId, open, onClose, onUpdateSuccess }: ViewDe
     try {
         // Chuẩn bị URL với các tham số
     const queryParams = new URLSearchParams({
-      aiApiKey: updatedApiKey || "",
+    
       shared: shared.toString(),
     });
 
@@ -164,9 +163,7 @@ const ViewDetailDialog = ({ aiApiKeyId, open, onClose, onUpdateSuccess }: ViewDe
               <input
                 type="text"
                 disabled
-                // value={updatedApiKey || ""}
-                value={updatedApiKey ? `${updatedApiKey.slice(0, 15)}...` : ""}
-                onChange={(e) => setUpdatedApiKey(e.target.value)}
+                value={aiApiKey.aiApiKey ? `${aiApiKey.aiApiKey.slice(0, 15)}...` : ""}
                 className="border border-gray-300 rounded-md p-2 w-full"
               />
             </div>

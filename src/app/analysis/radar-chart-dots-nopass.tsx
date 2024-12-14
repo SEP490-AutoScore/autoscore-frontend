@@ -27,7 +27,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function RadarChartDotsComponent({ examPaperId }: { examPaperId: string }) {
+export function RadarChartDotsNoPassComponent({ examPaperId }: { examPaperId: string }) {
   const [chartData, setChartData] = useState<{ functionName: string; passCount: number }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,7 +46,7 @@ export function RadarChartDotsComponent({ examPaperId }: { examPaperId: string }
 
       try {
         const response = await fetch(
-          `${BASE_URL}${API_ENDPOINTS.analyzeLogOnePass}?examPaperId=${examPaperId}`,
+          `${BASE_URL}${API_ENDPOINTS.noPass}?examPaperId=${examPaperId}`,
           {
             method: "GET",
             headers: {
@@ -99,14 +99,12 @@ export function RadarChartDotsComponent({ examPaperId }: { examPaperId: string }
 
   return (
     <Card>
-  <CardHeader className="">
-  <CardTitle>Pass At Least 1 Pmtest</CardTitle>
-  <CardDescription>
-   Students passing at least one pmtest.
-  </CardDescription>
-</CardHeader>
-
-
+      <CardHeader className="">
+        <CardTitle>No Pass Any Pmtest</CardTitle>
+        <CardDescription>
+        Students not passing pmtest.
+        </CardDescription>
+      </CardHeader>
       <CardContent className="pb-0">
         <ChartContainer
           config={chartConfig}

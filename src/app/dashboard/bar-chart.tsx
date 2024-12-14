@@ -43,7 +43,7 @@ export function BarChartComponent({ data, loading, error, year, handleYearChange
 
   return (
     <Card>
-        <CardHeader className="relative">
+      <CardHeader className="relative">
         <CardTitle>Exams per Semester</CardTitle>
         <CardDescription>Exams counts per semester for selected year</CardDescription>
 
@@ -72,7 +72,12 @@ export function BarChartComponent({ data, loading, error, year, handleYearChange
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="count" fill={chartConfig["exam-counts"].color} />
+            <Bar
+              dataKey="count"
+              fill={chartConfig["exam-counts"].color}
+              barSize={150} // Set the width of the bars
+            />
+
           </BarChart>
         </ChartContainer>
       </CardContent>

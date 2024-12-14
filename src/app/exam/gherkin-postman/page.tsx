@@ -426,12 +426,17 @@ const GherkinPostmanPage: React.FC = () => {
 
         return (
           <Card
-            key={index}
-            className={`mb-4 resize-y overflow-auto cursor-pointer ${isSelected ? "border-2 border-orange-500" : 'border'
-              }`}
-            onClick={() => togglePostmanSelection(item.postman?.postmanForGradingId)
-            }
+              key={index}
+              className={`mb-4 resize-y overflow-auto cursor-pointer 
+                  ${isSelected 
+                      ? "border-2 border-orange-500" 
+                      : item.postman?.examQuestionId === null 
+                          ? "border-2 border-red-500" 
+                          : "border"
+                  }`}
+              onClick={() => togglePostmanSelection(item.postman?.postmanForGradingId)}
           >
+      
             <CardHeader>
               <CardTitle>
                 Postman Function: {item.postman?.postmanFunctionName}
@@ -440,9 +445,9 @@ const GherkinPostmanPage: React.FC = () => {
             <CardContent className="h-32">
               {item.postman ? (
                 <>
-                  <p className="text-sm">
-                    Score of function: {item.postman?.scoreOfFunction}
-                  </p>
+                 <p className="text-sm">
+  Score of function: {parseFloat((item.postman?.scoreOfFunction ?? 0).toFixed(2))}
+</p>
                   <p className="text-sm">
                     Score Percentage: {parseFloat((item.postman?.scorePercentage ?? 0).toFixed(1))} %
                   </p>
