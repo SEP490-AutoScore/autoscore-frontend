@@ -54,10 +54,10 @@ export function ExamPaperCard({
   const handleExportLog = async () => {
     try {
       const response = await fetch(`${BASE_URL}${API_ENDPOINTS.exportLog}?examPaperId=${examPaper.examPaperId}`, {
-        method: "POST", 
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,  
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -65,37 +65,37 @@ export function ExamPaperCard({
         throw new Error("Failed to export log.");
       }
 
-    // Debug header Content-Disposition
-    const contentDisposition = response.headers.get("Content-Disposition");
-    console.log("Content-Disposition header:", contentDisposition);
+      // Debug header Content-Disposition
+      const contentDisposition = response.headers.get("Content-Disposition");
+      console.log("Content-Disposition header:", contentDisposition);
 
-    const fileName = contentDisposition
-      ?.split("filename=")[1]
-      ?.replace(/"/g, "")
-      ?.trim();
+      const fileName = contentDisposition
+        ?.split("filename=")[1]
+        ?.replace(/"/g, "")
+        ?.trim();
 
-    console.log("Parsed filename:", fileName);
+      console.log("Parsed filename:", fileName);
 
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
 
-    link.download = fileName || "log.txt";
+      link.download = fileName || "log.txt";
 
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  } catch (error) {
-    console.error("Error exporting log:", error);
-    showToast({
-      title: "Error.",
-      description: "Failed to export the log. Please try again later.",
-      actionText: "OK",
-      variant: "destructive",
-    });
-  }
-};
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Error exporting log:", error);
+      showToast({
+        title: "Error.",
+        description: "Failed to export the log. Please try again later.",
+        actionText: "OK",
+        variant: "destructive",
+      });
+    }
+  };
   const handleDownloadWord = async () => {
     try {
       const response = await fetch(
@@ -137,15 +137,15 @@ export function ExamPaperCard({
       <Card
         key={examPaper.examPaperId}
         className="shadow-none hover:shadow-md cursor-pointer"
-        onClick={() =>
-          navigate("/exams/exam-papers/exam-questions", {
-            state: { examId, examPaperId: examPaper.examPaperId },
-          })
-        }
       >
         <CardContent className="p-4 w-full">
           <div className="flex justify-between items-center">
-            <div className="flex justify-between w-1/3">
+            <div className="flex justify-between w-1/3"
+              onClick={() =>
+                navigate("/exams/exam-papers/exam-questions", {
+                  state: { examId, examPaperId: examPaper.examPaperId },
+                })
+              }>
               <div>
                 <CardTitle className="text-md font-semibold">
                   Exam Paper Code

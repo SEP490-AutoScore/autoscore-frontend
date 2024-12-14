@@ -192,7 +192,7 @@ export function CreateExamPaperForm({
                     variant="outline"
                     className="mt-4 w-full py-3 text-lg font-semibold shadow-md focus:ring-2 focus:ring-blue-400"
                 >
-                    {isLoading ? "Submitting..." : "Submit"}
+                    {isLoading ? "Createing..." : "Create new Exam Paper"}
                 </Button>
             </DialogContent>
         </Dialog>

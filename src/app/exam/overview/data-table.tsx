@@ -2,7 +2,7 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import CreateExamFrom from "@/app/exam/new-exam/create-exam-form"
 
 import {
   ColumnDef,
@@ -35,7 +35,6 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Settings2 } from "lucide-react";
-import { Link } from "react-router-dom";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -91,11 +90,7 @@ export function DataTable<TData, TValue>({
             Here's a list of exams for this campus!
           </p>
         </div>
-        <Button variant="outline" className="p-2.5 h-10 w-10 rounded-full border-primary text-primary hover:text-white hover:bg-primary">
-          <Link to="new-exam">
-            <Plus className="h-6 w-6" />
-          </Link>
-        </Button>
+        <CreateExamFrom/>
       </div>
       <div className="flex items-center py-4">
         <Input

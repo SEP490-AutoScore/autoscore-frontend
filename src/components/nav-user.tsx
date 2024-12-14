@@ -23,8 +23,7 @@ import Notification from "@/components/notification/notification-sidebar"
 
 export function NavUser({
   user,
-  selectedItem,
-  setSelectedItem,
+  selectedItem
 }: {
   user: {
     name: string;
@@ -81,7 +80,7 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <Link to="#@" className="sidebar-link" onClick={() => setSelectedItem("#@")}>
+              <Link to="#@" className="sidebar-link">
                 <DropdownMenuItem className={`sidebar-link cursor-pointer ${selectedItem === "#@"
                   ? "bg-primary text-primary-foreground"
                   : ""
@@ -90,14 +89,12 @@ export function NavUser({
                   Profile
                 </DropdownMenuItem>
               </Link>
-              <Link to="##@" className="sidebar-link" onClick={() => setSelectedItem("##@")}>
-                <DropdownMenuItem className={`sidebar-link cursor-pointer ${selectedItem === "##@"
-                  ? "bg-primary text-primary-foreground"
-                  : ""
-                  }`}>
-                  <Notification />
-                </DropdownMenuItem>
-              </Link>
+              <DropdownMenuItem className={`sidebar-link cursor-pointer ${selectedItem === "##@"
+                ? "bg-primary text-primary-foreground"
+                : ""
+                }`}>
+                <Notification />
+              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
