@@ -52,7 +52,7 @@ const CreateSemesterDialog: React.FC = () => {
       {/* Nút mở dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          <Button variant="default">Create New Semester</Button>
+          <Button variant="outline" className='ml-auto text-primary border-primary rounded-full px-6'>Create New Semester</Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
