@@ -60,7 +60,7 @@ const data = {
       title: "Accounts",
       url: "?",
       icon: UsersRound,
-      allowedRoles: ["ADMIN", "EXAMIER", "HEAD_OF_DEPARTMENT"],
+      allowedRoles: ["ADMIN", "EXAMINER", "HEAD_OF_DEPARTMENT"],
       permission: "VIEW_ACCOUNT",
       items: [
         {
