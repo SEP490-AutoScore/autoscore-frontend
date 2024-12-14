@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { TrendingUp } from "lucide-react";
-import { Label, Pie, PieChart } from "recharts";
+import { Label, Pie, PieChart, Cell, Legend } from "recharts";
 
 import {
   Card,
@@ -26,27 +26,27 @@ type ChartDataItem = {
   fill: string;
 };
 
-// Define the chart configuration
+// Define the chart configuration with colors
 const chartConfig: ChartConfig = {
   excellent: {
-    label: "Excellent",
-    color: "hsl(var(--chart-1))",
+    label: "Excellent (9-10)",
+    color: "#4CAF50", // Green
   },
   good: {
-    label: "Good",
-    color: "hsl(var(--chart-2))",
+    label: "Good (8-9)",
+    color: "#2196F3", // Blue
   },
   fair: {
-    label: "Fair",
-    color: "hsl(var(--chart-3))",
+    label: "Fair (5-8)",
+    color: "#FFC107", // Yellow
   },
   poor: {
-    label: "Poor",
-    color: "hsl(var(--chart-4))",
+    label: "Poor (4-5)",
+    color: "#FF9800", // Orange
   },
   bad: {
-    label: "Bad",
-    color: "hsl(var(--chart-5))",
+    label: "Bad (0-4)",
+    color: "#F44336", // Red
   },
 };
 
@@ -84,12 +84,13 @@ export function PieChartComponent() {
 
         // Map API data to chart format
         const formattedData: ChartDataItem[] = [
-          { name: "Excellent", value: data.excellent, fill: "var(--chart-1)" },
-          { name: "Good", value: data.good, fill: "var(--chart-2)" },
-          { name: "Fair", value: data.fair, fill: "var(--chart-3)" },
-          { name: "Poor", value: data.poor, fill: "var(--chart-4)" },
-          { name: "Bad", value: data.bad, fill: "var(--chart-5)" },
+          { name: "Excellent (9-10)", value: data.excellent, fill: chartConfig.excellent.color || '#000' },
+          { name: "Good (8-9)", value: data.good, fill: chartConfig.good.color || '#000' },
+          { name: "Fair (5-8)", value: data.fair, fill: chartConfig.fair.color || '#000' },
+          { name: "Poor (4-5)", value: data.poor, fill: chartConfig.poor.color || '#000' },
+          { name: "Bad (0-4)", value: data.bad, fill: chartConfig.bad.color || '#000' },
         ];
+        
 
         setChartData(formattedData);
         setLoading(false);
@@ -132,8 +133,12 @@ export function PieChartComponent() {
                 dataKey="value"
                 nameKey="name"
                 innerRadius={60}
+                outerRadius={100}
                 strokeWidth={5}
               >
+                {chartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.fill} />
+                ))}
                 <Label
                   content={({ viewBox }) => {
                     if (viewBox && "cx" in viewBox && "cy" in viewBox) {
@@ -164,18 +169,12 @@ export function PieChartComponent() {
                   }}
                 />
               </Pie>
+              <Legend />
             </PieChart>
           </ChartContainer>
         )}
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing score distribution.
-        </div>
-      </CardFooter>
+     
     </Card>
   );
 }

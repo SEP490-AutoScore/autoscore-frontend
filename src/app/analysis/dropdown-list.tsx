@@ -1,11 +1,18 @@
+import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 import React, { useEffect, useState } from "react";
 
 interface DropdownProps {
   onSelect: (selected: string) => void;
 }
 
+interface ExamItem {
+  examPaperId: string;
+  examCode: string;
+  examPaperCode: string;
+}
+
 export const DropdownList: React.FC<DropdownProps> = ({ onSelect }) => {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<ExamItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -19,7 +26,7 @@ export const DropdownList: React.FC<DropdownProps> = ({ onSelect }) => {
       }
 
       try {
-        const response = await fetch("http://localhost:8080/api/exam/list-exam-exampaper", {
+        const response = await fetch(`${BASE_URL}${API_ENDPOINTS.dropdownList}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -33,7 +40,7 @@ export const DropdownList: React.FC<DropdownProps> = ({ onSelect }) => {
         setItems(data);
         setLoading(false);
       } catch (err) {
-    
+        setError("An error occurred while fetching data." + err);
         setLoading(false);
       }
     };
@@ -49,7 +56,7 @@ export const DropdownList: React.FC<DropdownProps> = ({ onSelect }) => {
       <option value="" disabled selected>
         Select an exam
       </option>
-      {items.map((item: any) => (
+      {items.map((item) => (
         <option key={item.examPaperId} value={item.examPaperId}>
           {item.examCode} - {item.examPaperCode}
         </option>

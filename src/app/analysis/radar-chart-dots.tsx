@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { TrendingUp } from "lucide-react";
+import { AlertTriangle, TrendingUp } from "lucide-react";
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 
@@ -22,24 +22,39 @@ import {
 
 const chartConfig = {
   passCount: {
-    label: "Pass Count",
+    label: "Count",
     color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig;
+
+const placeholderData = [
+  { functionName: "Function A", passCount: 0 },
+  { functionName: "Function B", passCount: 0 },
+  { functionName: "Function C", passCount: 0 },
+  { functionName: "Function D", passCount: 0 },
+  { functionName: "Function E", passCount: 0 },
+]
 
 export function RadarChartDotsComponent({ examPaperId }: { examPaperId: string }) {
   const [chartData, setChartData] = useState<{ functionName: string; passCount: number }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isPlaceholderData, setIsPlaceholderData] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!examPaperId) {
+        setChartData(placeholderData)
+        setIsPlaceholderData(true)
+        return
+      }
       setLoading(true);
       setError(null);
 
       const token = localStorage.getItem("jwtToken");
       if (!token) {
         setError("JWT token not found.");
+        setIsPlaceholderData(true)
         setLoading(false);
         return;
       }
@@ -64,9 +79,16 @@ export function RadarChartDotsComponent({ examPaperId }: { examPaperId: string }
           functionName: key,
           passCount: value as number, // Ensure type safety
         }));
-        setChartData(formattedData);
-      } catch (err: any) {
-        setError(err.message || "An unexpected error occurred.");
+        setChartData(formattedData.length > 0 ? formattedData : placeholderData);
+        setIsPlaceholderData(formattedData.length === 0);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unexpected error occurred.");
+        }
+        setChartData(placeholderData)
+        setIsPlaceholderData(true);
       } finally {
         setLoading(false);
       }
@@ -80,29 +102,48 @@ export function RadarChartDotsComponent({ examPaperId }: { examPaperId: string }
   }
 
   if (error) {
-    return <p>Error: {error}</p>;
+    return (
+      <Card>
+        <CardHeader className="items-center">
+          <CardTitle>Radar Chart - Pass Analysis</CardTitle>
+          <CardDescription>
+            No data available for the analysis.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="pb-0 flex justify-center items-center h-full">
+          <p>No data available for this exam paper.</p>
+        </CardContent>
+     
+      </Card>
+    );
   }
+
+
+  const displayData = chartData.length > 0 ? chartData : placeholderData
+
 
   return (
     <Card>
-      <CardHeader className="items-center">
-        <CardTitle>Radar Chart - Pass Analysis</CardTitle>
-        <CardDescription>
-          Analyzing pass count for each function
-        </CardDescription>
-      </CardHeader>
+  <CardHeader className="">
+  <CardTitle>Pass At Least 1 Pmtest</CardTitle>
+  <CardDescription>
+   Students passing at least one pmtest.
+  </CardDescription>
+</CardHeader>
+
+
       <CardContent className="pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
+          className="mx-auto aspect-video max-h-[250px]"
         >
-          <RadarChart data={chartData}>
+          <RadarChart data={displayData}>
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <PolarAngleAxis dataKey="functionName" />
             <PolarGrid />
             <Radar
               dataKey="passCount"
-              fill="var(--color-passCount)"
+              fill="#FF8D29"
               fillOpacity={0.6}
               dot={{
                 r: 4,
@@ -112,11 +153,30 @@ export function RadarChartDotsComponent({ examPaperId }: { examPaperId: string }
           </RadarChart>
         </ChartContainer>
       </CardContent>
+
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 font-medium leading-none">
-          Data fetched successfully <TrendingUp className="h-4 w-4" />
+        {loading ? (
+            "Loading data..."
+          ) : error ? (
+            <>
+              <AlertTriangle className="h-4 w-4 text-yellow-500" />
+              Error: {error}
+            </>
+          ) : isPlaceholderData ? (
+            <>
+              <AlertTriangle className="h-4 w-4 text-yellow-500" />
+              No data available. Showing placeholder data.
+            </>
+          ) : (
+            <>
+              <TrendingUp className="h-4 w-4 text-green-500" />
+               {chartData.length} function{chartData.length !== 1 ? 's' : ''}
+            </>
+          )}
         </div>
       </CardFooter>
+
     </Card>
   );
 }

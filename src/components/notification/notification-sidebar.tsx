@@ -21,7 +21,7 @@ export default function NotificationItem() {
         try {
             const token = localStorage.getItem("jwtToken"); // Lấy token từ localStorage
 
-            const response = await fetch(`${BASE_URL}${API_ENDPOINTS.grading}`, {
+            const response = await fetch(`${BASE_URL}${API_ENDPOINTS.notification}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
