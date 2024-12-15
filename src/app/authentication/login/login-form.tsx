@@ -14,6 +14,7 @@ import { useToastNotification } from "@/hooks/use-toast-notification";
 import { useCookie } from "@/hooks/use-cookie";
 
 interface AuthResponse {
+  id: number;
   email: string;
   name: string;
   role: string;
@@ -53,22 +54,20 @@ export function LoginForm() {
           }
           const data: AuthResponse = await res.json();
           // Lưu vào localStorage
-          Object.entries(data).forEach(([key, value]) =>{
+          Object.entries(data).forEach(([key, value]) => {
             if (key === "refreshToken") {
               setCookie(key, value, data.exp);
             } else if (key === "exp") {
               localStorage.setItem(key, data.exp.toString());
+            } else {
+              localStorage.setItem(key, value);
             }
-             else {
-              localStorage.setItem(key, value)
-            }
-        });
+          });
 
           // Chuyển đến dashboard
           window.location.href = "/dashboard";
         })
         .catch((error) => {
-
           // Hiển thị toast dựa trên mã lỗi
           if (error.message.includes("401") || error.message.includes("404")) {
             showToast({
