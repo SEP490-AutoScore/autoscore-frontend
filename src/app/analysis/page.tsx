@@ -70,7 +70,7 @@ export default function Page() {
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
-        }else setError("An error occurred while fetching data.")
+        } else setError("An error occurred while fetching data.")
         setLoading(false);
       }
     };
@@ -115,7 +115,7 @@ export default function Page() {
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
-        }else setError("An error occurred while fetching data.")
+        } else setError("An error occurred while fetching data.")
         setLoading(false);
       }
     };
@@ -160,7 +160,7 @@ export default function Page() {
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
-        }else setError("An error occurred while fetching data.")
+        } else setError("An error occurred while fetching data.")
         setLoading(false);
       }
     };
@@ -191,10 +191,10 @@ export default function Page() {
                   loading
                     ? "Loading total students..."
                     : error
-                    ? `Error: ${error}`
-                    : totalStudents !== null
-                    ? `Total Students: ${totalStudents}`
-                    : "Overview"
+                      ? `Error: ${error}`
+                      : totalStudents !== null
+                        ? `Total Students: ${totalStudents}`
+                        : "Overview"
                 }
                 icon={Book}
               />
@@ -209,10 +209,10 @@ export default function Page() {
                   loading
                     ? "Loading zero score data..."
                     : error
-                    ? `Error: ${error}`
-                    : studentsWithZeroScore !== null
-                    ? `Zero Score: ${studentsWithZeroScore}`
-                    : "Overview"
+                      ? `Error: ${error}`
+                      : studentsWithZeroScore !== null
+                        ? `Zero Score: ${studentsWithZeroScore}`
+                        : "Overview"
                 }
                 icon={Book}
               />
@@ -227,10 +227,10 @@ export default function Page() {
                   loading
                     ? "Loading score data..."
                     : error
-                    ? `Error: ${error}`
-                    : studentsWithScoreGreaterThanZero !== null
-                    ? `Score > 0: ${studentsWithScoreGreaterThanZero}`
-                    : "Overview"
+                      ? `Error: ${error}`
+                      : studentsWithScoreGreaterThanZero !== null
+                        ? `Score > 0: ${studentsWithScoreGreaterThanZero}`
+                        : "Overview"
                 }
                 icon={Book}
               />
@@ -248,13 +248,13 @@ export default function Page() {
 
 
 
-           {/* pass toàn phần */}
-           <div className="col-span-2">
+          {/* pass toàn phần */}
+          <div className="col-span-2">
 
-<RadarChartDotsAllPassComponent examPaperId={selectedExamPaper || ""} />
+            <RadarChartDotsAllPassComponent examPaperId={selectedExamPaper || ""} />
 
 
-</div>
+          </div>
 
 
           {/* pass 1 phần */}
@@ -273,9 +273,7 @@ export default function Page() {
             />
           </div>
 
-          <div className="col-span-1">
-            <BarChartStackedComponent examPaperId={selectedExamPaper || ""} />
-          </div>
+
 
         </div>
       </div>
