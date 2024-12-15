@@ -23,8 +23,6 @@ const chartConfig = {
 
 export function BarChartComponent({ data, error, year, handleYearChange }: BarChartComponentProps) {
 
-
-
   if (error) {
     return (
       <Card className="h-full">

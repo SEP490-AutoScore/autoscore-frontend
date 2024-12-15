@@ -139,7 +139,7 @@ export const API_ENDPOINTS = {
   studentsWithZeroScore: "/api/score/students-with-zero-score",
   studentsWithScoreGreaterThanZero: "/api/score/students-with-score-greater-than-zero",
   studentScores: "/api/score/student-scores",
-  scoreCategories: "/api/score/score-categories", 
+  scoreCategories: "/api/score/score-categories",
   totalScoreOccurrences: "/api/score/total-score-occurrences",
   analyzeLog: "/api/score/analyze-log",
   //analysis
@@ -150,7 +150,6 @@ export const API_ENDPOINTS = {
   noPass: "/api/score/analyze-log-fail-all",
   codePlagiarismDetails: "/api/score/get-code-plagiarism-details",
   studentResponseTime: "/api/score/get-total-run-and-average-response-time",
-
 
   //notification
   notification: "/api/notifications",

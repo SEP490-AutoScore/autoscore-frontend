@@ -136,7 +136,7 @@ export default function Page() {
       }
     };
 
-    // Gọi API để lấy số lượng Exam theo kỳ học và năm
+    // Call API to get the number of Exams by semester and year
     const fetchSemesterData = async (year: string) => {
       try {
         const response = await fetch(
@@ -151,8 +151,8 @@ export default function Page() {
         );
 
         if (response.ok) {
-          const data = await response.json(); // Dữ liệu trả về là JSON
-          setSemesterData(data); // Cập nhật dữ liệu của các kỳ học
+          const data = await response.json(); 
+          setSemesterData(data); 
         } else {
           const errorData = await response.text();
           setError(errorData);
