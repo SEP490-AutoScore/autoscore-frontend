@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts";
+import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 
 import {
   Card,
@@ -35,9 +36,9 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function BarChartCustomLabelComponent() {
-  const [chartData, setChartData] = useState<any[]>([]); // Lưu trữ dữ liệu chart
-  const [loading, setLoading] = useState<boolean>(true); // Trạng thái loading
-  const [error, setError] = useState<string | null>(null); // Lỗi nếu có
+  const [chartData, setChartData] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,9 +51,8 @@ export function BarChartCustomLabelComponent() {
           return;
         }
 
-        // Gọi API để lấy dữ liệu từ analyzeLog()
         const response = await fetch(
-          "http://localhost:8080/api/score/analyze-log",
+          `${BASE_URL}${API_ENDPOINTS.analyzeLog}`,
           {
             method: "GET",
             headers: {
@@ -67,7 +67,7 @@ export function BarChartCustomLabelComponent() {
 
         const data = await response.json();
 
-        // Chuyển đổi dữ liệu thành định dạng phù hợp với chart
+        // Convert data into a format suitable for the chart
         const formattedData = data.map((entry: any) => ({
           function: entry.function,
           occurrences: entry.occurrences,
@@ -84,11 +84,27 @@ export function BarChartCustomLabelComponent() {
     fetchData();
   }, []);
 
+
+  if (error) {
+    return (
+      <Card className="h-full">
+        <CardHeader className="">
+          <CardTitle>Total Postman Function</CardTitle>
+
+          <CardDescription>
+            There is no data for statistics
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Bar Chart - Custom Label</CardTitle>
-        <CardDescription>Function Occurrences</CardDescription>
+        <CardTitle>Total Postman Function</CardTitle>
+        <CardDescription>List postman function</CardDescription>
       </CardHeader>
       <CardContent>
         {loading ? (
@@ -96,7 +112,7 @@ export function BarChartCustomLabelComponent() {
         ) : error ? (
           <div>{error}</div>
         ) : (
-          <ChartContainer config={chartConfig}>
+          <ChartContainer config={chartConfig} className="w-full h-[500px]">
             <BarChart
               accessibilityLayer
               data={chartData}
@@ -109,13 +125,17 @@ export function BarChartCustomLabelComponent() {
               <YAxis
                 dataKey="function"
                 type="category"
-                tickLine={false}
+                tickLine={true}
                 tickMargin={10}
-                axisLine={false}
+                axisLine={true}
                 tickFormatter={(value) => value.slice(0, 3)}
-                hide
+
               />
-              <XAxis dataKey="occurrences" type="number" hide />
+              <XAxis dataKey="occurrences" type="number"
+                tickLine={true}
+                axisLine={true}
+              />
+
               <ChartTooltip
                 cursor={false}
                 content={<ChartTooltipContent indicator="line" />}
@@ -125,7 +145,7 @@ export function BarChartCustomLabelComponent() {
                 layout="vertical"
                 fill="#FF8D29"
                 radius={4}
-                barSize={100}
+                barSize={40}
               >
                 <LabelList
                   dataKey="function"
@@ -146,7 +166,7 @@ export function BarChartCustomLabelComponent() {
           </ChartContainer>
         )}
       </CardContent>
-   
+
     </Card>
   );
 }

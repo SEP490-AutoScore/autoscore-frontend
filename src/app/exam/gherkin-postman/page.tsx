@@ -426,17 +426,17 @@ const GherkinPostmanPage: React.FC = () => {
 
         return (
           <Card
-              key={index}
-              className={`mb-4 resize-y overflow-auto cursor-pointer 
-                  ${isSelected 
-                      ? "border-2 border-orange-500" 
-                      : item.postman?.examQuestionId === null 
-                          ? "border-2 border-red-500" 
-                          : "border"
-                  }`}
-              onClick={() => togglePostmanSelection(item.postman?.postmanForGradingId)}
+            key={index}
+            className={`mb-4 resize-y overflow-auto cursor-pointer 
+                  ${isSelected
+                ? "border-2 border-orange-500"
+                : item.postman?.examQuestionId === null
+                  ? "border-2 border-red-500"
+                  : "border"
+              }`}
+            onClick={() => togglePostmanSelection(item.postman?.postmanForGradingId)}
           >
-      
+
             <CardHeader>
               <CardTitle>
                 Postman Function: {item.postman?.postmanFunctionName}
@@ -445,14 +445,12 @@ const GherkinPostmanPage: React.FC = () => {
             <CardContent className="h-32">
               {item.postman ? (
                 <>
-                 <p className="text-sm">
-  Score of function: {parseFloat((item.postman?.scoreOfFunction ?? 0).toFixed(2))}
-</p>
+                  <p className="text-sm">
+                    Score of function: {parseFloat((item.postman?.scoreOfFunction ?? 0).toFixed(2))}
+                  </p>
                   <p className="text-sm">
                     Score Percentage: {parseFloat((item.postman?.scorePercentage ?? 0).toFixed(1))} %
                   </p>
-
-
 
                   <p className="text-sm">
                     Total PM Tests: {item.postman?.totalPmTest}
@@ -477,8 +475,6 @@ const GherkinPostmanPage: React.FC = () => {
       })}
     </div>
   );
-
-
 
   return (
     <SidebarInset className="overflow-x-hidden">
@@ -558,7 +554,6 @@ const GherkinPostmanPage: React.FC = () => {
 
           }
 
-
           middle={
             <>
               <div className="flex justify-center p-4">
@@ -575,7 +570,6 @@ const GherkinPostmanPage: React.FC = () => {
 
             </>
           }
-
 
           left={gherkinContent}
 
@@ -610,7 +604,6 @@ const GherkinPostmanPage: React.FC = () => {
           fetchGherkinPostmanPairs={fetchGherkinPostmanPairs}
         />
       </Dialog>
-
 
     </SidebarInset>
 

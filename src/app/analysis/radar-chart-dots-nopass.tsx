@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { TrendingUp } from "lucide-react";
+import { AlertTriangle, TrendingUp } from "lucide-react";
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 
@@ -62,7 +62,7 @@ export function RadarChartDotsNoPassComponent({ examPaperId }: { examPaperId: st
         const data = await response.json();
         const formattedData = Object.entries(data).map(([key, value]) => ({
           functionName: key,
-          passCount: value as number, // Ensure type safety
+          passCount: value as number,
         }));
         setChartData(formattedData);
       } catch (err: any) {
@@ -83,18 +83,15 @@ export function RadarChartDotsNoPassComponent({ examPaperId }: { examPaperId: st
     return (
       <Card>
         <CardHeader className="items-center">
-          <CardTitle>Radar Chart - Pass Analysis</CardTitle>
+          <CardTitle>No Pass Any Pmtest</CardTitle>
           <CardDescription>
             No data available for the analysis.
           </CardDescription>
         </CardHeader>
-        <CardContent className="pb-0 flex justify-center items-center h-full">
-          <p>No data available for this exam paper.</p>
-        </CardContent>
-     
       </Card>
     );
   }
+
 
 
   return (
@@ -102,7 +99,7 @@ export function RadarChartDotsNoPassComponent({ examPaperId }: { examPaperId: st
       <CardHeader className="">
         <CardTitle>No Pass Any Pmtest</CardTitle>
         <CardDescription>
-        Students not passing pmtest.
+          Students not passing pmtest.
         </CardDescription>
       </CardHeader>
       <CardContent className="pb-0">
@@ -126,7 +123,12 @@ export function RadarChartDotsNoPassComponent({ examPaperId }: { examPaperId: st
           </RadarChart>
         </ChartContainer>
       </CardContent>
-    
+      <CardFooter className="flex-col items-start gap-2 text-sm">
+        <div className="leading-none text-muted-foreground">
+          Total Functions: {chartData.length}
+        </div>
+      </CardFooter>
+
     </Card>
   );
 }

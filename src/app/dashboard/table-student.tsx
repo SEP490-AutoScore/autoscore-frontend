@@ -61,11 +61,13 @@ export function TableStudentComponent() {
   }, []); // Empty dependency array to fetch data once on component mount
 
   return (
-    <div className="overflow-x-auto m-4 p-4 border border-gray-300 rounded-lg">
-         <div className="text-lg font-semibold mb-4">Top 20 Students with the Highest Scores</div>
+    <div className="p-4 border border-gray-200 rounded-lg shadow-sm">
+      <div className="text-l font-semibold ml-2">Top Students </div>
+      <div className="text-sm text-gray-500 mb-4 ml-2">20 students with the highest scores</div>
+
 
       <Table>
-       
+
         <TableHeader>
           <TableRow>
             <TableHead>Student Code</TableHead>
@@ -98,7 +100,7 @@ export function TableStudentComponent() {
             ))
           )}
         </TableBody>
-     
+
       </Table>
     </div>
   );
