@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { TrendingUp } from "lucide-react";
 import { Label, Pie, PieChart, Cell, Legend } from "recharts";
+import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 
 import {
   Card,
@@ -67,7 +68,7 @@ export function PieChartComponent() {
         }
 
         const response = await fetch(
-          "http://localhost:8080/api/score/score-categories",
+          `${BASE_URL}${API_ENDPOINTS.scoreCategories}`,
           {
             method: "GET",
             headers: {
@@ -84,13 +85,12 @@ export function PieChartComponent() {
 
         // Map API data to chart format
         const formattedData: ChartDataItem[] = [
-          { name: "Excellent (9-10)", value: data.excellent, fill: chartConfig.excellent.color || '#000' },
-          { name: "Good (8-9)", value: data.good, fill: chartConfig.good.color || '#000' },
-          { name: "Fair (5-8)", value: data.fair, fill: chartConfig.fair.color || '#000' },
-          { name: "Poor (4-5)", value: data.poor, fill: chartConfig.poor.color || '#000' },
-          { name: "Bad (0-4)", value: data.bad, fill: chartConfig.bad.color || '#000' },
+          { name: "Excellent (9-10 point)", value: data.excellent, fill: chartConfig.excellent.color || '#000' },
+          { name: "Good (8-9 point)", value: data.good, fill: chartConfig.good.color || '#000' },
+          { name: "Fair (5-8 point)", value: data.fair, fill: chartConfig.fair.color || '#000' },
+          { name: "Poor (4-5 point)", value: data.poor, fill: chartConfig.poor.color || '#000' },
+          { name: "Bad (0-4 point)", value: data.bad, fill: chartConfig.bad.color || '#000' },
         ];
-        
 
         setChartData(formattedData);
         setLoading(false);
@@ -107,74 +107,85 @@ export function PieChartComponent() {
     return chartData.reduce((acc, curr) => acc + curr.value, 0);
   }, [chartData]);
 
+  if (error) {
+    return (
+      <Card className="h-full">
+        <CardHeader className="">
+          <CardTitle>Score Distribution</CardTitle>
+
+          <CardDescription>
+            There is no data for statistics
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
   return (
     <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0">
+      <CardHeader className="pb-0">
         <CardTitle>Score Distribution</CardTitle>
         <CardDescription>Score categories from Excellent to Bad</CardDescription>
       </CardHeader>
+
       <CardContent className="flex-1 pb-0">
-        {loading ? (
-          <div>Loading...</div>
-        ) : error ? (
-          <div>{error}</div>
-        ) : (
-          <ChartContainer
-            config={chartConfig} // Add the missing config prop
-            className="mx-auto aspect-square max-h-[250px]"
-          >
-            <PieChart>
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent hideLabel />}
-              />
-              <Pie
-                data={chartData}
-                dataKey="value"
-                nameKey="name"
-                innerRadius={60}
-                outerRadius={100}
-                strokeWidth={5}
-              >
-                {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.fill} />
-                ))}
-                <Label
-                  content={({ viewBox }) => {
-                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                      return (
-                        <text
+
+        <ChartContainer
+          config={chartConfig}
+          className="w-full h-[550px]"
+        >
+          <PieChart>
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent hideLabel />}
+            />
+            <Pie
+              data={chartData}
+              dataKey="value"
+              nameKey="name"
+              innerRadius={100}
+              outerRadius={180}
+              strokeWidth={5}
+            >
+              {chartData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.fill} />
+              ))}
+              <Label
+                content={({ viewBox }) => {
+                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                    return (
+                      <text
+                        x={viewBox.cx}
+                        y={viewBox.cy}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          textAnchor="middle"
-                          dominantBaseline="middle"
+                          className="fill-foreground text-3xl font-bold"
                         >
-                          <tspan
-                            x={viewBox.cx}
-                            y={viewBox.cy}
-                            className="fill-foreground text-3xl font-bold"
-                          >
-                            {totalScores.toLocaleString()}
-                          </tspan>
-                          <tspan
-                            x={viewBox.cx}
-                            y={(viewBox.cy || 0) + 24}
-                            className="fill-muted-foreground"
-                          >
-                            Total Scores
-                          </tspan>
-                        </text>
-                      );
-                    }
-                  }}
-                />
-              </Pie>
-              <Legend />
-            </PieChart>
-          </ChartContainer>
-        )}
+                          {totalScores.toLocaleString()}
+                        </tspan>
+                        <tspan
+                          x={viewBox.cx}
+                          y={(viewBox.cy || 0) + 24}
+                          className="fill-muted-foreground"
+                        >
+                          assignments
+                        </tspan>
+                      </text>
+                    );
+                  }
+                }}
+              />
+            </Pie>
+            <Legend layout="horizontal" wrapperStyle={{ marginBottom: '22px' }} />
+          </PieChart>
+        </ChartContainer>
+
       </CardContent>
-     
+
     </Card>
   );
 }

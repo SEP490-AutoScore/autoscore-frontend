@@ -20,7 +20,7 @@ import {
 import { useCookie } from "@/hooks/use-cookie";
 import Notification from "@/components/notification/notification-sidebar";
 import { Dialog } from "./ui/dialog";
-import { DialogProfileAccount } from "@/app/authentication/account/profile-overview/dialog";
+import { ProfilePage } from "@/app/authentication/account/profile-overview/page";
 import { checkPermission } from "@/hooks/use-auth";
 import { useState } from "react";
 
@@ -30,6 +30,7 @@ export function NavUser({
   setSelectedItem,
 }: {
   user: {
+    id: number;
     name: string;
     position: string;
     avatar: string;
@@ -96,17 +97,14 @@ export function NavUser({
                     setOpenDialog(true);
                     setSelectedItem("profile");
                   }}
-                  
                   disabled={!checkPermission({ permission: "VIEW_PROFILE" })}
                 >
                   <UserCog />
                   Profile
                 </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className={`sidebar-link cursor-pointer`}
-                  >
-                    <Notification />
-                  </DropdownMenuItem>
+                <DropdownMenuItem className={`sidebar-link cursor-pointer`}>
+                  <Notification />
+                </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem
@@ -121,12 +119,8 @@ export function NavUser({
         </SidebarMenuItem>
       </SidebarMenu>
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-              <DialogProfileAccount 
-                // permissionId={permission.permissionId}
-                // onSuccess={handleCloseDialog}
-              />
-            </Dialog>
-      
+        <ProfilePage id={user.id}/>
+      </Dialog>
     </>
   );
 }

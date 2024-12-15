@@ -1,5 +1,15 @@
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 import React, { useEffect, useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator
+} from "@/components/ui/dropdown-menu";
+import { Settings2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface DropdownProps {
   onSelect: (selected: string) => void;
@@ -52,15 +62,28 @@ export const DropdownList: React.FC<DropdownProps> = ({ onSelect }) => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <select onChange={(e) => onSelect(e.target.value)} className="border p-2 rounded">
-      <option value="" disabled selected>
-        Select an exam
-      </option>
-      {items.map((item) => (
-        <option key={item.examPaperId} value={item.examPaperId}>
-          {item.examCode} - {item.examPaperCode}
-        </option>
-      ))}
-    </select>
+    <div className="flex justify-between items-center">
+      <div>
+        <h2 className="text-2xl font-bold tracking-tight">Analysis page</h2>
+        <p className="text-muted-foreground">
+          These are charts to analyze scores of each exam paper
+        </p>
+      </div>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" className="mt-3 ml-auto">
+            Select An Exam Paper
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-50">
+          <DropdownMenuLabel>Available Exam Paper</DropdownMenuLabel>
+          {items.map((item) => (
+            <DropdownMenuItem key={item.examPaperId} onClick={() => onSelect(item.examPaperId)}>
+              {item.examCode} - {item.examPaperCode}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   );
 };

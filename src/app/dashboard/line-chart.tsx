@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { TrendingUp } from "lucide-react";
-import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 
 import {
   Card,
@@ -17,29 +18,28 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-// Define the shape of your chart data
 interface ChartData {
   score: number;
   occurrences: number;
 }
 
 export function LineChartComponent() {
-  const [chartData, setChartData] = useState<ChartData[]>([]); // Explicit type
+  const [chartData, setChartData] = useState<ChartData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     const fetchChartData = async () => {
       try {
         const token = localStorage.getItem("jwtToken");
-  
+
         if (!token) {
           setError("JWT token not found.");
           setLoading(false);
           return;
         }
-  
+
         const response = await fetch(
-          "http://localhost:8080/api/score/total-score-occurrences",
+          `${BASE_URL}${API_ENDPOINTS.totalScoreOccurrences}`,
           {
             method: "GET",
             headers: {
@@ -47,13 +47,13 @@ export function LineChartComponent() {
             },
           }
         );
-  
+
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-  
+
         const data = await response.json();
-  
+
         // Transform data: round scores to the nearest integer
         const formattedData: ChartData[] = Object.entries(data)
           .map(([score, occurrences]) => ({
@@ -71,26 +71,24 @@ export function LineChartComponent() {
             return acc;
           }, [] as ChartData[])
           .sort((a, b) => a.score - b.score); // Sort by score
-  
+
         setChartData(formattedData);
         setLoading(false);
       } catch (err) {
-        if(err instanceof Error){
+        if (err instanceof Error) {
           setError(err.message)
-        }else setError("Failed to fetch data");
+        } else setError("Failed to fetch data");
         setLoading(false);
       }
     };
-  
+
     fetchChartData();
   }, []);
-  
-  
-  
+
 
   const chartConfig = {
     occurrences: {
-      label: "Occurrences",
+      label: "Student count: ",
       color: "#FF8D29",
     },
   } satisfies ChartConfig;
@@ -98,8 +96,8 @@ export function LineChartComponent() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Score Occurrences Line Chart</CardTitle>
-        <CardDescription>Occurrences of Total Scores</CardDescription>
+        <CardTitle>Total Student Each Score</CardTitle>
+        <CardDescription>Number of students with achieved scores</CardDescription>
       </CardHeader>
       <CardContent>
         {loading ? (
@@ -107,7 +105,7 @@ export function LineChartComponent() {
         ) : error ? (
           <div>{error}</div>
         ) : (
-          <ChartContainer config={chartConfig} className="m-10">
+          <ChartContainer config={chartConfig} className="w-full h-[500px]">
             <LineChart
               accessibilityLayer
               data={chartData}
@@ -119,10 +117,15 @@ export function LineChartComponent() {
               <CartesianGrid vertical={false} />
               <XAxis
                 dataKey="score"
-                tickLine={false}
-                axisLine={false}
+                tickLine={true}
+                axisLine={true}
                 tickMargin={8}
                 tickFormatter={(value) => value.toString()}
+              />
+              <YAxis
+                tickLine={true}
+                axisLine={true}
+                tickMargin={10}
               />
               <ChartTooltip
                 cursor={false}
