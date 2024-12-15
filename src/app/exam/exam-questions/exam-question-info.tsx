@@ -29,15 +29,10 @@ const ExamQuestionItem: React.FC<ExamQuestionItemProps> = ({ question, examPaper
     return (
         <div className="border p-4 rounded-lg shadow-sm space-y-2">
             <div className="flex justify-between items-center">
+                <div className="flex space-x-2 min-w-[80%]" onClick={onToggle}>
                 <h3 className="font-bold text-lg">{question.questionContent}</h3>
-                <div className="flex space-x-2">
-                    {/* Nút bật/tắt thông tin */}
-                    <button
-                        onClick={onToggle}
-                        className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
-                    >
-                        {isExpanded ? "Hide Details" : "Show Details"}
-                    </button>
+                </div>
+                <div>
                     <UpdateQuestion
                         examPaperId={examPaperId}
                         questionId={question.examQuestionId}

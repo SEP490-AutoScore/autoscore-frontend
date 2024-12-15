@@ -6,6 +6,8 @@ import { Alert } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { useToastNotification } from "@/hooks/use-toast-notification";
+import { PencilLine } from "lucide-react";
+import { checkPermission } from "@/hooks/use-auth";
 
 interface Important {
     importantId: number;
@@ -30,6 +32,10 @@ export default function UpdateExamPaper({ examPaperId, subjectId, examId }: Upda
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const showToast = useToastNotification();
+    const hasPermission = checkPermission({ permission: "CREATE_EXAM_PAPER" });
+    if (!hasPermission) {
+        return <></>
+    }
 
     // Fetch exam paper details and importants
     useEffect(() => {
@@ -125,8 +131,12 @@ export default function UpdateExamPaper({ examPaperId, subjectId, examId }: Upda
 
     return (
         <>
-            <Button onClick={() => setOpen(true)} variant="outline">
-                Update Exam Paper
+            <Button
+                onClick={() => setOpen(true)}
+                variant="outline"
+                className="p-2.5 h-10 w-10 rounded-full border-primary text-primary hover:text-white hover:bg-primary"
+            >
+                <PencilLine />
             </Button>
 
             <Dialog open={open} onOpenChange={setOpen}>

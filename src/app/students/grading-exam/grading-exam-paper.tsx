@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "@/components/ui/button";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";// Assuming you have an Input component
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { checkPermission } from "@/hooks/use-auth";
 
 interface ExamPaperIdDialogButtonProps {
   examPaperId: number; // Prop to receive the examPaperId
@@ -54,6 +55,10 @@ const ExamPaperIdDialogButton: React.FC<ExamPaperIdDialogButtonProps> = ({ examP
       alert(`Error`);
     }
   };
+  const hasPermission = checkPermission({ permission: "CREATE_EXAM_PAPER" });
+  if (!hasPermission) {
+      return <></>
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>

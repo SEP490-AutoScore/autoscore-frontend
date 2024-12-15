@@ -121,6 +121,7 @@ export const API_ENDPOINTS = {
   getExamPapers: "/api/exam-paper/list",
   getExamPaperInfo: "/api/exam-paper",
   getListExamPaper: "/api/exam-paper/all",
+  importExamQuestion: "/api/document/import",
 
   //important
   getImportant: "/api/important",

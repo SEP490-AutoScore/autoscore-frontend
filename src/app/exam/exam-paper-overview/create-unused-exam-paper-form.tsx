@@ -3,6 +3,7 @@
 import * as React from "react";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { Button } from "@/components/ui/button";
+import { checkPermission } from "@/hooks/use-auth";
 import {
   Dialog,
   DialogTrigger,
@@ -44,6 +45,7 @@ export const CreateExamPaperDialog: React.FC<CreateExamPaperDialogProps> = ({
   const [selectedImportants, setSelectedImportants] = React.useState<Set<number>>(
     new Set()
   );
+  const hasPermission = checkPermission({ permission: "CREATE_EXAM" });
   const [error, setError] = React.useState<string>("");
 
   React.useEffect(() => {
@@ -161,6 +163,10 @@ export const CreateExamPaperDialog: React.FC<CreateExamPaperDialogProps> = ({
     }
   };
   
+  if (!hasPermission) {
+    return <></>
+}
+
 
   return (
     <Dialog>
