@@ -121,6 +121,7 @@ export const API_ENDPOINTS = {
   getExamPapers: "/api/exam-paper/list",
   getExamPaperInfo: "/api/exam-paper",
   getListExamPaper: "/api/exam-paper/all",
+  importExamQuestion: "/api/document/import",
 
   //important
   getImportant: "/api/important",
@@ -145,8 +146,6 @@ export const API_ENDPOINTS = {
   studentScoresBarChart: "/api/score/student-scores",
   analyzeLogOnePass: "/api/score/analyze-log-one-pass",
   analyzeLogAllPass: "/api/score/analyze-log-all-pass",
-
-  analyzeLogEachTest: "/api/score/analyze-log-each-test",
   dropdownList: "/api/exam/list-exam-exampaper",
 
 

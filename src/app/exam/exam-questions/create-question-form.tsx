@@ -3,13 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter } from "@/components/ui/dialog";
+import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
+import { useToastNotification } from "@/hooks/use-toast-notification";
+import { Plus } from "lucide-react";
+import { checkPermission } from "@/hooks/use-auth";
 
-interface CreateQuestionFormProps {
-    onCreate: (newQuestionData: any) => void;
-    onClose: () => void;
+interface ExamQuestionsCreateProps {
+    examPaperId: number;
 }
 
-const CreateQuestionForm: React.FC<CreateQuestionFormProps> = ({ onCreate, onClose }) => {
+const CreateQuestionForm: React.FC<ExamQuestionsCreateProps> = ({ examPaperId }) => {
     const [questionContent, setQuestionContent] = useState<string>("");
     const [examQuestionScore, setExamQuestionScore] = useState<number>(0);
     const [endPoint, setEndPoint] = useState<string>("");
@@ -21,6 +25,41 @@ const CreateQuestionForm: React.FC<CreateQuestionFormProps> = ({ onCreate, onClo
     const [validation, setValidation] = useState<string>("");
     const [sucessResponse, setSuccessResponse] = useState<string>("");
     const [errorResponse, setErrorResponse] = useState<string>("");
+
+    const showToast = useToastNotification();
+    const hasPermission = checkPermission({ permission: "CREATE_QUESTION" });
+    if (!hasPermission) {
+        return <></>
+    }
+
+    const handleCreateQuestion = (newQuestionData: any) => {
+        const token = localStorage.getItem("jwtToken");
+
+        const requestBody = { ...newQuestionData };
+
+        fetch(`${BASE_URL}${API_ENDPOINTS.getQuestion}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(requestBody),
+        })
+            .then((response) => {
+                if (!response.ok) throw new Error("Failed to create new question.");
+                return response.json();
+            })
+            .then(() => {
+                showToast({
+                    title: "Create success",
+                    description: "Create new exam paper success",
+                    variant: "default",
+                });
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -37,21 +76,25 @@ const CreateQuestionForm: React.FC<CreateQuestionFormProps> = ({ onCreate, onClo
             sucessResponse,
             errorResponse,
             orderBy: 0,
-            examPaperId: 0,
+            examPaperId: examPaperId,
         };
-        onCreate(newQuestionData);
-        onClose();
+        handleCreateQuestion(newQuestionData);
     };
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div
-                className="bg-white p-6 rounded-lg w-3/4 max-w-3xl"
-                style={{
-                    maxHeight: "90vh", // Giới hạn chiều cao tối đa
-                    overflowY: "auto", // Kích hoạt cuộn nếu nội dung vượt quá chiều cao
-                }}
-            >
+        <Dialog>
+            <DialogTrigger>
+                <Button
+                    variant="outline"
+                    className="p-2.5 h-10 w-10 rounded-full border-primary text-primary hover:text-white hover:bg-primary"
+                >
+                    <Plus className="h-6 w-6" />
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="min-w-[100vh] max-h-[80vh] overflow-auto">
+                <DialogHeader>
+                    <h3>Create New Question</h3>
+                </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <Label htmlFor="questionContent">Question Content</Label>
@@ -182,24 +225,16 @@ const CreateQuestionForm: React.FC<CreateQuestionFormProps> = ({ onCreate, onClo
                         />
                     </div>
 
-                    <div className="flex justify-end space-x-4">
-                        <Button
-                            type="submit"
-                            className="w-auto bg-white text-black hover:bg-orange-500 hover:text-white"
-                        >
+                    <DialogFooter>
+                        <Button type="submit"
+                            variant="outline"
+                            className="mt-4 w-full py-3 text-lg font-semibold shadow-md focus:ring-2 focus:ring-blue-400">
                             Create Question
                         </Button>
-                        <Button
-                            type="button"
-                            onClick={onClose}
-                            className="w-auto bg-white text-black hover:bg-orange-500 hover:text-white"
-                        >
-                            Cancel
-                        </Button>
-                    </div>
+                    </DialogFooter>
                 </form>
-            </div>
-        </div>
+            </DialogContent>
+        </Dialog>
     );
 };
 
