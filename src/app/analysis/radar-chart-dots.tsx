@@ -22,7 +22,7 @@ import {
 
 const chartConfig = {
   passCount: {
-    label: "Pass Count",
+    label: "Count",
     color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig;
@@ -102,19 +102,36 @@ export function RadarChartDotsComponent({ examPaperId }: { examPaperId: string }
   }
 
   if (error) {
-    return <p>Error: {error}</p>;
+    return (
+      <Card>
+        <CardHeader className="items-center">
+          <CardTitle>Radar Chart - Pass Analysis</CardTitle>
+          <CardDescription>
+            No data available for the analysis.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="pb-0 flex justify-center items-center h-full">
+          <p>No data available for this exam paper.</p>
+        </CardContent>
+     
+      </Card>
+    );
   }
+
 
   const displayData = chartData.length > 0 ? chartData : placeholderData
 
+
   return (
     <Card>
-      <CardHeader className="items-center">
-        <CardTitle>Radar Chart - Pass Analysis</CardTitle>
-        <CardDescription>
-          Analyzing pass count for each function
-        </CardDescription>
-      </CardHeader>
+  <CardHeader className="">
+  <CardTitle>Pass At Least 1 Pmtest</CardTitle>
+  <CardDescription>
+   Students passing at least one pmtest.
+  </CardDescription>
+</CardHeader>
+
+
       <CardContent className="pb-0">
         <ChartContainer
           config={chartConfig}
@@ -126,7 +143,7 @@ export function RadarChartDotsComponent({ examPaperId }: { examPaperId: string }
             <PolarGrid />
             <Radar
               dataKey="passCount"
-              fill="var(--color-passCount)"
+              fill="#FF8D29"
               fillOpacity={0.6}
               dot={{
                 r: 4,
@@ -136,6 +153,7 @@ export function RadarChartDotsComponent({ examPaperId }: { examPaperId: string }
           </RadarChart>
         </ChartContainer>
       </CardContent>
+
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 font-medium leading-none">
         {loading ? (
@@ -158,6 +176,7 @@ export function RadarChartDotsComponent({ examPaperId }: { examPaperId: string }
           )}
         </div>
       </CardFooter>
+
     </Card>
   );
 }

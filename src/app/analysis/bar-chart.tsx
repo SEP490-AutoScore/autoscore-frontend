@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, Tooltip } from "recharts";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 
 import {
@@ -26,10 +26,18 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+interface ChartDataItem {
+  student: string;
+  score: number;
+}
+
+
 export function BarChartComponent({ examPaperId }: { examPaperId: string }) {
-  const [chartData, setChartData] = useState([]);
+  const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+
 
   useEffect(() => {
     if (!examPaperId) return;
@@ -61,11 +69,14 @@ export function BarChartComponent({ examPaperId }: { examPaperId: string }) {
         }
 
         const data = await response.json(); // Parse dữ liệu JSON từ API
-        // Map dữ liệu để phù hợp với biểu đồ (tuỳ chỉnh theo API trả về)
-        const mappedData = data.map((item: any) => ({
+        // Map dữ liệu để phù hợp với biểu đồ và sắp xếp theo điểm số tăng dần
+        const mappedData = data
+        .map((item: any) => ({
           student: item.studentCode,
           score: item.totalScore,
-        }));
+        }))
+        .sort((a: ChartDataItem, b: ChartDataItem) => a.score - b.score); // Sort by score
+      
         setChartData(mappedData);
       } catch (err: unknown) {
         if(err instanceof Error){
@@ -84,7 +95,9 @@ export function BarChartComponent({ examPaperId }: { examPaperId: string }) {
       <CardHeader>
         <CardTitle>Student Scores</CardTitle>
         <CardDescription>
+
           Scores for exam paper:
+
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -96,24 +109,37 @@ export function BarChartComponent({ examPaperId }: { examPaperId: string }) {
           <ChartContainer config={chartConfig}>
             <BarChart accessibilityLayer data={chartData}>
               <CartesianGrid vertical={false} />
+              {/* Hide the studentCode on the X-axis */}
               <XAxis
                 dataKey="student"
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
+                hide // This will hide the student codes from the X-axis
               />
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent hideLabel />}
+              {/* Tooltip to display studentCode and score when hovering */}
+              <Tooltip
+                content={({ payload }) => {
+                  if (payload && payload.length > 0) {
+                    const { student, score } = payload[0].payload;
+                    return (
+                      <div className="p-2 bg-white shadow-lg rounded">
+                        <div><strong>Student Code: </strong>{student}</div>
+                        <div><strong>Score: </strong>{score}</div>
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
               />
-              <Bar dataKey="score" fill="var(--color-desktop)" radius={8} />
+              <Bar dataKey="score" fill="#FF8D29" radius={8} />
             </BarChart>
           </ChartContainer>
         )}
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="leading-none text-muted-foreground">
-          Student scores for the selected exam paper
+       
         </div>
       </CardFooter>
     </Card>

@@ -3,12 +3,14 @@ import { SidebarInset } from "@/components/ui/sidebar";
 import { CardHeaderAnalysis } from "./card-header";
 import { Book } from "lucide-react";
 import { BarChartComponent } from "./bar-chart";
-import { BarChartStackedComponent } from "./bar-chart-stacked";
+
 import { RadarChartDotsComponent } from "./radar-chart-dots";
 import { RadarChartDotsAllPassComponent } from "./radar-chart-dots-allpass";
+import { RadarChartDotsNoPassComponent } from "./radar-chart-dots-nopass";
 import { DropdownList } from "./dropdown-list";
 import { useState, useEffect } from "react";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
+import { BarChartMultipleComponent } from "./bar-chart-multiple";
 
 export default function Page() {
   const Header = useHeader({
@@ -68,7 +70,7 @@ export default function Page() {
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
-        }else setError("An error occurred while fetching data.")
+        } else setError("An error occurred while fetching data.")
         setLoading(false);
       }
     };
@@ -113,7 +115,7 @@ export default function Page() {
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
-        }else setError("An error occurred while fetching data.")
+        } else setError("An error occurred while fetching data.")
         setLoading(false);
       }
     };
@@ -158,7 +160,7 @@ export default function Page() {
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
-        }else setError("An error occurred while fetching data.")
+        } else setError("An error occurred while fetching data.")
         setLoading(false);
       }
     };
@@ -179,6 +181,7 @@ export default function Page() {
           </div>
 
           {/* Thông tin tổng học sinh */}
+
           <div className="col-span-4 md:col-span-4 grid grid-cols-3 gap-6">
             <div className="col-span-3 md:col-span-1">
               <CardHeaderAnalysis
@@ -188,10 +191,10 @@ export default function Page() {
                   loading
                     ? "Loading total students..."
                     : error
-                    ? `Error: ${error}`
-                    : totalStudents !== null
-                    ? `Total Students: ${totalStudents}`
-                    : "Overview"
+                      ? `Error: ${error}`
+                      : totalStudents !== null
+                        ? `Total Students: ${totalStudents}`
+                        : "Overview"
                 }
                 icon={Book}
               />
@@ -206,10 +209,10 @@ export default function Page() {
                   loading
                     ? "Loading zero score data..."
                     : error
-                    ? `Error: ${error}`
-                    : studentsWithZeroScore !== null
-                    ? `Zero Score: ${studentsWithZeroScore}`
-                    : "Overview"
+                      ? `Error: ${error}`
+                      : studentsWithZeroScore !== null
+                        ? `Zero Score: ${studentsWithZeroScore}`
+                        : "Overview"
                 }
                 icon={Book}
               />
@@ -224,27 +227,44 @@ export default function Page() {
                   loading
                     ? "Loading score data..."
                     : error
-                    ? `Error: ${error}`
-                    : studentsWithScoreGreaterThanZero !== null
-                    ? `Score > 0: ${studentsWithScoreGreaterThanZero}`
-                    : "Overview"
+                      ? `Error: ${error}`
+                      : studentsWithScoreGreaterThanZero !== null
+                        ? `Score > 0: ${studentsWithScoreGreaterThanZero}`
+                        : "Overview"
                 }
                 icon={Book}
               />
             </div>
+
           </div>
         </div>
 
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="col-span-1">
+
             <BarChartComponent examPaperId={selectedExamPaper || ""} />
           </div>
 
+
+
+          {/* pass toàn phần */}
+          <div className="col-span-2">
+
+            <RadarChartDotsAllPassComponent examPaperId={selectedExamPaper || ""} />
+
+
+          </div>
+
+
           {/* pass 1 phần */}
 
+
           <div className="col-span-1">
+
             <RadarChartDotsComponent examPaperId={selectedExamPaper || ""} />
           </div>
+
 
           {/* pass toàn phần */}
           <div className="col-span-1">
@@ -253,9 +273,8 @@ export default function Page() {
             />
           </div>
 
-          <div className="col-span-1">
-            <BarChartStackedComponent examPaperId={selectedExamPaper || ""} />
-          </div>
+
+
         </div>
       </div>
     </SidebarInset>

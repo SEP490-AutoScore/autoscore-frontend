@@ -137,6 +137,7 @@ export function ExamPaperCard({
       <Card
         key={examPaper.examPaperId}
         className="shadow-none hover:shadow-md cursor-pointer"
+
       >
         <CardContent className="p-4 w-full">
           <div className="flex justify-between items-center">
