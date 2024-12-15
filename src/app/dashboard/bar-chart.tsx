@@ -8,7 +8,7 @@ type BarChartComponentProps = {
     Summer: number;
     Fall: number;
   };
-  loading: boolean;
+
   error: string | null;
   year: string;
   handleYearChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -21,16 +21,25 @@ const chartConfig = {
   },
 };
 
-export function BarChartComponent({ data, loading, error, year, handleYearChange }: BarChartComponentProps) {
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+export function BarChartComponent({ data, error, year, handleYearChange }: BarChartComponentProps) {
+
+
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <Card className="h-full">
+        <CardHeader className="">
+          <CardTitle>Exams Each Year</CardTitle>
+
+          <CardDescription>
+            There is no data for statistics
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
   }
 
-  // Dữ liệu cho BarChart
+  // Data for BarChart
   const chartData = [
     { semester: "Spring", count: data.Spring },
     { semester: "Summer", count: data.Summer },
@@ -44,7 +53,7 @@ export function BarChartComponent({ data, loading, error, year, handleYearChange
   return (
     <Card>
       <CardHeader className="relative">
-        <CardTitle>Exams per Semester</CardTitle>
+        <CardTitle>Exams Each Year</CardTitle>
         <CardDescription>Exams counts per semester for selected year</CardDescription>
 
         {/* Dropdown select to choose year */}
@@ -65,11 +74,13 @@ export function BarChartComponent({ data, loading, error, year, handleYearChange
       </CardHeader>
 
       <CardContent>
-        <ChartContainer config={chartConfig}>
-          <BarChart width={500} height={300} data={chartData}>
+        <ChartContainer config={chartConfig} className="w-full h-[500px]">
+          <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="semester" />
-            <YAxis />
+            <XAxis dataKey="semester" tickLine={true}
+              axisLine={true} />
+            <YAxis tickLine={true}
+              axisLine={true} />
             <Tooltip />
             <Legend />
             <Bar

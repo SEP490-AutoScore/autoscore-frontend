@@ -174,104 +174,95 @@ export default function Page() {
   return (
     <SidebarInset>
       {Header}
-      <div className="p-4 pt-0">
-        <div className="grid grid-cols-6 gap-6">
 
-          <div className="col-span-2">
-            <CardHeaderDashboard
-              title="Total Exams"
-              content={
-                loading
-                  ? "Loading..."
-                  : examCount !== null
-                  ? examCount.toString()
-                  : "Error"
-              }
-              description="Total number of exams."
-              icon={Book}
+      <div className="p-4 pt-0 space-y-6 ml-12 mr-12">
+        <div className="border border-gray-200 p-6 rounded-lg shadow-sm">
+          <div className="grid grid-cols-4 gap-6 mt-2 ml-2 mr-2">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold tracking-tight">Dashboard page</h2>
+              <p className="text-muted-foreground">
+                These are charts to analyze scores of all exam
+              </p>
+            </div>
+            <div className="col-span-4 md:col-span-4 grid grid-cols-3 gap-6 mb-6 ">
 
-            />
-          </div>
-
-          <div className="col-span-2">
-            <CardHeaderDashboard
-
-              title="Exams Grading Over Time"
-              content={
-                loading
-                  ? "Loading..."
-                  : examGradingAtCount !== null
-                  ? examGradingAtCount.toString()
-                  : "Error"
-              }
-              description="Number of exams passed the current time."
-              icon={Book}
-
-            />
-          </div>
-
-          <div className="col-span-2">
-            <CardHeaderDashboard
-
-              title="Exams Grading At Passed"
-              content={
-                loading
-                  ? "Loading..."
-                  : examGradingAtPassedCount !== null
-                  ? examGradingAtPassedCount.toString()
-                  : "Error"
-              }
-              description="Number of exams is passed."
-              icon={Book}
-
-            />
-          </div>
-          <div className="col-span-3 grid grid-cols-2">
-            {/* Bar chart for semester data */}
-            <div className="col-span-2">
-              <BarChartComponent
-                data={semesterData}
-                loading={loading}
-                error={error}
-                year={year}
-                handleYearChange={handleYearChange}
+              {/* Total exam */}
+              <CardHeaderDashboard
+                title="Total Exams"
+                description={
+                  loading
+                    ? "Loading..."
+                    : error
+                      ? "No data to Analysis"
+                      : examCount !== null
+                        ? `Count: ${examCount.toString()}`
+                        : ""
+                }
+                content="Exam Statistics"
+                icon={Book}
               />
-            </div>
-            <div className="col-span-2">
-              <TableStudentComponent />{" "}
-              {/* This will render the table of top students */}
+
+              {/* Total exam has not been graded */}
+              <CardHeaderDashboard
+                title="Exams Not Graded"
+                description={
+                  loading
+                    ? "Loading..."
+                    : error
+                      ? "No data to Analysis"
+                      : examGradingAtCount !== null
+                        ? `Count: ${examGradingAtCount.toString()}`
+                        : ""
+                }
+                content="Exam Statistics"
+                icon={Book}
+              />
+
+              {/* Total exam graded */}
+              <CardHeaderDashboard
+                title="Exams Graded"
+                description={
+                  loading
+                    ? "Loading..."
+                    : error
+                      ? "No data to Analysis"
+                      : examGradingAtPassedCount !== null
+                        ? `Count: ${examGradingAtPassedCount.toString()}`
+                        : ""
+                }
+                content="Exam Statistics"
+                icon={Book}
+              />
+
             </div>
           </div>
-          <div className="col-span-3 grid grid-cols-1">
-            {/* Line Chart Component */}
+
+          {/* Bar Chart and Pie Chart on the same row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 ml-2 mr-2">
             <div className="col-span-1">
-              <LineChartComponent /> {/* Render the new LineChartComponent */}
-            </div>
-            {/* Insert TableStudentComponent */}
-            <div className="col-span-1">
-              <PieChartComponent /> {/* Render the new LineChartComponent */}
+              {/* Total exam each year */}
+              <BarChartComponent data={semesterData} error={error} year={year} handleYearChange={handleYearChange} />
             </div>
             <div className="col-span-1">
-              <BarChartCustomLabelComponent />{" "}
-              {/* Render the new LineChartComponent */}
+              {/* Quality Score */}
+              <PieChartComponent />
             </div>
+          </div>
+
+          <div className="space-y-6 ml-2 mr-2">
+            {/* Score each student */}
+            <LineChartComponent />
+
+            {/* Score detail each student */}
+            <TableStudentComponent />
+
+            {/* All function api */}
+            <BarChartCustomLabelComponent />
           </div>
 
         </div>
-        {/* <div className="col-span-4">
-            <LineChartComponent />
-          </div>
-          <div className="col-span-4 border border-gray-200 p-4 rounded-lg shadow">
-            <DataTableDemo />
-          </div>
-          <div className="col-span-2">
-            <BarChartHorizontalComponent />
-          </div>
-          <div className="col-span-2">
-            <PieChartComponent />
-          </div> */}
-
       </div>
     </SidebarInset>
   );
+
 }

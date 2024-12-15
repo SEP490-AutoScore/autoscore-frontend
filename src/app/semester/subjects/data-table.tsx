@@ -80,16 +80,6 @@ export function DataTable<TData, TValue>({
         <CreateSubject/>
       </div>
       <div className="flex items-center py-4">
-        {/* <Input
-          placeholder="Filter emails..."
-          value={
-            (table.getColumn("")?.getFilterValue() as string) ?? ""
-          }
-          onChange={(event) =>
-            table.getColumn("")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        /> */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">

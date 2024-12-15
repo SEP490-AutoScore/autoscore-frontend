@@ -3,6 +3,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
+import { checkPermission } from "@/hooks/use-auth";
 
 const CreateSemesterDialog: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -46,6 +47,10 @@ const CreateSemesterDialog: React.FC = () => {
       setLoading(false);
     }
   };
+  const hasPermission = checkPermission({ permission: "CREATE_SEMESTER" });
+  if (!hasPermission) {
+    return <></>
+  }
 
   return (
     <div>
@@ -99,9 +104,8 @@ const CreateSemesterDialog: React.FC = () => {
           </DialogFooter>
           {message && (
             <p
-              className={`mt-4 text-sm ${
-                message.startsWith('Error') ? 'text-red-600' : 'text-green-600'
-              }`}
+              className={`mt-4 text-sm ${message.startsWith('Error') ? 'text-red-600' : 'text-green-600'
+                }`}
             >
               {message}
             </p>
