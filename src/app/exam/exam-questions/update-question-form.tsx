@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
+import { PencilLine } from "lucide-react";
+import { checkPermission } from "@/hooks/use-auth";
 
 interface UpdateQuestionProps {
     examPaperId: number;
@@ -105,12 +107,20 @@ export default function UpdateQuestion({ examPaperId, questionId }: UpdateQuesti
             .finally(() => setSubmitting(false));
     };
 
+    const hasPermission = checkPermission({ permission: "CREATE_QUESTION" });
+    if (!hasPermission) {
+        return <></>
+    }
+
     return (
         <>
-            <Button onClick={() => setOpen(true)} variant="outline">
-                Update Question
+            <Button
+              onClick={() => setOpen(true)}
+              variant="outline"
+              className="p-2.5 h-10 w-10 rounded-full border-primary text-primary hover:text-white hover:bg-primary"
+            >
+              <PencilLine />
             </Button>
-
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className="w-[80vw] max-w-4xl h-[80vh] overflow-y-auto">
                     <DialogHeader>
@@ -123,12 +133,17 @@ export default function UpdateQuestion({ examPaperId, questionId }: UpdateQuesti
                         </div>
                     ) : (
                         <div className="space-y-4">
-                            <Textarea
-                                placeholder="Question Content"
-                                value={formData.questionContent}
-                                onChange={(e) => handleInputChange("questionContent", e.target.value)}
-                                rows={4}
-                            />
+                            <div>
+                                <label htmlFor="payloadType" className="block text-sm font-medium text-gray-700">
+                                    Question Content
+                                </label>
+                                <Input
+                                    type="text"
+                                    value={formData.questionContent}
+                                    onChange={(e) => handleInputChange("questionContent", e.target.value)}
+                                    required
+                                />
+                            </div>
 
                             {/* Score and Role Allow in the Same Row */}
                             <div className="grid grid-cols-2 gap-4">
@@ -141,9 +156,19 @@ export default function UpdateQuestion({ examPaperId, questionId }: UpdateQuesti
                                         placeholder="Exam Question Score"
                                         type="number"
                                         value={formData.examQuestionScore}
-                                        onChange={(e) => handleInputChange("examQuestionScore", Number(e.target.value))}
+                                        onChange={(e) => {
+                                            const value = parseFloat(e.target.value);
+                                            if (value >= 0) {
+                                                handleInputChange("examQuestionScore", value);
+                                            }
+                                        }}
+                                        min={0}
+                                        max={10}
+                                        step="0.1"
+                                        required
                                     />
                                 </div>
+
                                 <div>
                                     <label htmlFor="roleAllow" className="block text-sm font-medium text-gray-700">
                                         Role Allow
@@ -167,9 +192,9 @@ export default function UpdateQuestion({ examPaperId, questionId }: UpdateQuesti
                                         id="httpMethod"
                                         value={formData.httpMethod}
                                         onChange={(e) => handleInputChange("httpMethod", e.target.value)}
-                                        className="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                        className="w-full p-2 border rounded"
+                                        required
                                     >
-                                        <option value="">Select HTTP Method</option>
                                         <option value="GET">GET</option>
                                         <option value="POST">POST</option>
                                         <option value="PUT">PUT</option>
@@ -189,6 +214,9 @@ export default function UpdateQuestion({ examPaperId, questionId }: UpdateQuesti
                                 </div>
                             </div>
 
+                            <label htmlFor="payloadType" className="block text-sm font-medium text-gray-700">
+                                Description
+                            </label>
                             <Textarea
                                 placeholder="Description"
                                 value={formData.description}
@@ -205,7 +233,7 @@ export default function UpdateQuestion({ examPaperId, questionId }: UpdateQuesti
                                     id="payloadType"
                                     value={formData.payloadType || ""}
                                     onChange={(e) => handleInputChange("payloadType", e.target.value)}
-                                    className="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                    className="w-full p-2 border rounded"
                                 >
                                     <option value="">Select Type</option>
                                     <option value="JSON">JSON</option>
@@ -213,24 +241,36 @@ export default function UpdateQuestion({ examPaperId, questionId }: UpdateQuesti
                                 </select>
                             </div>
 
+                            <label htmlFor="payloadType" className="block text-sm font-medium text-gray-700">
+                                Payload
+                            </label>
                             <Textarea
                                 placeholder="Payload"
                                 value={formData.payload}
                                 onChange={(e) => handleInputChange("payload", e.target.value)}
                                 rows={3}
                             />
+                            <label htmlFor="payloadType" className="block text-sm font-medium text-gray-700">
+                                Validation
+                            </label>
                             <Textarea
                                 placeholder="Validation"
                                 value={formData.validation}
                                 onChange={(e) => handleInputChange("validation", e.target.value)}
                                 rows={3}
                             />
+                            <label htmlFor="payloadType" className="block text-sm font-medium text-gray-700">
+                                Success Response
+                            </label>
                             <Textarea
                                 placeholder="Success Response"
                                 value={formData.sucessResponse}
                                 onChange={(e) => handleInputChange("sucessResponse", e.target.value)}
                                 rows={3}
                             />
+                            <label htmlFor="payloadType" className="block text-sm font-medium text-gray-700">
+                                Error Response
+                            </label>
                             <Textarea
                                 placeholder="Error Response"
                                 value={formData.errorResponse}

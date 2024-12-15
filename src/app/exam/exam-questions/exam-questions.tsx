@@ -3,7 +3,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import ExamQuestionItem from "./exam-question-info";
-import CreateQuestionForm from "./create-question-form";
+import ImportQuestion from "@/app/exam/exam-questions/import-question";
+import CreateQuestion from "@/app/exam/exam-questions/create-question-form";
 import { Button } from "@/components/ui/button";
 
 interface ExamQuestion {
@@ -20,7 +21,7 @@ interface ExamQuestion {
     sucessResponse: string | null;
     errorResponse: string | null;
     orderBy: number;
-    examPaperId:number;
+    examPaperId: number;
 }
 
 interface ExamQuestionsListProps {
@@ -32,8 +33,6 @@ const ExamQuestionsList: React.FC<ExamQuestionsListProps> = ({ examPaperId }) =>
     const [expandedQuestionId, setExpandedQuestionId] = useState<number | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [showCreateForm, setShowCreateForm] = useState<boolean>(false);
-    const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
     useEffect(() => {
         const token = localStorage.getItem("jwtToken");
@@ -60,33 +59,6 @@ const ExamQuestionsList: React.FC<ExamQuestionsListProps> = ({ examPaperId }) =>
         setExpandedQuestionId(prevId => (prevId === id ? null : id));
     };
 
-    const handleCreateQuestion = (newQuestionData: any) => {
-        const token = localStorage.getItem("jwtToken");
-
-        const requestBody = { ...newQuestionData, examPaperId };
-
-        fetch(`${BASE_URL}${API_ENDPOINTS.getQuestion}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(requestBody),
-        })
-            .then((response) => {
-                if (!response.ok) throw new Error("Failed to create new question.");
-                return response.json();
-            })
-            .then((data) => {
-                setQuestions(prevQuestions => [...prevQuestions, data]);
-                setSuccessMessage("Question created successfully!");
-                setShowCreateForm(false); // Close modal on success
-            })
-            .catch((err) => setError(err.message));
-    };
-
-    const toggleFormVisibility = () => setShowCreateForm(prevState => !prevState);
-
     const renderLoadingState = () => (
         <div className="space-y-4">
             <Skeleton className="h-6 w-3/4" />
@@ -106,29 +78,15 @@ const ExamQuestionsList: React.FC<ExamQuestionsListProps> = ({ examPaperId }) =>
         <div className="space-y-4">
             <div className="flex justify-end">
                 <Button
-                    onClick={toggleFormVisibility}
                     size="sm"
                     className="w-auto border border-gray-300 text-black bg-white hover:bg-orange-500 hover:text-white transition-colors duration-200"
                 >
-                    {showCreateForm ? "Cancel" : "Create New Question"}
                 </Button>
-            </div>
-            {showCreateForm && (
-                <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-10">
-                    <div className="bg-white p-6 rounded-md w-full sm:w-96">
-                        <CreateQuestionForm
-                            onCreate={handleCreateQuestion}
-                            onClose={() => setShowCreateForm(false)} // Pass onClose to close modal
-                        />
-                    </div>
+                <div className="flex space-x-4">
+                    <CreateQuestion examPaperId={examPaperId} />
+                    <ImportQuestion examPaperId={examPaperId} />
                 </div>
-            )}
-            {successMessage && (
-                <Alert variant="default">
-                    <AlertTitle>Success</AlertTitle>
-                    <AlertDescription>{successMessage}</AlertDescription>
-                </Alert>
-            )}
+            </div>
             <Alert variant="default">
                 <AlertTitle>No Questions Found</AlertTitle>
                 <AlertDescription>This exam paper has no questions.</AlertDescription>
@@ -140,35 +98,16 @@ const ExamQuestionsList: React.FC<ExamQuestionsListProps> = ({ examPaperId }) =>
         <div className="space-y-4">
             <div className="space-y-4 border p-4 rounded-md"> {/* Wrapper for questions */}
                 <div className="flex justify-end">
-                    <Button
-                        onClick={toggleFormVisibility}
-                        size="sm"
-                        className="w-auto border border-gray-300 text-black bg-white hover:bg-orange-500 hover:text-white transition-colors duration-200"
-                    >
-                        {showCreateForm ? "Cancel" : "Create New Question"}
-                    </Button>
-                </div>
-                {showCreateForm && (
-                    <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-10">
-                        <div className="bg-white p-6 rounded-md w-full sm:w-96">
-                            <CreateQuestionForm
-                                onCreate={handleCreateQuestion}
-                                onClose={() => setShowCreateForm(false)} // Pass onClose to close modal
-                            />
-                        </div>
+                    <div className="flex space-x-4">
+                        <CreateQuestion examPaperId={examPaperId} />
+                        <ImportQuestion examPaperId={examPaperId} />
                     </div>
-                )}
-                {successMessage && (
-                    <Alert variant="default">
-                        <AlertTitle>Success</AlertTitle>
-                        <AlertDescription>{successMessage}</AlertDescription>
-                    </Alert>
-                )}
+                </div>
                 {questions.map((question) => (
                     <div key={question.examQuestionId} className="border-b pb-4">
                         <ExamQuestionItem
                             question={question}
-                            examPaperId = {examPaperId}
+                            examPaperId={examPaperId}
                             isExpanded={expandedQuestionId === question.examQuestionId}
                             onToggle={() => toggleExpand(question.examQuestionId)}
                         />

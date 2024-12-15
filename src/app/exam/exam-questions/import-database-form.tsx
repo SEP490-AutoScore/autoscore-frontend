@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from '@/components/ui/dialog';
 import { Button } from "@/components/ui/button";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
+import { checkPermission } from "@/hooks/use-auth";
 
 interface AddDatabaseFormProps {
   examPaperId: number;
@@ -52,6 +53,10 @@ const AddDatabaseForm: React.FC<AddDatabaseFormProps> = ({ examPaperId, onAddSuc
       setError(err.message);
     }
   };
+  const hasPermission = checkPermission({ permission: "CREATE_EXAM_DATABASE" });
+  if (!hasPermission) {
+    return <></>
+  }
 
   return (
     <Dialog>
@@ -68,7 +73,7 @@ const AddDatabaseForm: React.FC<AddDatabaseFormProps> = ({ examPaperId, onAddSuc
           </DialogDescription>
         </DialogHeader>
         {error && <p className="text-red-500">{error}</p>}
-        
+
         {/* Note Textarea */}
         <div className="mt-4">
           <label className="block text-sm font-semibold text-gray-700" htmlFor="note">
@@ -82,7 +87,7 @@ const AddDatabaseForm: React.FC<AddDatabaseFormProps> = ({ examPaperId, onAddSuc
             className="w-full mt-2 p-2 border border-gray-300 rounded text-sm text-gray-500"
           />
         </div>
-        
+
         {/* Description Textarea */}
         <div className="mt-4">
           <label className="block text-sm font-semibold text-gray-700" htmlFor="description">

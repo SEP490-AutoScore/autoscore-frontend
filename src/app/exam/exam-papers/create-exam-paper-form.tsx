@@ -8,6 +8,7 @@ import { Alert } from "@/components/ui/alert";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Plus } from "lucide-react";
+import { checkPermission } from "@/hooks/use-auth";
 
 interface Important {
     importantId: number;
@@ -48,6 +49,10 @@ export function CreateExamPaperForm({
 
     const showToast = useToastNotification();
     const token = useMemo(() => localStorage.getItem("jwtToken"), []);
+    const hasPermission = checkPermission({ permission: "CREATE_EXAM_PAPER" });
+    if (!hasPermission) {
+        return <></>
+    }
 
     const handleInputChange = (key: string, value: string | number) => {
         setFormData((prevData) => ({

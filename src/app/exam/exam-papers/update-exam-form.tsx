@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import { PencilLine } from "lucide-react";
+import { checkPermission } from "@/hooks/use-auth";
 import {
   Tooltip,
   TooltipContent,
@@ -60,6 +61,10 @@ const UpdateExamDialog: React.FC<UpdateExamDialogProps> = ({
   const [dialogOpen, setDialogOpen] = useState(false);
   const token = localStorage.getItem("jwtToken");
   const showToast = useToastNotification();
+  const hasPermission = checkPermission({ permission: "CREATE_EXAM"});
+  if (!hasPermission) {
+    return <></>
+  }
 
   useEffect(() => {
     const fetchExam = async () => {
