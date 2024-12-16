@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { User, fetchUserData, updateUserData } from "./api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import { ProfileSkeleton } from "./skeleton";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "@/context/UserContext";
+import { useCookie } from "@/hooks/use-cookie";
+import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 
 const formSchema = z
   .object({
@@ -57,9 +61,13 @@ export function Profile({ id }: { id: number }) {
   const [isEditing, setIsEditing] = useState(false);
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
+  const [previewAvatar, setPreviewAvatar] = useState<string | null>(null);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { setAvatar, setName, setEmail } = useUser();
+  const { setCookie, getCookie, deleteCookie } = useCookie();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const showToast = useToastNotification();
+  const navigate = useNavigate();
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -76,20 +84,80 @@ export function Profile({ id }: { id: number }) {
     },
   });
 
+  const handleUnauthorized = useCallback(async () => {
+    try {
+      const refreshToken = getCookie("refreshToken");
+      if (!refreshToken) {
+        showToast({
+          title: "Session Expired",
+          description: "Please log in again.",
+          variant: "destructive",
+        });
+        localStorage.clear();
+        navigate("/");
+        return;
+      }
+
+      const response = await fetch(`${BASE_URL}${API_ENDPOINTS.refreshToken}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "*/*",
+        },
+        body: refreshToken,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem("jwtToken", data.accessToken);
+        localStorage.setItem("exp", data.exp.toString());
+        setCookie("refreshToken", data.refreshToken, data.exp);
+        showToast({
+          title: "Session Refreshed",
+          description: "Your session has been renewed.",
+        });
+      } else {
+        showToast({
+          title: "Session Expired",
+          description: "Please log in again.",
+          variant: "destructive",
+        });
+        localStorage.clear();
+        deleteCookie("refreshToken");
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Error handling 401:", error);
+      showToast({
+        title: "Error",
+        description: "An error occurred while refreshing session.",
+        variant: "destructive",
+      });
+      localStorage.clear();
+      deleteCookie("refreshToken");
+      navigate("/");
+    }
+  }, [getCookie, showToast, navigate, setCookie, deleteCookie]);
+
   useEffect(() => {
     fetchUserData(id).then((data) => {
       setUser(data);
       form.reset(data);
+      setAvatar(data.avatar);
+      setName(data.name);
       setIsLoading(false);
     });
-  }, [form, id]);
+  }, [form, id, setAvatar, setName, setEmail]);
 
   const onSubmit = async (values: FormValues) => {
     setIsUpdating(true);
     try {
-      const updatedUser = await updateUserData(values, id, showToast);
+      const updatedUser = await updateUserData(values, id, showToast, navigate);
       setUser(updatedUser);
       form.reset(updatedUser);
+      setAvatar(updatedUser.avatar);
+      setName(updatedUser.name);
+      handleUnauthorized();
       setIsEditing(false);
     } catch (error) {
       console.error("Failed to update user data:", error);
@@ -103,7 +171,9 @@ export function Profile({ id }: { id: number }) {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        form.setValue("avatar", reader.result); // Gửi Base64
+        const result = reader.result as string;
+        form.setValue("avatar", result); // Lưu Base64 vào form để gửi đi
+        setPreviewAvatar(result); // Lưu ảnh tạm vào state
       };
       reader.readAsDataURL(file);
     }
@@ -126,7 +196,7 @@ export function Profile({ id }: { id: number }) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-4">
             {/* Part 1: Avatar and Full Name */}
@@ -134,7 +204,7 @@ export function Profile({ id }: { id: number }) {
               <CardHeader>
                 <CardTitle>Profile</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-2">
                 <div className="flex flex-col items-center space-y-4">
                   <FormField
                     control={form.control}
@@ -145,7 +215,7 @@ export function Profile({ id }: { id: number }) {
                           <div className="relative">
                             <Avatar className="w-32 h-32">
                               <AvatarImage
-                                src={user?.avatar || ""}
+                                src={previewAvatar || user?.avatar || ""}
                                 alt={form.getValues("name")}
                               />
                               <AvatarFallback>
@@ -205,7 +275,7 @@ export function Profile({ id }: { id: number }) {
               <CardHeader>
                 <CardTitle>Change Password</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-2">
                 <FormField
                   control={form.control}
                   name="oldPassword"
@@ -327,7 +397,7 @@ export function Profile({ id }: { id: number }) {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input {...field} type="email" disabled={!isEditing} />
+                      <Input {...field} type="email" disabled/>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -1,5 +1,4 @@
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
-
 export interface User {
   accountId: number;
   name: string;
@@ -32,13 +31,21 @@ export async function fetchUserData(id: number): Promise<User> {
     throw new Error(`Failed to fetch data: ${await res.text()}`);
   }
 
-  return res.json();
+  
+  const data: User = await res.json();
+
+  // Lưu avatar vào localStorage
+  if (data.avatar) {
+    localStorage.setItem("avatar", data.avatar);
+  }
+  return data;
 }
 
 export async function updateUserData(
   data: Partial<User>,
   id: number,
-  showToast: any
+  showToast: any,
+  navigate: any
 ): Promise<User> {
   // Simulate API call delay
   await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -87,6 +94,9 @@ export async function updateUserData(
         description: `Account has been updated successfully`,
         variant: "default",
       });
+      navigate(
+        (localStorage.getItem("selectedItem") as string) || "/dashboard"
+      );
     } else {
       showToast({
         title: "Updated Failed",
