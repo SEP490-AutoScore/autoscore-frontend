@@ -11,6 +11,14 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { ChartConfig, ChartContainer } from "@/components/ui/chart";
+
+const chartConfig = {
+    desktop: {
+        label: "Desktop",
+        color: "hsl(var(--chart-1))",
+    },
+} satisfies ChartConfig;
 
 interface PlagiarismData {
     studentCodePlagiarism: string;
@@ -76,40 +84,60 @@ export function BarChartPlagiarismComponent({ examPaperId }: { examPaperId: stri
             </Card>
         );
     }
-
     return (
         <Card>
             <CardHeader>
                 <CardTitle>Student Plagiarism</CardTitle>
-                <CardDescription>Percentage of plagiarism per student.</CardDescription>
+                <CardDescription>
+                    Percentage of plagiarism each student.
+                </CardDescription>
             </CardHeader>
             <CardContent>
                 {loading ? (
                     <p>Loading...</p>
-                ) : error ? (
-                    <p>Error: {error}</p>
                 ) : (
-                    <BarChart
-                        width={500}
-                        height={300}
-                        data={chartData}
-                        margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
-                    >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="studentCodePlagiarism"
-                            tickLine={true}
-                            axisLine={true} />
-                        <YAxis
-                            label={{ value: "Plagiarism (%)", angle: -90, position: "insideLeft" }}
-                            tickLine={true}
-                            axisLine={true}
-                        />
-                        <Tooltip
-                            formatter={(value: number) => `${value}%`}
-                            labelFormatter={(label: string) => `Student: ${label}`}
-                        />
-                        <Bar dataKey="plagiarismPercentage" fill="#FF5733" radius={4} />
-                    </BarChart>
+                    <ChartContainer config={chartConfig} className="w-full h-[500px]">
+                        <BarChart data={chartData} barSize={60}>
+                            <CartesianGrid vertical={false} />
+                            <XAxis
+                                dataKey="studentCodePlagiarism"
+                                tickLine={true}
+                                tickMargin={10}
+                                axisLine={true}
+                            />
+                            <YAxis
+                                tickLine={true}
+                                axisLine={true}
+                                tickMargin={10}
+                                label={{
+                                    value: "",
+                                    angle: -90,
+                                    position: "insideLeft",
+                                }}
+                            />
+                            <Tooltip
+                                content={({ payload }) => {
+                                    if (payload && payload.length > 0) {
+                                        const { studentCodePlagiarism, plagiarismPercentage } = payload[0].payload;
+                                        return (
+                                            <div className="p-2 bg-white shadow-lg rounded">
+                                                <div>
+                                                    <strong>Student: </strong>
+                                                    {studentCodePlagiarism}
+                                                </div>
+                                                <div>
+                                                    <strong>Plagiarism: </strong>
+                                                    {plagiarismPercentage}%
+                                                </div>
+                                            </div>
+                                        );
+                                    }
+                                    return null;
+                                }}
+                            />
+                            <Bar dataKey="plagiarismPercentage" fill="#FF8D29" radius={8} />
+                        </BarChart>
+                    </ChartContainer>
                 )}
             </CardContent>
             <CardFooter className="flex-col items-start gap-2 text-sm">
