@@ -1,7 +1,7 @@
 import { useHeader } from "@/hooks/use-header";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { CardHeaderDashboard } from "./card-header";
-import { Book } from "lucide-react";
+import { Book, BookOpen, BookOpenCheck } from "lucide-react";
 import { BarChartComponent } from "./bar-chart";
 import { useState, useEffect } from "react";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
@@ -177,13 +177,13 @@ export default function Page() {
 
       <div className="p-4 pt-0 space-y-6">
         <div className="border border-gray-200 p-6 rounded-lg shadow-sm">
-          <div className="grid grid-cols-4 gap-6">
             <div className="mb-6">
               <h2 className="text-2xl font-bold tracking-tight">Dashboard page</h2>
               <p className="text-muted-foreground">
                 These are charts to analyze scores of all exam
               </p>
             </div>
+          <div className="grid grid-cols-4 gap-6">
             <div className="col-span-4 md:col-span-4 grid grid-cols-3 gap-6 mb-6 ">
 
               {/* Total exam */}
@@ -199,7 +199,7 @@ export default function Page() {
                         : ""
                 }
                 content="Exam Statistics"
-                icon={Book}
+                icon={BookOpen}
               />
 
               {/* Total exam has not been graded */}
@@ -231,7 +231,7 @@ export default function Page() {
                         : ""
                 }
                 content="Exam Statistics"
-                icon={Book}
+                icon={BookOpenCheck}
               />
 
             </div>
