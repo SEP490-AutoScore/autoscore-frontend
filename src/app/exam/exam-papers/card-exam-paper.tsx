@@ -53,13 +53,16 @@ export function ExamPaperCard({
 
   const handleExportLog = async () => {
     try {
-      const response = await fetch(`${BASE_URL}${API_ENDPOINTS.exportLog}?examPaperId=${examPaper.examPaperId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${BASE_URL}${API_ENDPOINTS.exportLog}?examPaperId=${examPaper.examPaperId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to export log.");
@@ -133,20 +136,21 @@ export function ExamPaperCard({
   };
 
   return (
-    <div className="my-2.5">
+    <div className="my-2.5" >
       <Card
         key={examPaper.examPaperId}
         className="shadow-none hover:shadow-md cursor-pointer"
-
       >
         <CardContent className="p-4 w-full">
           <div className="flex justify-between items-center">
-            <div className="flex justify-between w-1/3"
+            <div
+              className="flex justify-between w-1/3"
               onClick={() =>
                 navigate("/exams/exam-papers/exam-questions", {
                   state: { examId, examPaperId: examPaper.examPaperId },
                 })
-              }>
+              }
+            >
               <div>
                 <CardTitle className="text-md font-semibold">
                   Exam Paper Code

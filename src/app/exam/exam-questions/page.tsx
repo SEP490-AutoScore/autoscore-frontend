@@ -65,7 +65,7 @@ export default function ExamPaperDetails() {
   const [exam, setExam] = useState<Exam | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<string>("overview");
+  const [activeTab, setActiveTab] = useState<string>("details");
   const onGradingReload = location.state?.onGradingReload || false;
   const onScoreReload = location.state?.onScoreReload || false;
 
