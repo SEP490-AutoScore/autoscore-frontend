@@ -38,13 +38,6 @@ export const DropdownList: React.FC<DropdownProps> = ({ onSelect }) => {
         return;
       }
       try {
-<<<<<<< HEAD
-        const response = await fetch(`${BASE_URL}${API_ENDPOINTS.dropdownList}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-=======
         const response = await fetch(
           `${BASE_URL}${API_ENDPOINTS.dropdownList}`,
           {
@@ -53,8 +46,6 @@ export const DropdownList: React.FC<DropdownProps> = ({ onSelect }) => {
             },
           }
         );
-
->>>>>>> 05515fb7f6d97902ebff8a0b4b03a59e68dc7ab7
         if (!response.ok) {
           throw new Error(`Error fetching exams: ${response.statusText}`);
         }

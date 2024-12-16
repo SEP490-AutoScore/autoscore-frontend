@@ -161,12 +161,9 @@ export default function Page() {
             <DropdownList onSelect={handleSelect} />
           </div>
           <div className="grid grid-cols-4 gap-6">
-<<<<<<< HEAD
             <div className="col-span-4 mb-6">
               <DropdownList onSelect={handleSelect} />
             </div>
-=======
->>>>>>> 05515fb7f6d97902ebff8a0b4b03a59e68dc7ab7
             <div className="col-span-4 md:col-span-4 grid grid-cols-3 gap-6 mb-6 ">
               {/* Total student in exam */}
               <CardHeaderAnalysis
@@ -232,13 +229,9 @@ export default function Page() {
             {/* Bar Chart - Response Time */}
             <BarChartMultipleComponent examPaperId={selectedExamPaper || ""} />
             {/* Bar Chart - Plagiarism */}
-<<<<<<< HEAD
-            <BarChartPlagiarismComponent examPaperId={selectedExamPaper || ""} />
-=======
             <BarChartPlagiarismComponent
               examPaperId={selectedExamPaper || ""}
             />
->>>>>>> 05515fb7f6d97902ebff8a0b4b03a59e68dc7ab7
           </div>
         </div>
       </div>

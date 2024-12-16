@@ -45,11 +45,7 @@ const chartConfig = {
     label: "Exam Counts",
     color: "#FF8D29",
   },
-<<<<<<< HEAD
-};
 
-export function BarChartComponent({ data, error, year, handleYearChange }: BarChartComponentProps) {
-=======
 } satisfies ChartConfig;
 
 export function BarChartComponent({
@@ -58,7 +54,7 @@ export function BarChartComponent({
   year,
   handleYearChange,
 }: BarChartComponentProps) {
->>>>>>> 05515fb7f6d97902ebff8a0b4b03a59e68dc7ab7
+
   if (error) {
     return (
       <Card className="h-full">
@@ -78,27 +74,13 @@ export function BarChartComponent({
   ];
   // Generate years from current year to 10 years ago
   const currentYear = new Date().getFullYear();
-<<<<<<< HEAD
   const years = Array.from({ length: 11 }, (_, index) => (currentYear - index).toString());
   return (
     <Card>
       <CardHeader className="relative">
         <CardTitle>Exams Each Year</CardTitle>
         <CardDescription>Exams counts per semester for selected year</CardDescription>
-=======
-  const years = Array.from({ length: 11 }, (_, index) =>
-    (currentYear - index).toString()
-  );
 
-  return (
-    <Card>
-      <CardHeader className="relative">
-        <CardTitle>Total Exams</CardTitle>
-        <CardDescription>
-          Exams counts per semester for selected year
-        </CardDescription>
-
->>>>>>> 05515fb7f6d97902ebff8a0b4b03a59e68dc7ab7
         {/* Dropdown select to choose year */}
         <div className="absolute top-2 right-2">
           <Select onValueChange={handleYearChange} defaultValue={year}>
@@ -132,8 +114,7 @@ export function BarChartComponent({
               axisLine={false}
               tickFormatter={(value) => value}
             />
-<<<<<<< HEAD
-=======
+
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
@@ -151,7 +132,6 @@ export function BarChartComponent({
                 fontSize={12}
               />
             </Bar>
->>>>>>> 05515fb7f6d97902ebff8a0b4b03a59e68dc7ab7
           </BarChart>
         </ChartContainer>
       </CardContent>
