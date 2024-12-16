@@ -19,16 +19,13 @@ export const useGenerateGherkinMore = (
       });
       return;
     }
-
     notify({
-        title: "Generating Gherkin...",
-        description: "Please wait while we generate the Gherkin format.",
-        variant: "default",
+      title: "Generating Gherkin...",
+      description: "Please wait while we generate the Gherkin format.",
+      variant: "default",
     });
-
     try {
       setLoading(true);
-
       const response = await fetch(
         `${BASE_URL}${API_ENDPOINTS.generateGherkinMore}?examQuestionId=${storedQuestionId}`,
         {
@@ -37,10 +34,9 @@ export const useGenerateGherkinMore = (
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(selectedGherkinIds), 
+          body: JSON.stringify(selectedGherkinIds),
         }
       );
-
       if (!response.ok) {
         notify({
           title: "Error",
@@ -49,9 +45,7 @@ export const useGenerateGherkinMore = (
         });
         return;
       }
-
       const result = await response.text();
-
       if (result === "Generate gherkin more successfully!") {
         notify({
           title: "Success",
@@ -62,9 +56,9 @@ export const useGenerateGherkinMore = (
           await fetchGherkinPostmanPairs(storedQuestionId);
         }
         else {
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000); 
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
         }
       } else {
         notify({
@@ -83,6 +77,5 @@ export const useGenerateGherkinMore = (
       setLoading(false);
     }
   };
-
   return { generateGherkinMore };
 };

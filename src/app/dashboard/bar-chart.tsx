@@ -35,7 +35,6 @@ type BarChartComponentProps = {
     Summer: number;
     Fall: number;
   };
-
   error: string | null;
   year: string;
   handleYearChange: (value: string) => void;
@@ -46,6 +45,7 @@ const chartConfig = {
     label: "Exam Counts",
     color: "#FF8D29",
   },
+
 } satisfies ChartConfig;
 
 export function BarChartComponent({
@@ -54,6 +54,7 @@ export function BarChartComponent({
   year,
   handleYearChange,
 }: BarChartComponentProps) {
+
   if (error) {
     return (
       <Card className="h-full">
@@ -65,28 +66,20 @@ export function BarChartComponent({
       </Card>
     );
   }
-
   // Data for BarChart
   const chartData = [
     { semester: "Spring", Exams: data.Spring },
     { semester: "Summer", Exams: data.Summer },
     { semester: "Fall", Exams: data.Fall },
   ];
-
   // Generate years from current year to 10 years ago
   const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 11 }, (_, index) =>
-    (currentYear - index).toString()
-  );
-
+  const years = Array.from({ length: 11 }, (_, index) => (currentYear - index).toString());
   return (
     <Card>
       <CardHeader className="relative">
-        <CardTitle>Total Exams</CardTitle>
-        <CardDescription>
-          Exams counts per semester for selected year
-        </CardDescription>
-
+        <CardTitle>Exams Each Year</CardTitle>
+        <CardDescription>Exams counts per semester for selected year</CardDescription>
         {/* Dropdown select to choose year */}
         <div className="absolute top-2 right-2">
           <Select onValueChange={handleYearChange} defaultValue={year}>
@@ -103,9 +96,11 @@ export function BarChartComponent({
           </Select>
         </div>
       </CardHeader>
-
       <CardContent>
-        <ChartContainer config={chartConfig}>
+      <ChartContainer
+          config={chartConfig}
+          className="w-full h-[502px]"
+        >
           <BarChart
             accessibilityLayer
             data={chartData}

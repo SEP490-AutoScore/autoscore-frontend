@@ -14,16 +14,16 @@ type ViewDetailDialogProps = {
 };
 
 export type AIApiKey = {
-    aiApiKeyId: number;
-    aiName: string;
-    aiApiKey: string;
-    fullName: string;
-    status: boolean;
-    createdAt: string;
-    updatedAt: string;
-    selected: boolean;
-    shared: boolean;
-  };
+  aiApiKeyId: number;
+  aiName: string;
+  aiApiKey: string;
+  fullName: string;
+  status: boolean;
+  createdAt: string;
+  updatedAt: string;
+  selected: boolean;
+  shared: boolean;
+};
 
 const ViewDetailDialog = ({ aiApiKeyId, open, onClose, onUpdateSuccess }: ViewDetailDialogProps) => {
   const [aiApiKey, setAiApiKey] = useState<AIApiKey | null>(null);
@@ -86,32 +86,26 @@ const ViewDetailDialog = ({ aiApiKeyId, open, onClose, onUpdateSuccess }: ViewDe
     }
 
     try {
-        // Chuẩn bị URL với các tham số
-    const queryParams = new URLSearchParams({
-    
-      shared: shared.toString(),
-    });
-
-    const response = await fetch(
-    `${BASE_URL}${API_ENDPOINTS.updateAiApiKey}/${aiApiKeyId}?${queryParams.toString()}`, {
+      const queryParams = new URLSearchParams({
+        shared: shared.toString(),
+      });
+      const response = await fetch(
+        `${BASE_URL}${API_ENDPOINTS.updateAiApiKey}/${aiApiKeyId}?${queryParams.toString()}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
-     
-      },
-    }
-  );
-
+        },
+      }
+      );
       if (response.ok) {
         notify({
           title: "Success",
           description: "API Key updated successfully.",
           variant: "default",
         });
-    
-        onUpdateSuccess(); // Gọi onUpdateSuccess khi cập nhật thành công
-        onClose(); 
+        onUpdateSuccess();
+        onClose();
       } else {
         const errorData = await response.json();
         notify({
@@ -130,7 +124,6 @@ const ViewDetailDialog = ({ aiApiKeyId, open, onClose, onUpdateSuccess }: ViewDe
     }
   };
 
-
   useEffect(() => {
     if (open && aiApiKeyId) {
       fetchApiKeyDetail();
@@ -145,7 +138,6 @@ const ViewDetailDialog = ({ aiApiKeyId, open, onClose, onUpdateSuccess }: ViewDe
             Here are the details for the selected API key.
           </DialogDescription>
         </DialogHeader>
-
         {aiApiKey ? (
           <div className="space-y-4">
             <div>
@@ -157,7 +149,6 @@ const ViewDetailDialog = ({ aiApiKeyId, open, onClose, onUpdateSuccess }: ViewDe
                 className="border border-gray-300 rounded-md p-2 w-full"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium">API Key</label>
               <input
@@ -167,17 +158,15 @@ const ViewDetailDialog = ({ aiApiKeyId, open, onClose, onUpdateSuccess }: ViewDe
                 className="border border-gray-300 rounded-md p-2 w-full"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium">Shared</label>
               <input
                 type="checkbox"
                 checked={shared}
                 onChange={(e) => setShared(e.target.checked)}
-              className="peer h-5 w-5 border-2 border-gray-300 rounded-md checked:bg-orange-500 checked:border-orange-500 transition-all duration-200"
+                className="peer h-5 w-5 border-2 border-gray-300 rounded-md checked:bg-orange-500 checked:border-orange-500 transition-all duration-200"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium">Created At</label>
               <input
@@ -187,7 +176,6 @@ const ViewDetailDialog = ({ aiApiKeyId, open, onClose, onUpdateSuccess }: ViewDe
                 className="border border-gray-300 rounded-md p-2 w-full"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium">Updated At</label>
               <input
@@ -201,7 +189,6 @@ const ViewDetailDialog = ({ aiApiKeyId, open, onClose, onUpdateSuccess }: ViewDe
         ) : (
           <div className="text-red-500">Loading...</div>
         )}
-
         <div className="mt-6 flex justify-end space-x-2">
           <Button variant="default" onClick={handleSave}>
             Save

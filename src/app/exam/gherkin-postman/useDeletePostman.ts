@@ -10,9 +10,8 @@ export const useDeletePostman = (
     setLoading: (loading: boolean) => void,
     examPaperId: number | null
 ) => {
-    const [loading, setLoadingState] = useState(false);
+    const [loading] = useState(false);
     const notify = useToastNotification();
-
     const deletePostman = async () => {
         if (!selectedPostmans.length) {
             notify({
@@ -22,14 +21,11 @@ export const useDeletePostman = (
             });
             return;
         }
-
         try {
             setLoading(true);
-
             // Make DELETE request to delete selected Postman scripts
             const response = await fetch(
-                `${BASE_URL}${API_ENDPOINTS.deletePostman}?postmanForGradingIds=${selectedPostmans.join(',')}&examPaperId=${examPaperId}`
-,
+                `${BASE_URL}${API_ENDPOINTS.deletePostman}?postmanForGradingIds=${selectedPostmans.join(',')}&examPaperId=${examPaperId}`,
                 {
                     method: "DELETE",
                     headers: {
@@ -38,11 +34,9 @@ export const useDeletePostman = (
                     },
                 }
             );
-
             if (!response.ok) {
                 throw new Error("Failed to delete Postman scripts.");
             }
-
             const responseText = await response.text();
 
             if (responseText.includes("successfully")) {
@@ -58,13 +52,12 @@ export const useDeletePostman = (
                     variant: "destructive",
                 });
             }
-
             if (storedQuestionId !== null) {
                 await fetchGherkinPostmanPairs(storedQuestionId);
             } else {
                 setTimeout(() => {
                     window.location.reload();
-                }, 0); 
+                }, 0);
             }
         } catch (error) {
             notify({
@@ -76,6 +69,5 @@ export const useDeletePostman = (
             setLoading(false);
         }
     };
-
     return { deletePostman, loading };
 };

@@ -37,7 +37,6 @@ export const DropdownList: React.FC<DropdownProps> = ({ onSelect }) => {
         setLoading(false);
         return;
       }
-
       try {
         const response = await fetch(
           `${BASE_URL}${API_ENDPOINTS.dropdownList}`,
@@ -47,11 +46,9 @@ export const DropdownList: React.FC<DropdownProps> = ({ onSelect }) => {
             },
           }
         );
-
         if (!response.ok) {
           throw new Error(`Error fetching exams: ${response.statusText}`);
         }
-
         const data = await response.json();
         setItems(data);
         setLoading(false);
@@ -60,7 +57,6 @@ export const DropdownList: React.FC<DropdownProps> = ({ onSelect }) => {
         setLoading(false);
       }
     };
-
     fetchExams();
   }, []);
 
@@ -69,7 +65,6 @@ export const DropdownList: React.FC<DropdownProps> = ({ onSelect }) => {
     onSelect(examPaperId);
   };
   
-  if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (

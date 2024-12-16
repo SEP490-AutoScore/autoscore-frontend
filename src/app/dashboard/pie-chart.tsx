@@ -53,9 +53,8 @@ const chartConfig: ChartConfig = {
 
 export function PieChartComponent() {
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     const fetchChartData = async () => {
       try {
@@ -66,7 +65,6 @@ export function PieChartComponent() {
           setLoading(false);
           return;
         }
-
         const response = await fetch(
           `${BASE_URL}${API_ENDPOINTS.scoreCategories}`,
           {
@@ -76,13 +74,10 @@ export function PieChartComponent() {
             },
           }
         );
-
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-
         const data = await response.json();
-
         // Map API data to chart format
         const formattedData: ChartDataItem[] = [
           { name: "Excellent (9-10 point)", value: data.excellent, fill: chartConfig.excellent.color || '#000' },
@@ -91,7 +86,6 @@ export function PieChartComponent() {
           { name: "Poor (4-5 point)", value: data.poor, fill: chartConfig.poor.color || '#000' },
           { name: "Bad (0-4 point)", value: data.bad, fill: chartConfig.bad.color || '#000' },
         ];
-
         setChartData(formattedData);
         setLoading(false);
       } catch (err) {
@@ -99,20 +93,17 @@ export function PieChartComponent() {
         setLoading(false);
       }
     };
-
     fetchChartData();
   }, []);
 
   const totalScores = React.useMemo(() => {
     return chartData.reduce((acc, curr) => acc + curr.value, 0);
   }, [chartData]);
-
   if (error) {
     return (
       <Card className="h-full">
         <CardHeader className="">
           <CardTitle>Score Distribution</CardTitle>
-
           <CardDescription>
             There is no data for statistics
           </CardDescription>
@@ -127,9 +118,7 @@ export function PieChartComponent() {
         <CardTitle>Score Distribution</CardTitle>
         <CardDescription>Score categories from Excellent to Bad</CardDescription>
       </CardHeader>
-
       <CardContent className="flex-1 pb-0">
-
         <ChartContainer
           config={chartConfig}
           className="w-full h-[550px]"
@@ -183,9 +172,7 @@ export function PieChartComponent() {
             <Legend layout="horizontal" wrapperStyle={{ marginBottom: '22px' }} />
           </PieChart>
         </ChartContainer>
-
       </CardContent>
-
     </Card>
   );
 }

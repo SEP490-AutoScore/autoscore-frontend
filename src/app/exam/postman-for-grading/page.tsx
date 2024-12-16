@@ -12,6 +12,7 @@ import { Settings2 } from "lucide-react";
 import FileCollectionDialog from "./FileCollectionDialog";
 import LogRunPostmanDialog from "./LogRunPostmanDialog";
 import { calculateScores } from "./calculate-scores";
+import { fixAuthFilePostman } from "./fixAuthFilePostman";
 
 import {
   DropdownMenu,
@@ -22,15 +23,11 @@ import {
   DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
 
-
 const Page: React.FC = () => {
   const location = useLocation();
   const { examId, examPaperId } = location.state || {};
-
   const [postmanData, setPostmanData] = useState<any[]>([]);
-
   const [selectedNodeIds, setSelectedNodeIds] = useState<Set<number>>(new Set());
-
   const token = localStorage.getItem("jwtToken");
   const [, setSelectedAction] = useState<string>("");
   const [showPopup, setShowPopup] = useState<boolean>(false);
@@ -44,8 +41,6 @@ const Page: React.FC = () => {
   const [showFilePostmanDialog, setShowFilePostmanDialog] = useState<boolean>(false);
   const [showLogRunPostmanDialog, setShowLogRunPostmanDialog] = useState<boolean>(false);
 
-
-
   const Header = useHeader({
     breadcrumbLink: "/exams",
     breadcrumbPage: "Exams Overview",
@@ -55,33 +50,31 @@ const Page: React.FC = () => {
     stateGive: { examId: examId },
   });
 
-    // Hàm bỏ chọn tất cả các node
-    const clearSelection = () => {
-      setSelectedNodeIds(new Set());
+  // Function to deselect all nodes
+  const clearSelection = () => {
+    setSelectedNodeIds(new Set());
+  };
+
+  // Function to check for clicks outside the nodes
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const isClickInside = Object.values(nodeRefs.current).some(
+        (node) => node && node.contains(event.target as Node)
+      );
+
+      if (!isClickInside) {
+        clearSelection();
+      }
     };
-  
-    // Thêm useEffect để xử lý click ra ngoài
-    useEffect(() => {
-      // Hàm kiểm tra click ra ngoài các node
-      const handleClickOutside = (event: MouseEvent) => {
-        // Kiểm tra xem click có nằm ngoài các nodeRefs hay không
-        const isClickInside = Object.values(nodeRefs.current).some(
-          (node) => node && node.contains(event.target as Node)
-        );
-  
-        if (!isClickInside) {
-          clearSelection(); // Nếu không, bỏ chọn tất cả các node
-        }
-      };
-  
-      // Gắn sự kiện click vào document khi component được render
-      document.addEventListener("click", handleClickOutside);
-  
-      // Dọn dẹp sự kiện khi component unmount
-      return () => {
-        document.removeEventListener("click", handleClickOutside);
-      };
-    }, []); // Chạy 1 lần khi component mount
+
+    // Attach a click event to the document when the component is rendered
+    document.addEventListener("click", handleClickOutside);
+
+    // Clean up event when component unmount
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -104,13 +97,12 @@ const Page: React.FC = () => {
             postmanForGradingOrder: node.postmanForGradingOrder ?? (index > 0 ? index : null),
           }));
 
-
           setPostmanData(dataWithOrder);
         } else {
           console.error("Failed to fetch data");
         }
 
-        // Gọi API thứ hai
+        // Call the second API
         const infoFilePostmanResponse = await fetch(
           `${BASE_URL}${API_ENDPOINTS.infoFilePostmanExamPaper}?examPaperId=${examPaperId}`,
           {
@@ -150,24 +142,22 @@ const Page: React.FC = () => {
 
     } else if (action === "impostFilePostman") {
       setShowPopup(true);
-
-    
-  } else if (action === "calculateScores") {
-    calculateScores(examPaperId, notify);
-    
-    setTimeout(() => {
-
-      setReloadData(true); 
-    }, 100);
-
-  }
+    } else if (action === "calculateScores") {
+      calculateScores(examPaperId, notify);
+      setTimeout(() => {
+        setReloadData(true);
+      }, 100);
+    }
     else if (action === "exportFilePostman") {
       exportFilePostman();
     }
     else if (action === "mergeAllFilePostman") {
       mergeAllFilePostman();
+    } else if (action === "fixAuthFilePostman") {
+      if (examPaperId && token) {
+        fixAuthFilePostman(examPaperId, token, notify);
+      }
     }
- 
   };
 
   const handleShowOrder = () => {
@@ -183,11 +173,11 @@ const Page: React.FC = () => {
       const node = postmanData.find((n) => n.postmanForGradingId === id);
       return {
         ...node,
-        order: index + 1, // // Append new order
+        order: index + 1,
       };
     });
 
-    return sortedNodes; // // Returns the sorted list of nodes
+    return sortedNodes;
   };
 
 
@@ -200,7 +190,6 @@ const Page: React.FC = () => {
       });
       return;
     }
-
     try {
       const response = await fetch(`${BASE_URL}${API_ENDPOINTS.exportPostman}/${examPaperId}`, {
 
@@ -209,29 +198,23 @@ const Page: React.FC = () => {
           "Authorization": `Bearer ${token}`,
         },
       });
-
-
       if (response.ok) {
         const data = await response.json();
-
         if (data.info) {
-        
           notify({
             title: "Successfully",
             description: `Exported Postman Collection Sucessfully`,
             variant: "default",
           });
-
-     
           const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
           const url = URL.createObjectURL(blob);
           const a = document.createElement("a");
           a.href = url;
-          a.download = `${data.info.name}.json`; 
+          a.download = `${data.info.name}.json`;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
-          URL.revokeObjectURL(url); 
+          URL.revokeObjectURL(url);
         } else {
           notify({
             title: "Error",
@@ -283,7 +266,6 @@ const Page: React.FC = () => {
             description: `Merge successfully`,
             variant: "default",
           });
-          // setReloadData(true);
           window.location.reload();
         } else {
           notify({
@@ -318,7 +300,6 @@ const Page: React.FC = () => {
       });
       return;
     }
-  
     // Call the updateListFunction function first
     const sortedNodes = handleShowOrder();
     const updateDTOs: any[] = sortedNodes.map((node) => ({
@@ -326,7 +307,6 @@ const Page: React.FC = () => {
       postmanFunctionName: node.postmanFunctionName,
       postmanForGradingParentId: node.postmanForGradingParentId,
     }));
-  
     try {
       const updateResponse = await fetch(`${BASE_URL}${API_ENDPOINTS.updatePostmanGrading}`, {
         method: "PUT",
@@ -336,10 +316,8 @@ const Page: React.FC = () => {
         },
         body: JSON.stringify({ examPaperId, updateDTOs }),
       });
-  
       if (!updateResponse.ok) {
         const errorMessage = await updateResponse.text();
-       
         notify({
           title: "Something went wrong",
           description: "There is a problem with the tree, please reload the page",
@@ -347,7 +325,6 @@ const Page: React.FC = () => {
         });
         throw new Error(`Update failed: ${errorMessage}, `);
       }
-  
       const updateResult = await updateResponse.text();
       if (!updateResult.includes("Successfully")) {
         notify({
@@ -356,18 +333,14 @@ const Page: React.FC = () => {
           variant: "destructive",
         });
       }
-  
-  
-  
+
       // Call confirmFilePostman after successful update
       const confirmResponse = await fetch(`${BASE_URL}${API_ENDPOINTS.confirmFilePostman}/${examPaperId}`, {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}` },
       });
-  
       if (!confirmResponse.ok) {
         const errorMessage = await confirmResponse.text();
-       
         notify({
           title: "Confirm fail",
           description: "Please calculate score before confirm",
@@ -375,7 +348,6 @@ const Page: React.FC = () => {
         });
         throw new Error(`Confirm failed: ${errorMessage}, `);
       }
-  
       const confirmResult = await confirmResponse.text();
       if (!confirmResult.includes("Successfully")) {
         notify({
@@ -384,13 +356,11 @@ const Page: React.FC = () => {
           variant: "destructive",
         });
       }
-  
       notify({
         title: "Confirm Success",
         description: "File postman confirmed successfully.",
         variant: "default",
       });
-  
       setReloadData(true);
     } catch (error) {
       notify({
@@ -402,74 +372,67 @@ const Page: React.FC = () => {
     }
   };
 
-  
   const getChildrenNodes = (parentId: number, allNodes: any[]) => {
     return allNodes
-      .slice(1) // Bỏ qua phần tử đầu tiên trong danh sách
+      .slice(1) // Skip the first element in the list
       .filter((node) => node.postmanForGradingParentId === parentId);
   };
 
-
-// Xử lý sự kiện click để chọn hoặc bỏ chọn node
-const handleNodeClick = (nodeId: number) => {
-  // Kiểm tra nếu node là Root của tree (id = 0)
-  if (nodeId === 0) {
-    notify({
-      title: "Error",
-      description: "Cannot select the root node.",
-      variant: "destructive",
-    });
-    return; // Nếu là node root, không cho chọn và thoát khỏi hàm
-  }
-
-  setSelectedNodeIds((prevSelectedIds) => {
-    const newSelectedIds = new Set(prevSelectedIds);
-    if (newSelectedIds.has(nodeId)) {
-      newSelectedIds.delete(nodeId); // Nếu đã chọn thì bỏ chọn
-    } else {
-      newSelectedIds.add(nodeId); // Nếu chưa chọn thì chọn
+  // Handle the click event to select or deselect the node
+  const handleNodeClick = (nodeId: number) => {
+    if (nodeId === 0) {
+      notify({
+        title: "Error",
+        description: "Cannot select the root node.",
+        variant: "destructive",
+      });
+      return;
     }
-    return newSelectedIds;
-  });
-};
-
-  
+    setSelectedNodeIds((prevSelectedIds) => {
+      const newSelectedIds = new Set(prevSelectedIds);
+      if (newSelectedIds.has(nodeId)) {
+        newSelectedIds.delete(nodeId);
+      } else {
+        newSelectedIds.add(nodeId);
+      }
+      return newSelectedIds;
+    });
+  };
 
   const moveNodesToNewParent = (selectedNodeIds: Set<number>, targetNodeId: number) => {
     const updatedNodes = [...postmanData];
-  
-    // Hàm di chuyển tất cả các node con đệ quy, giữ nguyên quan hệ cha-con
+    // The function moves all child nodes recursively, keeping the parent-child relationship intact
     const moveChildrenRecursive = (parentId: number, newParentId: number) => {
       updatedNodes.forEach((node) => {
         if (node.postmanForGradingParentId === parentId) {
-          node.postmanForGradingParentId = newParentId; // Cập nhật parentId cho node con
-          moveChildrenRecursive(node.postmanForGradingId, newParentId); // Đệ quy di chuyển các node con của node này
+          node.postmanForGradingParentId = newParentId; // Update parentId for child node
+          moveChildrenRecursive(node.postmanForGradingId, newParentId); // Recursively move the child nodes of this node
         }
       });
     };
-  
-    // Kiểm tra nếu các node đã chọn không có mối quan hệ cha-con
+
+    // Check if the selected nodes do not have a parent-child relationship
     const hasParentChildRelationship = Array.from(selectedNodeIds).some((draggedNodeId) => {
       return Array.from(selectedNodeIds).some((otherNodeId) => {
-        // Kiểm tra nếu một node là cha của node khác
+        // Check if a node is the parent of another node
         return draggedNodeId !== otherNodeId && isAncestor(draggedNodeId, otherNodeId, postmanData);
       });
     });
-  
-    // Nếu không có mối quan hệ cha-con, tất cả các node sẽ trở thành con của targetNodeId
+
+    // If there is no parent-child relationship, all nodes will become children of targetNodeId
     if (!hasParentChildRelationship) {
       selectedNodeIds.forEach((nodeId) => {
         updatedNodes.forEach((node) => {
           if (node.postmanForGradingId === nodeId) {
-            node.postmanForGradingParentId = targetNodeId; // Đặt targetNodeId làm cha của node
+            node.postmanForGradingParentId = targetNodeId; // Set targetNodeId as the node's parent
           }
         });
       });
     } else {
-      // Di chuyển node đầu tiên vào targetNodeId
+      // Move the first node to targetNodeId
       const firstSelectedNodeId = [...selectedNodeIds][0];
-  
-      // Kiểm tra nếu node đang cố di chuyển vào chính nó hoặc vào node con của nó
+
+      // Check if the node is trying to move into itself or into its child node
       if (isAncestor(firstSelectedNodeId, targetNodeId, postmanData)) {
         notify({
           title: "Error",
@@ -478,95 +441,70 @@ const handleNodeClick = (nodeId: number) => {
         });
         return;
       }
-  
-      // Di chuyển node cha vào targetNodeId
+
+      // Move the parent node to targetNodeId
       updatedNodes.forEach((node) => {
         if (node.postmanForGradingId === firstSelectedNodeId) {
-          node.postmanForGradingParentId = targetNodeId; // Di chuyển node chính
+          node.postmanForGradingParentId = targetNodeId; // Move the main node
         }
       });
-  
-      // Di chuyển tất cả các node con của node đầu tiên vào targetNodeId và giữ mối quan hệ cha con
-      moveChildrenRecursive(firstSelectedNodeId, firstSelectedNodeId); // Di chuyển các node con nhưng giữ chúng là con của draggedNodeId
+
+      // Move child nodes but keep them as children of draggedNodeId
+      moveChildrenRecursive(firstSelectedNodeId, firstSelectedNodeId);
     }
-  
-    // Cập nhật lại dữ liệu
+
     setPostmanData(updatedNodes);
   };
-  
-  
-  
-  
-  
-
-  
-  
 
   const updateNodeOrder = (parentId: number, nodeId: number, targetId: number, position: "moveBelowNode") => {
     const updatedNodes = [...postmanData];
     const parentNodeChildren = getChildrenNodes(parentId, updatedNodes).sort(
       (a, b) => a.postmanForGradingOrder - b.postmanForGradingOrder
     );
-
     const draggedNodeIndex = parentNodeChildren.findIndex((node) => node.postmanForGradingId === nodeId);
     const targetNodeIndex = parentNodeChildren.findIndex((node) => node.postmanForGradingId === targetId);
-
     if (draggedNodeIndex !== -1 && targetNodeIndex !== -1) {
       const draggedNode = parentNodeChildren.splice(draggedNodeIndex, 1)[0];
       const newPosition = position === "moveBelowNode" ? targetNodeIndex : targetNodeIndex + 1;
       parentNodeChildren.splice(newPosition, 0, draggedNode);
-
       // Update the order priority
       parentNodeChildren.forEach((node, index) => {
         node.postmanForGradingOrder = index; // Update order based on new position
       });
-
       // Update the main postmanData
       const finalNodes = updatedNodes.map((node) =>
         node.postmanForGradingParentId === parentId
           ? parentNodeChildren.find((child) => child.postmanForGradingId === node.postmanForGradingId) || node
           : node
       );
-
       setPostmanData(finalNodes);
 
     }
   };
 
-
   const handleDrop = (targetId: number, action: "moveToNode" | "moveBelowNode") => {
-    if (selectedNodeIds.size === 0) return; // Nếu không có node nào được chọn thì không làm gì
-  
-   // Xử lý với hành động "moveToNode"
-   if (action === "moveToNode") {
-
-    for (let draggedNodeId of selectedNodeIds) {
-      // Kiểm tra nếu node đang cố di chuyển vào chính nó
-      if (draggedNodeId === targetId) {
-        notify({
-          title: "Error",
-          description: "Cannot move node into itself.",
-          variant: "destructive",
-        });
-        return;
+    if (selectedNodeIds.size === 0) return;
+    if (action === "moveToNode") {
+      for (let draggedNodeId of selectedNodeIds) {
+        if (draggedNodeId === targetId) {
+          notify({
+            title: "Error",
+            description: "Cannot move node into itself.",
+            variant: "destructive",
+          });
+          return;
+        }
+        else if (isAncestor(draggedNodeId, targetId, postmanData)) {
+          notify({
+            title: "Error",
+            description: "Cannot move parent node into its child.",
+            variant: "destructive",
+          });
+          return;
+        }
       }
-
-      // Kiểm tra nếu node cha đang cố di chuyển vào node con
-      else if (isAncestor(draggedNodeId, targetId, postmanData)) {
-        notify({
-          title: "Error",
-          description: "Cannot move parent node into its child.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-    
-    }
-      // Di chuyển tất cả các node đã chọn và các node con của nó
       moveNodesToNewParent(selectedNodeIds, targetId);
-  }
-    // Xử lý với hành động "moveBelowNode" chỉ khi chọn 1 node
+    }
     if (action === "moveBelowNode") {
       if (selectedNodeIds.size > 1) {
         notify({
@@ -574,10 +512,8 @@ const handleNodeClick = (nodeId: number) => {
           description: "You can only move one node at a time using 'move below node'.",
           variant: "destructive",
         });
-        return; // Nếu có nhiều hơn 1 node, không thực hiện di chuyển
+        return;
       }
-  
-      // Di chuyển node và các node con của nó xuống dưới node cha mới
       selectedNodeIds.forEach((draggedNodeId) => {
         const parentId = postmanData.find((node) => node.postmanForGradingId === targetId)?.postmanForGradingParentId;
         if (parentId !== undefined) {
@@ -585,99 +521,80 @@ const handleNodeClick = (nodeId: number) => {
         }
       });
     }
-  
-    setSelectedNodeIds(new Set()); // Reset danh sách node đã chọn sau khi di chuyển
+    setSelectedNodeIds(new Set());
   };
 
+  // Function to check if a node is an ancestor of another node
+  const isAncestor = (ancestorId: number, descendantId: number, allNodes: any[]): boolean => {
+    let currentNode = allNodes.find((node) => node.postmanForGradingId === descendantId);
+    const visited = new Set<number>(); // Keep track of visited nodes to avoid infinite loops
 
-  
-// Hàm kiểm tra xem một node có phải tổ tiên của một node khác hay không
-const isAncestor = (ancestorId: number, descendantId: number, allNodes: any[]): boolean => {
-  let currentNode = allNodes.find((node) => node.postmanForGradingId === descendantId);
-  const visited = new Set<number>(); // Theo dõi các node đã duyệt để tránh vòng lặp vô hạn
-
-  while (currentNode) {
-    if (visited.has(currentNode.postmanForGradingId)) {
-      console.error("Circular reference detected in postmanData!");
-      return false; // Trả về false nếu phát hiện vòng lặp
+    while (currentNode) {
+      if (visited.has(currentNode.postmanForGradingId)) {
+        console.error("Circular reference detected in postmanData!");
+        return false; // Returns false if a loop is detected
+      }
+      visited.add(currentNode.postmanForGradingId);
+      if (currentNode.postmanForGradingParentId === ancestorId) {
+        return true;
+      }
+      currentNode = allNodes.find((node) => node.postmanForGradingId === currentNode.postmanForGradingParentId);
     }
-    visited.add(currentNode.postmanForGradingId);
-
-    // Kiểm tra xem node hiện tại có phải là tổ tiên của node không
-    if (currentNode.postmanForGradingParentId === ancestorId) {
-      return true; // Nếu tìm thấy ancestor
-    }
-
-    // Chuyển sang node cha
-    currentNode = allNodes.find((node) => node.postmanForGradingId === currentNode.postmanForGradingParentId);
-  }
-  return false; // Không tìm thấy ancestor
-};
+    return false;
+  };
 
   const renderTree = (parent: any, allNodes: any[]) => {
     const children = getChildrenNodes(parent.postmanForGradingId, allNodes).sort(
       (a, b) => a.postmanForGradingOrder - b.postmanForGradingOrder
     );
-
     const isSelected = selectedNodeIds.has(parent.postmanForGradingId);
+    return (
+      <div
+        ref={(el) => {
+          if (el) nodeRefs.current[parent.postmanForGradingId] = el;// Assign ref to each node
+        }}
+      >
+        <ul className="ml-10">
+          <li key={parent.postmanForGradingId} className="mt-2">
+            {/* Main Node */}
+            <div
+              draggable
+              onDrop={(e) => {
+                e.preventDefault();
+                handleDrop(parent.postmanForGradingId, "moveToNode");
+              }}
+              onDragOver={(e) => e.preventDefault()}
+              className={`p-3 rounded-lg cursor-pointer border ${isSelected ? "border-orange-500" : "border-gray-300"}`}
+              onClick={() => handleNodeClick(parent.postmanForGradingId)}
+            >
 
-  return (
-    <div
-      ref={(el) => {
-        if (el) nodeRefs.current[parent.postmanForGradingId] = el; // Gán ref cho từng node
-   
-      }}
-    >
-      <ul className="ml-10">
-        <li key={parent.postmanForGradingId} className="mt-2">
-          {/* Node chính */}
-          <div
-            draggable
-            // onDragStart={handleDragStart}
-            onDrop={(e) => {
-              e.preventDefault();
-              handleDrop(parent.postmanForGradingId, "moveToNode");
-            }}
-            onDragOver={(e) => e.preventDefault()}
-            className={`p-3 rounded-lg cursor-pointer border ${isSelected ? "border-orange-500" : "border-gray-300"}`}
-            onClick={() => handleNodeClick(parent.postmanForGradingId)} // Thêm sự kiện click
-          >
-                     
-            {/* Hiển thị thông tin node */}
-            <div className="flex items-center space-x-2 overflow-x-auto whitespace-nowrap">
-              <span className="font-semibold">{parent.postmanFunctionName}</span>
-              <span className="text-sm text-gray-600">{parent.endPoint}</span>
-              <span className="text-sm text-gray-600">
-  Score: {parseFloat((parent.scoreOfFunction ?? 0).toFixed(2))}
-</span>
-              <span className="text-sm text-gray-600">
-  Percentage: {parseFloat((parent.scorePercentage ?? 0).toFixed(1))} %
-</span>
-
-
-
-              <span className="text-sm text-gray-600">Pmtest: {parent.totalPmTest ?? "0"}</span>
+              <div className="flex items-center space-x-2 overflow-x-auto whitespace-nowrap">
+                <span className="font-semibold">{parent.postmanFunctionName}</span>
+                <span className="text-sm text-gray-600">{parent.httpMethod}</span>
+                <span className="text-sm text-gray-600">{parent.endPoint}</span>
+                <span className="text-sm text-gray-600">
+                  Score: {parseFloat((parent.scoreOfFunction ?? 0).toFixed(2))}
+                </span>
+                <span className="text-sm text-gray-600">
+                  Percentage: {parseFloat((parent.scorePercentage ?? 0).toFixed(1))} %
+                </span>
+                <span className="text-sm text-gray-600">Pmtest: {parent.totalPmTest ?? "0"}</span>
+              </div>
             </div>
+            {/* Lower Div of node */}
+            <div
+              className="bg-gray-50 h-4 mt-2 rounded-md"
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={() => handleDrop(parent.postmanForGradingId, "moveBelowNode")}
+            ></div>
+            {/* Recursively render child nodes */}
+            {children.map((child) => renderTree(child, allNodes))}
+          </li>
+        </ul>
+      </div>
+    );
+  };
 
-
-          </div>
-  
-          {/* Div dưới */}
-          <div
-            className="bg-gray-50 h-4 mt-2 rounded-md"
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={() => handleDrop(parent.postmanForGradingId, "moveBelowNode")}
-          ></div>
-  
-          {/* Đệ quy render các node con */}
-          {children.map((child) => renderTree(child, allNodes))}
-        </li>
-      </ul>
-    </div>
-  );
-};
-
-  
   return (
     <SidebarInset>
       {Header}
@@ -686,12 +603,8 @@ const isAncestor = (ancestorId: number, descendantId: number, allNodes: any[]): 
           top={
             <div>
               <h1 className="text-2xl font-bold tracking-tight">Postman For Grading</h1>
-
               <p className="text-sm text-muted-foreground">Function tree is showing!</p>
-
-
             </div>
-
           }
           leftTop={
             <DropdownMenu>
@@ -701,39 +614,34 @@ const isAncestor = (ancestorId: number, descendantId: number, allNodes: any[]): 
                   List action
                 </Button>
               </DropdownMenuTrigger>
-             
               <DropdownMenuContent className="w-48">
                 <DropdownMenuLabel>List action</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => handleActionChange("impostFilePostman")}>
-                  Import file postman
+                  Import File Postman
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleActionChange("exportFilePostman")}>
-                  Export file postman
+                  Export File Postman
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleActionChange("mergeAllFilePostman")}>
-                  Merge all file postman
+                  Merge All File Postman
                 </DropdownMenuItem>
-              
+                <DropdownMenuItem onClick={() => handleActionChange("fixAuthFilePostman")}>
+                  Fix Auth All File
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleActionChange("calculateScores")}>
                   Calculate Scores
                 </DropdownMenuItem>
-           
                 <DropdownMenuItem onClick={() => handleActionChange("updateAndConfirmFilePostman")}>
-                  Confirm order priority of tree
+                  Update and Confirm Postman Collection
                 </DropdownMenuItem>
-          
-              
-                
               </DropdownMenuContent>
             </DropdownMenu>
-
           }
-
           leftBottom={
-            <div 
+            <div
               className="p-4 space-y-4"
-              onClick={clearSelection} // Khi click vào leftBottom, bỏ chọn tất cả các node
+              onClick={clearSelection}// When clicking leftBottom, deselect all nodes
             >
               <h1 className="text-xl font-semibold text-gray-800">Info main file postman</h1>
               {isConfirmFile !== null && totalItem !== null ? (
@@ -761,13 +669,10 @@ const isAncestor = (ancestorId: number, descendantId: number, allNodes: any[]): 
                   </Button>
                 </div>
               ) : (
-                <Skeleton/>
+                <Skeleton />
               )}
             </div>
           }
-
-
-
           right={
             <div className="p-4">
               {postmanData.length > 0 && renderTree(postmanData[0], postmanData)}
@@ -779,16 +684,11 @@ const isAncestor = (ancestorId: number, descendantId: number, allNodes: any[]): 
         <ImpostFilePostmanPopup
           onClose={() => {
             setShowPopup(false);
-          
-        
-              setReloadData(true);  // Reload lại dữ liệu
-           
+            setReloadData(true);
           }}
           examPaperId={examPaperId}
         />
       )}
-
-
       {showFilePostmanDialog && (
         <FileCollectionDialog
           fileCollectionPostman={fileCollectionPostman}
@@ -796,8 +696,6 @@ const isAncestor = (ancestorId: number, descendantId: number, allNodes: any[]): 
           onClose={() => setShowFilePostmanDialog(false)}
         />
       )}
-
-
       {showLogRunPostmanDialog && (
         <LogRunPostmanDialog
           logRunPostman={logRunPostman}
@@ -808,5 +706,4 @@ const isAncestor = (ancestorId: number, descendantId: number, allNodes: any[]): 
     </SidebarInset>
   );
 };
-
 export default Page;

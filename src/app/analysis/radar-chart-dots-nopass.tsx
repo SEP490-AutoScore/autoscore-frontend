@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AlertTriangle, TrendingUp } from "lucide-react";
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
-
 import {
   Card,
   CardContent,
@@ -36,14 +34,12 @@ export function RadarChartDotsNoPassComponent({ examPaperId }: { examPaperId: st
     const fetchData = async () => {
       setLoading(true);
       setError(null);
-
       const token = localStorage.getItem("jwtToken");
       if (!token) {
         setError("JWT token not found.");
         setLoading(false);
         return;
       }
-
       try {
         const response = await fetch(
           `${BASE_URL}${API_ENDPOINTS.noPass}?examPaperId=${examPaperId}`,
@@ -54,11 +50,9 @@ export function RadarChartDotsNoPassComponent({ examPaperId }: { examPaperId: st
             },
           }
         );
-
         if (!response.ok) {
           throw new Error(`Failed to fetch data: ${response.statusText}`);
         }
-
         const data = await response.json();
         const formattedData = Object.entries(data).map(([key, value]) => ({
           functionName: key,
@@ -71,14 +65,12 @@ export function RadarChartDotsNoPassComponent({ examPaperId }: { examPaperId: st
         setLoading(false);
       }
     };
-
     fetchData();
   }, [examPaperId]);
 
   if (loading) {
     return <p>Loading...</p>;
   }
-
   if (error) {
     return (
       <Card>
@@ -91,9 +83,6 @@ export function RadarChartDotsNoPassComponent({ examPaperId }: { examPaperId: st
       </Card>
     );
   }
-
-
-
   return (
     <Card>
       <CardHeader className="">
@@ -128,7 +117,6 @@ export function RadarChartDotsNoPassComponent({ examPaperId }: { examPaperId: st
           Total Functions: {chartData.length}
         </div>
       </CardFooter>
-
     </Card>
   );
 }

@@ -24,18 +24,15 @@ export function BarChartPlagiarismComponent({ examPaperId }: { examPaperId: stri
 
     useEffect(() => {
         if (!examPaperId) return;
-
         const fetchChartData = async () => {
             setLoading(true);
             setError(null);
-
             const token = localStorage.getItem("jwtToken");
             if (!token) {
                 setError("JWT token not found.");
                 setLoading(false);
                 return;
             }
-
             try {
                 const response = await fetch(
                     `${BASE_URL}${API_ENDPOINTS.codePlagiarismDetails}?examPaperId=${examPaperId}`,
@@ -46,17 +43,14 @@ export function BarChartPlagiarismComponent({ examPaperId }: { examPaperId: stri
                         },
                     }
                 );
-
                 if (!response.ok) {
                     throw new Error(`Error fetching chart data: ${response.statusText}`);
                 }
-
                 const data = await response.json();
                 const mappedData = data.map((item: any) => ({
                     studentCodePlagiarism: item.studentCodePlagiarism,
                     plagiarismPercentage: parseFloat(item.plagiarismPercentage.replace('%', '')),
                 }));
-
                 setChartData(mappedData);
             } catch (err: unknown) {
                 if (err instanceof Error) {
@@ -68,10 +62,8 @@ export function BarChartPlagiarismComponent({ examPaperId }: { examPaperId: stri
                 setLoading(false);
             }
         };
-
         fetchChartData();
     }, [examPaperId]);
-
     if (error) {
         return (
             <Card>
@@ -115,7 +107,6 @@ export function BarChartPlagiarismComponent({ examPaperId }: { examPaperId: stri
                         <Tooltip
                             formatter={(value: number) => `${value}%`}
                             labelFormatter={(label: string) => `Student: ${label}`}
-
                         />
                         <Bar dataKey="plagiarismPercentage" fill="#FF5733" radius={4} />
                     </BarChart>
