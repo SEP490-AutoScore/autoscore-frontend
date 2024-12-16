@@ -4,10 +4,13 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuRadioItem,
+  DropdownMenuRadioGroup,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { ChevronDown } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 interface DropdownProps {
   onSelect: (selected: string) => void;
@@ -23,6 +26,8 @@ export const DropdownList: React.FC<DropdownProps> = ({ onSelect }) => {
   const [items, setItems] = useState<ExamItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [position, setPosition] = useState<string | "">("");
+  const [selectedItem, setSelectedItem] = useState<string | "">("");
 
   useEffect(() => {
     const fetchExams = async () => {
@@ -33,11 +38,23 @@ export const DropdownList: React.FC<DropdownProps> = ({ onSelect }) => {
         return;
       }
       try {
+<<<<<<< HEAD
         const response = await fetch(`${BASE_URL}${API_ENDPOINTS.dropdownList}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
+=======
+        const response = await fetch(
+          `${BASE_URL}${API_ENDPOINTS.dropdownList}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+>>>>>>> 05515fb7f6d97902ebff8a0b4b03a59e68dc7ab7
         if (!response.ok) {
           throw new Error(`Error fetching exams: ${response.statusText}`);
         }
@@ -52,6 +69,11 @@ export const DropdownList: React.FC<DropdownProps> = ({ onSelect }) => {
     fetchExams();
   }, []);
 
+  const handleSelectPosition = (examPaperId: string) => {
+    setPosition(examPaperId);
+    onSelect(examPaperId);
+  };
+  
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
@@ -65,17 +87,29 @@ export const DropdownList: React.FC<DropdownProps> = ({ onSelect }) => {
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="mt-3 ml-auto text-primary border-primary rounded-full px-6">
-            Select An Exam Paper
+          <Button variant="outline" className="mt-3 ml-auto  px-6">
+            {selectedItem || "Select An Exam Paper"}
+            <ChevronDown className="ml-2 h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-50">
+        <DropdownMenuContent className="w-fit">
           <DropdownMenuLabel>Available Exam Paper</DropdownMenuLabel>
-          {items.map((item) => (
-            <DropdownMenuItem key={item.examPaperId} onClick={() => onSelect(item.examPaperId)}>
-              {item.examCode} - {item.examPaperCode}
-            </DropdownMenuItem>
-          ))}
+          <Separator />
+          <DropdownMenuRadioGroup value={position} onValueChange={handleSelectPosition}>
+            {items.map((item) => (
+              <DropdownMenuRadioItem
+                key={item.examPaperId}
+                value={item.examPaperId}
+                className="cursor-pointer"
+                onClick={() => {
+                  setSelectedItem(item.examCode + " - " + item.examPaperCode);
+                  onSelect(item.examPaperId);
+                }}
+              >
+                {item.examCode} - {item.examPaperCode}
+              </DropdownMenuRadioItem>
+            ))}
+          </DropdownMenuRadioGroup>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

@@ -9,6 +9,12 @@ import { useToastNotification } from "@/hooks/use-toast-notification";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Plus } from "lucide-react";
 import { checkPermission } from "@/hooks/use-auth";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+  } from "@/components/ui/tooltip";
 
 interface Important {
     importantId: number;
@@ -119,12 +125,20 @@ export function CreateExamPaperForm({
     return (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-                <Button
-                    variant="outline"
-                    className="p-2.5 h-10 w-10 rounded-full border-primary text-primary hover:text-white hover:bg-primary"
-                >
-                    <Plus className="h-6 w-6" />
-                </Button>
+
+                <TooltipProvider delayDuration={0}>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="outline"
+                                className="p-2.5 h-10 w-10 rounded-full border-primary text-primary hover:text-white hover:bg-primary"
+                            >
+                                <Plus className="h-6 w-6" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Create Exam</TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </DialogTrigger>
             <DialogContent className="p-8 bg-white shadow-lg rounded-lg max-w-xl mx-auto h-[80vh] flex flex-col">
                 <div className="mb-4">
