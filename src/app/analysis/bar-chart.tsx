@@ -103,7 +103,7 @@ export function BarChartComponent({ examPaperId }: { examPaperId: string }) {
         ) : error ? (
           <p>Error: {error}</p>
         ) : (
-          <ChartContainer config={chartConfig} className="w-full h-[500px]">
+          <ChartContainer config={chartConfig} className="w-full h-[500px] ">
             <BarChart accessibilityLayer data={chartData} barSize={100}>
               <CartesianGrid vertical={false} />
               <XAxis

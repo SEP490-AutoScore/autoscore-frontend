@@ -156,15 +156,14 @@ export default function Page() {
     <SidebarInset>
       {Header}
       <div className="p-4 pt-0 space-y-6">
-        <div className="border border-gray-200 p-6 rounded-lg shadow-sm">
-          <div className="col-span-4 mb-6">
+        <div className="border border-gray-200 p-6 rounded-lg shadow-sm ml-11 mr-11">
+          <div className="col-span-4 mb-6 ml-2 mr-2">
+            
             <DropdownList onSelect={handleSelect} />
           </div>
           <div className="grid grid-cols-4 gap-6">
-            <div className="col-span-4 mb-6">
-              <DropdownList onSelect={handleSelect} />
-            </div>
-            <div className="col-span-4 md:col-span-4 grid grid-cols-3 gap-6 mb-6 ">
+           
+            <div className="col-span-4 md:col-span-4 grid grid-cols-3 gap-6 mb-6 ml-2 mr-2">
               {/* Total student in exam */}
               <CardHeaderAnalysis
                 title="Total Students"
@@ -213,7 +212,7 @@ export default function Page() {
             </div>
           </div>
           {/* Chart*/}
-          <div className="space-y-6">
+          <div className="space-y-6 ml-2 mr-2  ">
             {/* Radar Charts */}
             <div className="col-span-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
               <RadarChartDotsAllPassComponent

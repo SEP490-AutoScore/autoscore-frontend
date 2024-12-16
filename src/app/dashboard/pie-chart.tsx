@@ -104,7 +104,6 @@ export function PieChartComponent() {
       <Card className="h-full">
         <CardHeader className="">
           <CardTitle>Score Distribution</CardTitle>
-
           <CardDescription>
             There is no data for statistics
           </CardDescription>

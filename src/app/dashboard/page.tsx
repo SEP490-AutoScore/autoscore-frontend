@@ -164,7 +164,7 @@ export default function Page() {
     <SidebarInset>
       {Header}
       <div className="p-4 pt-0 space-y-6">
-        <div className="border border-gray-200 p-6 rounded-lg shadow-sm">
+        <div className="border border-gray-200 p-6 rounded-lg shadow-sm ml-11 mr-11">
             <div className="mb-6">
               <h2 className="text-2xl font-bold tracking-tight">Dashboard page</h2>
               <p className="text-muted-foreground">
@@ -172,7 +172,7 @@ export default function Page() {
               </p>
             </div>
           <div className="grid grid-cols-4 gap-6">
-            <div className="col-span-4 md:col-span-4 grid grid-cols-3 gap-6 mb-6 ">
+            <div className="col-span-4 md:col-span-4 grid grid-cols-3 gap-6 mb-6 ml-2 mr-2 ">
               {/* Total exam */}
               <CardHeaderDashboard
                 title="Total Exams"
@@ -221,7 +221,7 @@ export default function Page() {
             </div>
           </div>
           {/* Bar Chart and Pie Chart on the same row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 ml-2 mr-2">
             <div className="col-span-1">
               {/* Total exam each year */}
               <BarChartComponent data={semesterData} error={error} year={year} handleYearChange={handleYearChange} />
@@ -231,7 +231,7 @@ export default function Page() {
               <PieChartComponent />
             </div>
           </div>
-          <div className="space-y-6">
+          <div className="space-y-6 ml-2 mr-2">
             {/* Score each student */}
             <LineChartComponent />
             {/* Score detail each student */}

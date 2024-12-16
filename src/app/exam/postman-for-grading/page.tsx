@@ -570,6 +570,7 @@ const Page: React.FC = () => {
 
               <div className="flex items-center space-x-2 overflow-x-auto whitespace-nowrap">
                 <span className="font-semibold">{parent.postmanFunctionName}</span>
+                <span className="text-sm text-gray-600">{parent.httpMethod}</span>
                 <span className="text-sm text-gray-600">{parent.endPoint}</span>
                 <span className="text-sm text-gray-600">
                   Score: {parseFloat((parent.scoreOfFunction ?? 0).toFixed(2))}

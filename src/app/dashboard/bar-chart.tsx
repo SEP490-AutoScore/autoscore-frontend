@@ -80,7 +80,6 @@ export function BarChartComponent({
       <CardHeader className="relative">
         <CardTitle>Exams Each Year</CardTitle>
         <CardDescription>Exams counts per semester for selected year</CardDescription>
-
         {/* Dropdown select to choose year */}
         <div className="absolute top-2 right-2">
           <Select onValueChange={handleYearChange} defaultValue={year}>
@@ -98,7 +97,10 @@ export function BarChartComponent({
         </div>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+      <ChartContainer
+          config={chartConfig}
+          className="w-full h-[502px]"
+        >
           <BarChart
             accessibilityLayer
             data={chartData}
@@ -114,7 +116,6 @@ export function BarChartComponent({
               axisLine={false}
               tickFormatter={(value) => value}
             />
-
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
