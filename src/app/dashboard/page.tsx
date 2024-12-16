@@ -164,8 +164,8 @@ export default function Page() {
     <SidebarInset>
       {Header}
       <div className="p-4 pt-0 space-y-6">
-        <div className="border border-gray-200 p-6 rounded-lg shadow-sm ml-11 mr-11">
-            <div className="mb-6">
+        <div className="border border-gray-200 p-6 rounded-lg shadow-sm mx-auto">
+            <div className="mb-6 ml-2 mr-2  mt-2">
               <h2 className="text-2xl font-bold tracking-tight">Dashboard page</h2>
               <p className="text-muted-foreground">
                 These are charts to analyze scores of all exam

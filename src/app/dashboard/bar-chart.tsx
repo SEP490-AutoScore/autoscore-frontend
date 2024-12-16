@@ -97,7 +97,7 @@ export function BarChartComponent({
         </div>
       </CardHeader>
       <CardContent>
-      <ChartContainer
+        <ChartContainer
           config={chartConfig}
           className="w-full h-[502px]"
         >
@@ -109,13 +109,10 @@ export function BarChartComponent({
             }}
           >
             <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="semester"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => value}
-            />
+            <XAxis dataKey="semester" tickLine={true}
+              axisLine={true} />
+            <YAxis tickLine={true}
+              axisLine={true} />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
