@@ -6,9 +6,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
-import { Settings2 } from "lucide-react";
+// import { Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface DropdownProps {
@@ -71,7 +70,7 @@ export const DropdownList: React.FC<DropdownProps> = ({ onSelect }) => {
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="mt-3 ml-auto">
+          <Button variant="outline" className="mt-3 ml-auto text-primary border-primary rounded-full px-6">
             Select An Exam Paper
           </Button>
         </DropdownMenuTrigger>
