@@ -27,28 +27,29 @@ const FolderUploadPopover: React.FC<FolderUploadPopoverProps> = ({
 }) => {
   const [file, setFile] = useState<File | null>(null);
   const [progress, setProgress] = useState<number>(0); // Giá trị thanh Progress
+  const [progressNew, setProgressNew] = useState<number>(0); // Giá trị thanh Progress
   const [isUploading, setIsUploading] = useState(false); // Trạng thái đang upload
   const showToast = useToastNotification();
   const navigate = useNavigate();
   const token = localStorage.getItem("jwtToken");
 
+  // SSE: Nhận tiến trình từ server
   useEffect(() => {
     if (isUploading) {
+      const clientId = "client_" + Date.now();
       const eventSource = new EventSource(
-        `${BASE_URL}${API_ENDPOINTS.uploadStudentSourceProcess}` // API nhận tiến trình từ server qua SSE
+        `${BASE_URL}${API_ENDPOINTS.uploadStudentSourceProcess}/${clientId}` // API nhận tiến trình từ server qua SSE
       );
 
-      eventSource.onmessage = (event) => {
-        if (event.data === "keep-alive") {
-          console.log("Connection alive");
-        } else {
-          const progressFromServer = Number(event.data); // Nhận tiến trình từ server
-          setProgress(progressFromServer); // Cập nhật tiến trình hiển thị
-          if (progressFromServer >= 100) {
+      eventSource.addEventListener("progress", (event) => {
+        const progressFromServer = Number(event.data);
+        setProgress(progressFromServer);
+        if (progressFromServer >= 100) {
+          setTimeout(() => {
             eventSource.close();
-          }
+          }, 10000);
         }
-      };
+      });
 
       eventSource.onerror = () => {
         eventSource.close();
@@ -57,6 +58,23 @@ const FolderUploadPopover: React.FC<FolderUploadPopoverProps> = ({
       return () => eventSource.close();
     }
   }, [isUploading]);
+
+  // Hiệu ứng tăng dần đến 100%
+  useEffect(() => {
+    if (progress >= 100) {
+      const interval = setInterval(() => {
+        setProgressNew((prev) => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            return 100;
+          }
+          return prev + 1;
+        });
+      }, 50);
+
+      return () => clearInterval(interval);
+    }
+  }, [progress]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -93,7 +111,9 @@ const FolderUploadPopover: React.FC<FolderUploadPopoverProps> = ({
           variant: "default",
         });
         onClose();
-        navigate("/exams/exam-papers", { state: { examId, onSourceReload: true } });
+        navigate("/exams/exam-papers", {
+          state: { examId, onSourceReload: true },
+        });
       } catch (error) {
         console.error("Error uploading file:", error);
         showToast({
@@ -162,10 +182,10 @@ const FolderUploadPopover: React.FC<FolderUploadPopoverProps> = ({
               <div className="relative h-4 w-full bg-gray-200 rounded-full overflow-hidden">
                 <div
                   className="absolute h-full bg-gradient-to-r from-green-600 to-green-300 transition-all duration-500"
-                  style={{ width: `${progress}%` }}
+                  style={{ width: `${progressNew}%` }}
                 />
                 <span className="absolute top-0 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700">
-                  {progress}%
+                  {progressNew}%
                 </span>
               </div>
             </div>
