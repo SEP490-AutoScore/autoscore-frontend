@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { columns } from "@/app/exam/exam-paper-overview/exam-paper-comlums";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { DataTableSkeleton } from "@/app/exam/exam-paper-overview/table-skeleton";
-import { NoResultPage, ErrorPage } from '@/app/authentication/error/page';
+import { ErrorPage } from '@/app/authentication/error/page';
 import { DataTable } from '@/app/exam/exam-paper-overview/data-table';
 
 interface ExamPapers {

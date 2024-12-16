@@ -1,6 +1,8 @@
-import { FC, useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { FC, useEffect, useState } from "react";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
+import { Separator } from "@/components/ui/separator";
+import { Dot } from "lucide-react";
 
 interface Subject {
   subjectId: number;
@@ -33,23 +35,26 @@ interface InfoProps {
 const InfoComponent: FC<InfoProps> = ({ examPaperId }) => {
   const [examPaper, setExamPaper] = useState<ExamPaperResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
   const token = localStorage.getItem("jwtToken");
 
   // Gọi API khi component được render
   useEffect(() => {
     const fetchExamPaper = async () => {
       try {
-        const response = await fetch(`${BASE_URL}${API_ENDPOINTS.getExamPaperInfo}/${examPaperId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`, // Thêm token vào header
-          },
-        });
+        const response = await fetch(
+          `${BASE_URL}${API_ENDPOINTS.getExamPaperInfo}/${examPaperId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`, // Thêm token vào header
+            },
+          }
+        );
 
         if (!response.ok) {
-          throw new Error('Failed to fetch exam paper');
+          throw new Error("Failed to fetch exam paper");
         }
         const data: ExamPaperResponse = await response.json();
         setExamPaper(data);
@@ -67,45 +72,66 @@ const InfoComponent: FC<InfoProps> = ({ examPaperId }) => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="space-y-4">
-      {/* Hiển thị trong một card duy nhất */}
-      <Card className="bg-white shadow-md rounded-lg border border-gray-200">
-        <CardHeader className="font-semibold p-4">
-          Introduction
-        </CardHeader>
-        <CardContent className="p-4 text-sm text-gray-700">
-          {/* Hướng dẫn */}
-          {examPaper?.instruction ? (
-            <div className="mb-4">
-              <h3 className="font-semibold text-lg mb-2">Instructions</h3>
-              <pre className="whitespace-pre-wrap">{examPaper.instruction}</pre>
+    <div className="space-y-4 mx-2">
+      <div className="mx-4">
+        <Separator className="h-1 bg-primary rounded" />
+      </div>
+      <CardHeader className="font-semibold text-2xl p-4">
+        <CardTitle>Introduction</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4 mx-0 px-4">
+        {examPaper?.instruction ? (
+          <div>
+            <span className="font-semibold text-lg mb-2">Instructions</span>
+            <div className="space-y-4 ml-4">
+              <div className="mb-4 flex items-start">
+                <div className="mr-2">
+                  <Dot />
+                </div>
+                <p className="whitespace-pre-wrap text-sm">
+                  {examPaper.instruction}
+                </p>
+              </div>
             </div>
+          </div>
+        ) : (
+          <div>
+            <span className="font-semibold text-base mb-2">No instructions available</span>
+            <p className="whitespace-pre-wrap text-sm">No instructions available.</p>
+          </div>
+        )}
+
+        {/* Các thông tin quan trọng */}
+        <h3 className="font-semibold text-lg mb-2">Important</h3>
+        <div className="space-y-4 ml-4">
+          {examPaper?.importants && examPaper.importants.length > 0 ? (
+            examPaper.importants.map((item) => (
+              <div key={item.importantId} className="mb-4 flex items-start">
+                <div className="mr-2">
+                  <Dot />
+                </div>
+                <div>
+                  <span className="font-semibold text-base mb-2">
+                    {item.importantName}
+                  </span>
+                  <p className="whitespace-pre-wrap text-sm">
+                    {item.importantScrip}
+                  </p>
+                </div>
+              </div>
+            ))
           ) : (
             <div className="mb-4">
-              <h3 className="font-semibold text-lg mb-2">No instructions available</h3>
-              <p>No instructions available.</p>
+              <span className="font-semibold text-base mb-2">
+                No important information found
+              </span>
+              <p className="whitespace-pre-wrap text-sm">
+                No important information available.
+              </p>
             </div>
           )}
-        
-          {/* Các thông tin quan trọng */}
-          <h3 className="font-semibold text-lg mb-2">Important</h3>
-          <div className="space-y-4 ml-4">
-            {examPaper?.importants && examPaper.importants.length > 0 ? (
-              examPaper.importants.map((item) => (
-                <div key={item.importantId} className="mb-4">
-                  <h4 className="font-semibold text-base mb-2">{item.importantName}</h4>
-                  <pre className="whitespace-pre-wrap">{item.importantScrip}</pre>
-                </div>
-              ))
-            ) : (
-              <div className="mb-4">
-                <h4 className="font-semibold text-base mb-2">No important information found</h4>
-                <p>No important information available.</p>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+      </CardContent>
     </div>
   );
 };
