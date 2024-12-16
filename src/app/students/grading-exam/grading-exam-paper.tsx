@@ -1,16 +1,35 @@
-import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import React, { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";// Assuming you have an Input component
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig"; // Assuming you have an Input component
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { checkPermission } from "@/hooks/use-auth";
-import { FilePen } from "lucide-react";
+import { Play } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface ExamPaperIdDialogButtonProps {
   examPaperId: number; // Prop to receive the examPaperId
 }
 
-const ExamPaperIdDialogButton: React.FC<ExamPaperIdDialogButtonProps> = ({ examPaperId }) => {
+const ExamPaperIdDialogButton: React.FC<ExamPaperIdDialogButtonProps> = ({
+  examPaperId,
+}) => {
   const [examType, setExamType] = useState<string>("ASSIGNMENT");
   const [numberDeploy] = useState<number>(1);
   const [isOpen, setIsOpen] = useState<boolean>(false); // State to control dialog visibility
@@ -58,63 +77,67 @@ const ExamPaperIdDialogButton: React.FC<ExamPaperIdDialogButtonProps> = ({ examP
   };
   const hasPermission = checkPermission({ permission: "CREATE_EXAM_PAPER" });
   if (!hasPermission) {
-    return <></>
+    return <></>;
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      {/* Button that triggers the dialog */}
-      <DialogTrigger asChild>
-        <div className="flex justify-end">
-          <Button
-            className="p-2.5 h-10 w-10 rounded-full border border-primary text-primary bg-white hover:bg-primary hover:text-white"
-            onClick={() => setIsOpen(true)}
-          >
-            <FilePen className="h-6 w-6" />
-          </Button>
-        </div>
-      </DialogTrigger>
-
-      {/* Dialog that will open when the button is clicked */}
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Start Grading</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4">
-          {/* Exam Type Selection */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium">Exam Type</label>
-            <Select value={examType} onValueChange={setExamType}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select exam type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ASSIGNMENT">ASSIGNMENT</SelectItem>
-                <SelectItem value="EXAM">EXAM</SelectItem>
-              </SelectContent>
-            </Select>
+    <>
+      <TooltipProvider delayDuration={0}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              onClick={() => setIsOpen(true)}
+              variant="outline"
+              className="p-2.5 h-10 w-10 rounded-full border-primary text-primary hover:text-white hover:bg-primary"
+            >
+              <Play />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Start Grading</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        {/* Dialog that will open when the button is clicked */}
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Start Grading</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {/* Exam Type Selection */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">Exam Type</label>
+              <Select value={examType} onValueChange={setExamType}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select exam type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ASSIGNMENT">ASSIGNMENT</SelectItem>
+                  <SelectItem value="EXAM">EXAM</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-        </div>
 
-        <div className="flex justify-end space-x-4 mt-4">
-          {/* Cancel Button */}
-          <Button
-            className="bg-white text-black hover:bg-orange-500 hover:text-white border border-gray-300"
-            onClick={handleCancel}
-          >
-            Cancel
-          </Button>
+          <div className="flex justify-end space-x-2 mt-4">
+            {/* Cancel Button */}
+            <Button
+              className="bg-white text-primary hover:bg-primary hover:text-white border border-primary"
+              onClick={handleCancel}
+            >
+              Cancel
+            </Button>
 
-          {/* Start Grading Button */}
-          <Button
-            className="bg-white text-black hover:bg-orange-500 hover:text-white border border-gray-300"
-            onClick={handleStartGrading}
-          >
-            Start Grading
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+            {/* Start Grading Button */}
+            <Button
+              className="bg-primary text-white hover:bg-orange-500"
+              onClick={handleStartGrading}
+            >
+              Start Grading
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

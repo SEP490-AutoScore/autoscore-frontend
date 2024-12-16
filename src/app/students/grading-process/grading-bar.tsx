@@ -101,7 +101,17 @@ const SSEComponent: React.FC<SSEComponentProps> = ({ examPaperId }) => {
 
   if (gradingNotFound) {
     return (
-      <div className="flex items-center justify-center">
+      <div >
+        <div className="flex items-center justify-between space-y-2 mb-4">
+              <div>
+                <h2 className="text-2xl font-bold tracking-tight">
+                  Exams Paper
+                </h2>
+                <p className="text-muted-foreground">
+                  Here is a exam paper with details.
+                </p>
+              </div>
+        </div>
         <div className="p-3 bg-white rounded-lg shadow-md text-gray-700 w-full">
           <p>This exam is not currently being graded.</p>
         </div>
@@ -135,9 +145,9 @@ const SSEComponent: React.FC<SSEComponentProps> = ({ examPaperId }) => {
                           <div
                             className={`w-12 h-12 flex items-center justify-center rounded-full ${
                               isCompleted
-                                ? "bg-green-500 text-white"
+                                ? "bg-primary text-white"
                                 : isActive
-                                ? "bg-blue-500 text-white"
+                                ? "bg-primary text-white"
                                 : "bg-gray-300 text-gray-500"
                             }`}
                           >
@@ -153,9 +163,9 @@ const SSEComponent: React.FC<SSEComponentProps> = ({ examPaperId }) => {
                         <div
                           className={`h-2 w-56 ${
                             isCompleted
-                              ? "bg-green-500"
+                              ? "bg-secondary"
                               : isActive
-                              ? "bg-blue-500"
+                              ? "bg-primary"
                               : "bg-gray-300"
                           }`}
                         />

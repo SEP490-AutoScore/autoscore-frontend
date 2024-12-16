@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import React, { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import UploadImage from "@/assets/upload.png";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import { FolderUp } from "lucide-react";
 import { checkPermission } from "@/hooks/use-auth";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface ImportWordDialogProps {
   examPaperId: number; // Nhận examPaperId dưới dạng prop
@@ -20,26 +28,26 @@ const ImportWordDialog: React.FC<ImportWordDialogProps> = ({ examPaperId }) => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
     if (file) {
-      const fileExtension = file.name.split('.').pop()?.toLowerCase();
-      if (fileExtension === 'doc' || fileExtension === 'docx') {
+      const fileExtension = file.name.split(".").pop()?.toLowerCase();
+      if (fileExtension === "doc" || fileExtension === "docx") {
         setSelectedFile(file);
         setErrorMessage(null);
       } else {
-        setErrorMessage('Vui lòng chọn tệp .doc hoặc .docx hợp lệ.');
+        setErrorMessage("Vui lòng chọn tệp .doc hoặc .docx hợp lệ.");
       }
     }
   };
-  const token = localStorage.getItem('jwtToken');
+  const token = localStorage.getItem("jwtToken");
 
   const showToast = useToastNotification();
   const hasPermission = checkPermission({ permission: "CREATE_QUESTION" });
   if (!hasPermission) {
-    return <></>
+    return <></>;
   }
 
   const handleImport = async () => {
     if (!selectedFile) {
-      setErrorMessage('Vui lòng chọn tệp để tải lên.');
+      setErrorMessage("Vui lòng chọn tệp để tải lên.");
       return;
     }
 
@@ -47,22 +55,22 @@ const ImportWordDialog: React.FC<ImportWordDialogProps> = ({ examPaperId }) => {
     setErrorMessage(null);
 
     const formData = new FormData();
-    formData.append('file', selectedFile);
+    formData.append("file", selectedFile);
 
     try {
       const response = await fetch(
         `${BASE_URL}${API_ENDPOINTS.importExamQuestion}?examPaperId=${examPaperId}`,
         {
-          method: 'POST',
+          method: "POST",
           body: formData,
           headers: {
-            'Authorization': `Bearer ${token}`, // Thêm JWT vào header
+            Authorization: `Bearer ${token}`, // Thêm JWT vào header
           },
         }
       );
 
       if (!response.ok) {
-        throw new Error('Không thể tải tệp lên. Vui lòng thử lại.');
+        throw new Error("Không thể tải tệp lên. Vui lòng thử lại.");
       }
 
       showToast({
@@ -78,7 +86,9 @@ const ImportWordDialog: React.FC<ImportWordDialogProps> = ({ examPaperId }) => {
         description: "Import questions fail!",
         variant: "destructive",
       });
-      setErrorMessage(error instanceof Error ? error.message : 'Đã xảy ra lỗi.');
+      setErrorMessage(
+        error instanceof Error ? error.message : "Đã xảy ra lỗi."
+      );
     } finally {
       setIsUploading(false);
     }
@@ -86,16 +96,25 @@ const ImportWordDialog: React.FC<ImportWordDialogProps> = ({ examPaperId }) => {
 
   return (
     <div>
-      <Button onClick={() => setIsOpen(true)}
-        variant="outline"
-        className="p-2.5 h-10 w-10 rounded-full border-primary text-primary hover:text-white hover:bg-primary">
-        <FolderUp className="h-6 w-6" />
-      </Button>
+      <TooltipProvider delayDuration={0}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              onClick={() => setIsOpen(true)}
+              variant="outline"
+              className="p-2.5 h-10 w-10 rounded-full border-primary text-primary hover:text-white hover:bg-primary"
+            >
+              <FolderUp />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Import Database</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Nhập tệp Word</DialogTitle>
+            <DialogTitle>Import Quest From Word</DialogTitle>
           </DialogHeader>
 
           <div className="flex flex-col space-y-4">
@@ -119,14 +138,19 @@ const ImportWordDialog: React.FC<ImportWordDialogProps> = ({ examPaperId }) => {
               </p>
               {selectedFile && (
                 <div className="mt-2 text-sm text-gray-600">
-                  {selectedFile.name} ({(selectedFile.size / (1024 * 1024)).toFixed(2)} MB)
+                  {selectedFile.name} (
+                  {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB)
                 </div>
               )}
             </div>
-            {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
+            {errorMessage && (
+              <p className="text-red-500 text-sm">{errorMessage}</p>
+            )}
             {/* Describe */}
             <div className="flex justify-between">
-              <DialogDescription>Supported formats: .doc/.docx</DialogDescription>
+              <DialogDescription>
+                Supported formats: .doc/.docx
+              </DialogDescription>
               <DialogDescription>Maximum size: 25MB</DialogDescription>
             </div>
 
@@ -138,15 +162,15 @@ const ImportWordDialog: React.FC<ImportWordDialogProps> = ({ examPaperId }) => {
             )}
           </div>
           <DialogFooter>
-            <Button onClick={() => setIsOpen(false)} variant="secondary">
-              Hủy
+            <Button onClick={() => setIsOpen(false)} variant="outline">
+              Cancel
             </Button>
             <Button
               onClick={handleImport}
-              variant="default"
+              className="bg-primary text-white hover:bg-orange-500"
               disabled={isUploading}
             >
-              {isUploading ? 'Đang tải lên...' : 'Import'}
+              {isUploading ? "Đang tải lên..." : "Import"}
             </Button>
           </DialogFooter>
         </DialogContent>
