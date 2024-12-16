@@ -157,7 +157,9 @@ export default function ExamPaperDetails() {
                 {examPaper && <ExamPaperInfo examPaper={examPaper} />}
             </div>
             <div className="space-y-6 p-6">
-                <Grading examPaperId={examPaperId}/>
+                <div className = "flex justify-end">
+                    <Grading examPaperId={examPaperId} />
+                </div>
                 <GradingProcess examPaperId={examPaperId} />
             </div>
             <div className="space-y-6 p-6">

@@ -75,10 +75,6 @@ export default function Page() {
         return <DataTableSkeleton />;
     }
 
-    if (data.length === 0) {
-        return <NoResultPage />;
-    }
-
     return (
         <div className="container mx-auto">
             <DataTable columns={columns} data={data} />
