@@ -19,7 +19,7 @@ const UpdateDatabase: React.FC<UpdateDatabaseProps> = ({ examPaperId }) => {
     const [successMessage, setSuccessMessage] = useState<string>("");
     const token = localStorage.getItem("jwtToken");
 
-    const hasPermission = checkPermission({ permission: "CREATE_DATABASE" });
+    const hasPermission = checkPermission({ permission: "CREATE_EXAM_DATABASE" });
     if (!hasPermission) {
         return <></>
     }
