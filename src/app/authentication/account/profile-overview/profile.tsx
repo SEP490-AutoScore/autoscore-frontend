@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { User, fetchUserData, updateUserData } from "./api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -20,8 +20,6 @@ import { useToastNotification } from "@/hooks/use-toast-notification";
 import { ProfileSkeleton } from "./skeleton";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/context/UserContext";
-import { useCookie } from "@/hooks/use-cookie";
-import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 
 const formSchema = z
   .object({
@@ -64,7 +62,6 @@ export function Profile({ id }: { id: number }) {
   const [previewAvatar, setPreviewAvatar] = useState<string | null>(null);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { setAvatar, setName, setEmail } = useUser();
-  const { setCookie, getCookie, deleteCookie } = useCookie();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const showToast = useToastNotification();
   const navigate = useNavigate();
@@ -84,61 +81,6 @@ export function Profile({ id }: { id: number }) {
     },
   });
 
-  const handleUnauthorized = useCallback(async () => {
-    try {
-      const refreshToken = getCookie("refreshToken");
-      if (!refreshToken) {
-        showToast({
-          title: "Session Expired",
-          description: "Please log in again.",
-          variant: "destructive",
-        });
-        localStorage.clear();
-        navigate("/");
-        return;
-      }
-
-      const response = await fetch(`${BASE_URL}${API_ENDPOINTS.refreshToken}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "*/*",
-        },
-        body: refreshToken,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem("jwtToken", data.accessToken);
-        localStorage.setItem("exp", data.exp.toString());
-        setCookie("refreshToken", data.refreshToken, data.exp);
-        showToast({
-          title: "Session Refreshed",
-          description: "Your session has been renewed.",
-        });
-      } else {
-        showToast({
-          title: "Session Expired",
-          description: "Please log in again.",
-          variant: "destructive",
-        });
-        localStorage.clear();
-        deleteCookie("refreshToken");
-        navigate("/");
-      }
-    } catch (error) {
-      console.error("Error handling 401:", error);
-      showToast({
-        title: "Error",
-        description: "An error occurred while refreshing session.",
-        variant: "destructive",
-      });
-      localStorage.clear();
-      deleteCookie("refreshToken");
-      navigate("/");
-    }
-  }, [getCookie, showToast, navigate, setCookie, deleteCookie]);
-
   useEffect(() => {
     fetchUserData(id).then((data) => {
       setUser(data);
@@ -157,7 +99,6 @@ export function Profile({ id }: { id: number }) {
       form.reset(updatedUser);
       setAvatar(updatedUser.avatar);
       setName(updatedUser.name);
-      handleUnauthorized();
       setIsEditing(false);
     } catch (error) {
       console.error("Failed to update user data:", error);
