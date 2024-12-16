@@ -97,13 +97,14 @@ export function BarChartCustomLabelComponent() {
           <div>{error}</div>
         ) : (
           <ChartContainer config={chartConfig} className="w-full h-[500px]">
-            <BarChart
+            <BarChart 
               accessibilityLayer
               data={chartData}
               layout="vertical"
               margin={{
                 right: 16,
               }}
+            
             >
               <CartesianGrid horizontal={false} />
               <YAxis
