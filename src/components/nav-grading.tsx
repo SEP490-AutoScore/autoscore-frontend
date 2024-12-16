@@ -65,7 +65,7 @@ export function NavGrading({
       [url]: !prev[url], // Flip the current state
     }));
   };
-  
+
   // Lọc các mục hợp lệ
   const filteredItems = items.filter(
     (item) =>
@@ -88,16 +88,17 @@ export function NavGrading({
               (item.allowedRoles?.includes(role) || !item.allowedRoles) &&
               (!item.permission || permissions.includes(item.permission))
           )
-          .map((item) => item.items && item.items.length > 0 ? (
-            <Collapsible
-              key={item.title}
-              asChild
-              defaultOpen={activeStates[item.url] || item.isActive}
-              className="group/collapsible"
-            >
-              <SidebarMenuItem>
-                <CollapsibleTrigger asChild>
-                  {/* <Link
+          .map((item) =>
+            item.items && item.items.length > 0 ? (
+              <Collapsible
+                key={item.title}
+                asChild
+                defaultOpen={activeStates[item.title] || item.isActive}
+                className="group/collapsible"
+              >
+                <SidebarMenuItem>
+                  <CollapsibleTrigger asChild>
+                    {/* <Link
                     to={item.url}
                     onClick={() => {
                       setSelectedItem(item.url);
@@ -124,53 +125,56 @@ export function NavGrading({
                         <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                       )}
                     </SidebarMenuButton>
-                  {/* </Link> */}
-                </CollapsibleTrigger>
-                {item.items && item.items.length > 0 && (
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      {item.items?.map((subItem) => (
-                        <SidebarMenuSubItem key={subItem.title}>
-                          <Link
-                            to={subItem.url}
-                            onClick={() => setSelectedItem(subItem.url)}
-                          >
-                            <SidebarMenuSubButton
-                              asChild
-                              className={`sidebar-link ${
-                                selectedItem === subItem.url
-                                  ? "bg-primary text-primary-foreground"
-                                  : ""
-                              }`}
+                    {/* </Link> */}
+                  </CollapsibleTrigger>
+                  {item.items && item.items.length > 0 && (
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        {item.items?.map((subItem) => (
+                          <SidebarMenuSubItem key={subItem.title}>
+                            <Link
+                              to={subItem.url}
+                              onClick={() => setSelectedItem(subItem.url)}
                             >
-                              <span>{subItem.title}</span>
-                            </SidebarMenuSubButton>
-                          </Link>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                )}
+                              <SidebarMenuSubButton
+                                asChild
+                                className={`sidebar-link ${
+                                  selectedItem === subItem.url
+                                    ? "bg-primary text-primary-foreground"
+                                    : ""
+                                }`}
+                              >
+                                <span>{subItem.title}</span>
+                              </SidebarMenuSubButton>
+                            </Link>
+                          </SidebarMenuSubItem>
+                        ))}
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  )}
+                </SidebarMenuItem>
+              </Collapsible>
+            ) : (
+              <SidebarMenuItem key={item.title}>
+                <Link
+                  to={item.url || "#"}
+                  onClick={() => setSelectedItem(item.url || null)}
+                >
+                  <SidebarMenuButton
+                    tooltip={item.title}
+                    className={`sidebar-link ${
+                      selectedItem === item.url
+                        ? "bg-primary text-primary-foreground"
+                        : ""
+                    }`}
+                  >
+                    {item.icon && <item.icon />}
+                    <span>{item.title}</span>
+                  </SidebarMenuButton>
+                </Link>
               </SidebarMenuItem>
-            </Collapsible>
-          ) :(<SidebarMenuItem key={item.title}>
-            <Link
-              to={item.url || "#"}
-              onClick={() => setSelectedItem(item.url || null)}
-            >
-              <SidebarMenuButton
-                tooltip={item.title}
-                className={`sidebar-link ${
-                  selectedItem === item.url
-                    ? "bg-primary text-primary-foreground"
-                    : ""
-                }`}
-              >
-                {item.icon && <item.icon />}
-                <span>{item.title}</span>
-              </SidebarMenuButton>
-            </Link>
-          </SidebarMenuItem>))}
+            )
+          )}
       </SidebarMenu>
     </SidebarGroup>
   );

@@ -6,7 +6,8 @@ export const GRADING_URL = "http://localhost:8081";
 // Các endpoint API
 export const API_ENDPOINTS = {
   oauthGoogle: "/oauth2/authorization/google",
-  signInGoogle: "/api/auth/signingoogle",
+  signInGoogle: "/api/auth/signingGoogle",
+  signInEmail: "/api/auth/signingEmail",
   refreshToken: "/api/auth/refresh-token",
   getAllExams: "/api/exam/list",
   vertification: "/api/auth/verify",

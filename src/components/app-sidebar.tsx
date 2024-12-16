@@ -32,7 +32,7 @@ const data = {
     position: localStorage.getItem("position") || "unknown",
     permissions: localStorage.getItem("permissions") || [],
     avatar:
-      localStorage.getItem("picture") ||
+      localStorage.getItem("avatar") ||
       "https://img.myloview.cz/nalepky/default-avatar-profile-in-trendy-style-for-social-media-user-icon-400-228654852.jpg",
     campus: localStorage.getItem("campus") || "unknown",
   },
