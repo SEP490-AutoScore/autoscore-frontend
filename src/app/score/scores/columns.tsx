@@ -21,7 +21,7 @@ export type Score = {
   studentEmail: string;
   gratedAt: Date;
   totalScore: number;
-  levelOfPlagiarism: string;
+  reason: string;
 };
 export const columns: ColumnDef<Score>[] = [
   {
@@ -45,8 +45,8 @@ export const columns: ColumnDef<Score>[] = [
     header: "Score",
   },
   {
-    accessorKey: "levelOfPlagiarism",
-    header: "Plagiarism",
+    accessorKey: "reason",
+    header: "Reason",
   },
   {
     id: "actions",
