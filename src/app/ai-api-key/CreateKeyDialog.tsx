@@ -156,7 +156,7 @@ export const CreateKeyDialog = ({ onClose, open }: { onClose: () => void; open: 
   };
 
   return (
-    <Dialog open={open}>
+    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="p-6 bg-white shadow-lg rounded-lg max-w-4xl mx-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">Create New API Key</DialogTitle>

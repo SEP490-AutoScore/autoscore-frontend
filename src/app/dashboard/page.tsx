@@ -1,7 +1,7 @@
 import { useHeader } from "@/hooks/use-header";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { CardHeaderDashboard } from "./card-header";
-import { Book, BookCheck, BookUser, Frame, LucideBookCheck, MenuSquare, SquareSigma, TestTubeDiagonal } from "lucide-react";
+import { Book } from "lucide-react";
 import { BarChartComponent } from "./bar-chart";
 import { useState, useEffect } from "react";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
@@ -31,8 +31,8 @@ export default function Page() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setYear(event.target.value);
+  const handleYearChange = (selectedYear: string) => {
+    setYear(selectedYear);
   };
 
   useEffect(() => {
@@ -175,9 +175,9 @@ export default function Page() {
     <SidebarInset>
       {Header}
 
-      <div className="p-4 pt-0 space-y-6 ml-12 mr-12">
+      <div className="p-4 pt-0 space-y-6">
         <div className="border border-gray-200 p-6 rounded-lg shadow-sm">
-          <div className="grid grid-cols-4 gap-6 mt-2 ml-2 mr-2">
+          <div className="grid grid-cols-4 gap-6">
             <div className="mb-6">
               <h2 className="text-2xl font-bold tracking-tight">Dashboard page</h2>
               <p className="text-muted-foreground">
@@ -238,7 +238,7 @@ export default function Page() {
           </div>
 
           {/* Bar Chart and Pie Chart on the same row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 ml-2 mr-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="col-span-1">
               {/* Total exam each year */}
               <BarChartComponent data={semesterData} error={error} year={year} handleYearChange={handleYearChange} />
@@ -249,7 +249,7 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="space-y-6 ml-2 mr-2">
+          <div className="space-y-6">
             {/* Score each student */}
             <LineChartComponent />
 

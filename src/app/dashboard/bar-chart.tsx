@@ -1,6 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import { ChartContainer } from "@/components/ui/chart";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type BarChartComponentProps = {
   data: {
@@ -11,7 +18,7 @@ type BarChartComponentProps = {
 
   error: string | null;
   year: string;
-  handleYearChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  handleYearChange: (value: string) => void;
 };
 
 const chartConfig = {
@@ -56,18 +63,18 @@ export function BarChartComponent({ data, error, year, handleYearChange }: BarCh
 
         {/* Dropdown select to choose year */}
         <div className="absolute top-2 right-2">
-          <select
-            id="year"
-            value={year}
-            onChange={handleYearChange}
-            className="select select-bordered"
-          >
-            {years.map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
+          <Select onValueChange={handleYearChange} defaultValue={year}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select year" />
+            </SelectTrigger>
+            <SelectContent>
+              {years.map((year) => (
+                <SelectItem key={year} value={year}>
+                  {year}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </CardHeader>
 
