@@ -1,6 +1,33 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from 'recharts';
-import { ChartContainer } from "@/components/ui/chart";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  LabelList,
+} from "recharts";
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type BarChartComponentProps = {
   data: {
@@ -8,10 +35,10 @@ type BarChartComponentProps = {
     Summer: number;
     Fall: number;
   };
-  loading: boolean;
+
   error: string | null;
   year: string;
-  handleYearChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  handleYearChange: (value: string) => void;
 };
 
 const chartConfig = {
@@ -19,65 +46,98 @@ const chartConfig = {
     label: "Exam Counts",
     color: "#FF8D29",
   },
-};
+} satisfies ChartConfig;
 
-export function BarChartComponent({ data, loading, error, year, handleYearChange }: BarChartComponentProps) {
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
+export function BarChartComponent({
+  data,
+  error,
+  year,
+  handleYearChange,
+}: BarChartComponentProps) {
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <Card className="h-full">
+        <CardHeader className="">
+          <CardTitle>Exams Each Year</CardTitle>
+
+          <CardDescription>There is no data for statistics</CardDescription>
+        </CardHeader>
+      </Card>
+    );
   }
 
-  // Dữ liệu cho BarChart
+  // Data for BarChart
   const chartData = [
-    { semester: "Spring", count: data.Spring },
-    { semester: "Summer", count: data.Summer },
-    { semester: "Fall", count: data.Fall },
+    { semester: "Spring", Exams: data.Spring },
+    { semester: "Summer", Exams: data.Summer },
+    { semester: "Fall", Exams: data.Fall },
   ];
 
   // Generate years from current year to 10 years ago
   const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 11 }, (_, index) => (currentYear - index).toString());
+  const years = Array.from({ length: 11 }, (_, index) =>
+    (currentYear - index).toString()
+  );
 
   return (
     <Card>
       <CardHeader className="relative">
-        <CardTitle>Exams per Semester</CardTitle>
-        <CardDescription>Exams counts per semester for selected year</CardDescription>
+        <CardTitle>Total Exams</CardTitle>
+        <CardDescription>
+          Exams counts per semester for selected year
+        </CardDescription>
 
         {/* Dropdown select to choose year */}
         <div className="absolute top-2 right-2">
-          <select
-            id="year"
-            value={year}
-            onChange={handleYearChange}
-            className="select select-bordered"
-          >
-            {years.map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
+          <Select onValueChange={handleYearChange} defaultValue={year}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select year" />
+            </SelectTrigger>
+            <SelectContent>
+              {years.map((year) => (
+                <SelectItem key={year} value={year}>
+                  {year}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </CardHeader>
 
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <BarChart width={500} height={300} data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="semester" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar
-              dataKey="count"
-              fill={chartConfig["exam-counts"].color}
-              barSize={150} // Set the width of the bars
+          <BarChart
+            accessibilityLayer
+            data={chartData}
+            margin={{
+              top: 20,
+            }}
+          >
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="semester"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              tickFormatter={(value) => value}
             />
-
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent hideLabel />}
+            />
+            <Bar
+              dataKey="Exams"
+              fill={chartConfig["exam-counts"].color}
+              radius={8}
+              barSize={50}
+            >
+              <LabelList
+                position="top"
+                offset={12}
+                className="fill-foreground"
+                fontSize={12}
+              />
+            </Bar>
           </BarChart>
         </ChartContainer>
       </CardContent>

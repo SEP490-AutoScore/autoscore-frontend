@@ -8,7 +8,7 @@ import { useCookie } from "@/hooks/use-cookie";
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const showToast = useToastNotification();
-  const { setCookie, getCookie, deleteCookie } = useCookie(); 
+  const { setCookie, getCookie, deleteCookie } = useCookie();
 
   const handle401 = useCallback(() => {
     const handleUnauthorized = async () => {

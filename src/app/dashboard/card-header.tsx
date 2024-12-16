@@ -22,7 +22,7 @@ export function CardHeaderDashboard({
   return (
     <Card className="rounded-xl px-4 border bg-card text-card-foreground shadow flex items-center justify-left">
       <div className="p-4 h-16 w-16 text-white rounded-md bg-primary flex items-center justify-left px-4">
-        <Icon className="h-6 w-6" />
+        <Icon className="h-6 w-6 w-full" />
       </div>
       <div className="w-full">
         <CardHeader className="pl-4">

@@ -6,7 +6,8 @@ export const GRADING_URL = "http://localhost:8081";
 // Các endpoint API
 export const API_ENDPOINTS = {
   oauthGoogle: "/oauth2/authorization/google",
-  signInGoogle: "/api/auth/signingoogle",
+  signInGoogle: "/api/auth/signingGoogle",
+  signInEmail: "/api/auth/signingEmail",
   refreshToken: "/api/auth/refresh-token",
   getAllExams: "/api/exam/list",
   vertification: "/api/auth/verify",
@@ -134,20 +135,22 @@ export const API_ENDPOINTS = {
   examCount: "/api/exam/count",
   examcountByGradingAt: "/api/exam/countByGradingAt",
   examcountByGradingAtPassed: "/api/exam/countByGradingAtPassed",
-  examCountByGradingAtPassedAndSemester:
-    "/api/exam/countByGradingAtPassedAndSemester",
+  examCountByGradingAtPassedAndSemester: "/api/exam/countByGradingAtPassedAndSemester",
   totalStudents: "/api/score/total-students",
   studentsWithZeroScore: "/api/score/students-with-zero-score",
-  studentsWithScoreGreaterThanZero:
-    "/api/score/students-with-score-greater-than-zero",
+  studentsWithScoreGreaterThanZero: "/api/score/students-with-score-greater-than-zero",
   studentScores: "/api/score/student-scores",
-
+  scoreCategories: "/api/score/score-categories",
+  totalScoreOccurrences: "/api/score/total-score-occurrences",
+  analyzeLog: "/api/score/analyze-log",
   //analysis
   studentScoresBarChart: "/api/score/student-scores",
   analyzeLogOnePass: "/api/score/analyze-log-one-pass",
   analyzeLogAllPass: "/api/score/analyze-log-all-pass",
   dropdownList: "/api/exam/list-exam-exampaper",
-
+  noPass: "/api/score/analyze-log-fail-all",
+  codePlagiarismDetails: "/api/score/get-code-plagiarism-details",
+  studentResponseTime: "/api/score/get-total-run-and-average-response-time",
 
   //notification
   notification: "/api/notifications",

@@ -105,32 +105,25 @@ export function RadarChartDotsComponent({ examPaperId }: { examPaperId: string }
     return (
       <Card>
         <CardHeader className="items-center">
-          <CardTitle>Radar Chart - Pass Analysis</CardTitle>
+          <CardTitle>Pass At Least 1 Pmtest</CardTitle>
           <CardDescription>
             No data available for the analysis.
           </CardDescription>
         </CardHeader>
-        <CardContent className="pb-0 flex justify-center items-center h-full">
-          <p>No data available for this exam paper.</p>
-        </CardContent>
-     
       </Card>
     );
   }
 
-
   const displayData = chartData.length > 0 ? chartData : placeholderData
-
 
   return (
     <Card>
-  <CardHeader className="">
-  <CardTitle>Pass At Least 1 Pmtest</CardTitle>
-  <CardDescription>
-   Students passing at least one pmtest.
-  </CardDescription>
-</CardHeader>
-
+      <CardHeader className="">
+        <CardTitle>Pass At Least 1 Pmtest</CardTitle>
+        <CardDescription>
+          Students passing at least one pmtest.
+        </CardDescription>
+      </CardHeader>
 
       <CardContent className="pb-0">
         <ChartContainer
@@ -154,26 +147,9 @@ export function RadarChartDotsComponent({ examPaperId }: { examPaperId: string }
         </ChartContainer>
       </CardContent>
 
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-        {loading ? (
-            "Loading data..."
-          ) : error ? (
-            <>
-              <AlertTriangle className="h-4 w-4 text-yellow-500" />
-              Error: {error}
-            </>
-          ) : isPlaceholderData ? (
-            <>
-              <AlertTriangle className="h-4 w-4 text-yellow-500" />
-              No data available. Showing placeholder data.
-            </>
-          ) : (
-            <>
-              <TrendingUp className="h-4 w-4 text-green-500" />
-               {chartData.length} function{chartData.length !== 1 ? 's' : ''}
-            </>
-          )}
+      <CardFooter className="flex-col items-start gap-2 text-sm">
+        <div className="leading-none text-muted-foreground">
+          Total Functions: {chartData.length}
         </div>
       </CardFooter>
 

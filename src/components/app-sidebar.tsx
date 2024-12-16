@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
-// import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
 import { AutoScoreSwitcher } from "@/components/autoscore-switcher";
 import {
@@ -24,18 +23,18 @@ import {
 import { NavPermission } from "./nav-permission";
 import { NavGrading } from "./nav-grading";
 
-// This is sample data.
 const data = {
   user: {
-    name: localStorage.getItem("name") || "uknown",
+    id: Number(localStorage.getItem("id")) || 0,
+    name: localStorage.getItem("name") || "unknown",
     email: localStorage.getItem("email") || "nN1xj@example.com",
     role: localStorage.getItem("role") || "unknown",
     position: localStorage.getItem("position") || "unknown",
     permissions: localStorage.getItem("permissions") || [],
     avatar:
-      localStorage.getItem("picture") ||
+      localStorage.getItem("avatar") ||
       "https://img.myloview.cz/nalepky/default-avatar-profile-in-trendy-style-for-social-media-user-icon-400-228654852.jpg",
-    campus: localStorage.getItem("campus") || "uknown",
+    campus: localStorage.getItem("campus") || "unknown",
   },
   navMain: [
     {
@@ -158,7 +157,7 @@ const data = {
       allowedRoles: ["ADMIN", "EXAMINER", "LECTURER", "HEAD_OF_DEPARTMENT"],
       icon: Settings,
       items: [],
-    },    
+    },
   ],
 };
 
@@ -181,8 +180,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       const hasRole =
         !item.allowedRoles || item.allowedRoles.includes(userRole);
       const hasPermission =
-        !item.permission ||
-        userPermissions.includes(item.permission);
+        !item.permission || userPermissions.includes(item.permission);
       return hasRole && hasPermission;
     });
 

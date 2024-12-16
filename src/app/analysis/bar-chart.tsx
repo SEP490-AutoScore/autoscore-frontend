@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Bar, BarChart, CartesianGrid, XAxis, Tooltip } from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 
 import {
@@ -31,13 +31,10 @@ interface ChartDataItem {
   score: number;
 }
 
-
 export function BarChartComponent({ examPaperId }: { examPaperId: string }) {
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-
 
   useEffect(() => {
     if (!examPaperId) return;
@@ -68,20 +65,20 @@ export function BarChartComponent({ examPaperId }: { examPaperId: string }) {
           throw new Error(`Error fetching chart data: ${response.statusText}`);
         }
 
-        const data = await response.json(); // Parse dữ liệu JSON từ API
-        // Map dữ liệu để phù hợp với biểu đồ và sắp xếp theo điểm số tăng dần
+        const data = await response.json();
+
         const mappedData = data
-        .map((item: any) => ({
-          student: item.studentCode,
-          score: item.totalScore,
-        }))
-        .sort((a: ChartDataItem, b: ChartDataItem) => a.score - b.score); // Sort by score
-      
+          .map((item: any) => ({
+            student: item.studentCode,
+            score: item.totalScore,
+          }))
+          .sort((a: ChartDataItem, b: ChartDataItem) => a.score - b.score); // Sort by score
+
         setChartData(mappedData);
       } catch (err: unknown) {
-        if(err instanceof Error){
+        if (err instanceof Error) {
           setError(err.message)
-        }else setError("An error occurred while fetching data.")
+        } else setError("An error occurred while fetching data.")
       } finally {
         setLoading(false);
       }
@@ -90,14 +87,25 @@ export function BarChartComponent({ examPaperId }: { examPaperId: string }) {
     fetchChartData();
   }, [examPaperId]);
 
+  if (error) {
+    return (
+      <Card>
+        <CardHeader className="">
+          <CardTitle>Student Scores</CardTitle>
+          <CardDescription>
+            No data available for the analysis.
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Student Scores</CardTitle>
         <CardDescription>
-
-          Scores for exam paper:
-
+          Scores for each student.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -106,16 +114,20 @@ export function BarChartComponent({ examPaperId }: { examPaperId: string }) {
         ) : error ? (
           <p>Error: {error}</p>
         ) : (
-          <ChartContainer config={chartConfig}>
-            <BarChart accessibilityLayer data={chartData}>
+          <ChartContainer config={chartConfig} className="w-full h-[500px]">
+            <BarChart accessibilityLayer data={chartData} barSize={100}>
               <CartesianGrid vertical={false} />
-              {/* Hide the studentCode on the X-axis */}
               <XAxis
                 dataKey="student"
-                tickLine={false}
+                tickLine={true}
                 tickMargin={10}
-                axisLine={false}
-                hide // This will hide the student codes from the X-axis
+                axisLine={true}
+              />
+              <YAxis
+                tickLine={true}
+                axisLine={true}
+                tickMargin={10}
+                tickFormatter={(value) => Math.floor(value).toString()}
               />
               {/* Tooltip to display studentCode and score when hovering */}
               <Tooltip
@@ -139,9 +151,10 @@ export function BarChartComponent({ examPaperId }: { examPaperId: string }) {
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="leading-none text-muted-foreground">
-       
+          Total Students: {chartData.length}
         </div>
       </CardFooter>
+
     </Card>
   );
 }

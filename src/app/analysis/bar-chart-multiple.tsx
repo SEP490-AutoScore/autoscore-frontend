@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { TrendingUp } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import {
   Card,
   CardContent,
@@ -54,7 +54,8 @@ export function BarChartMultipleComponent({ examPaperId }: { examPaperId: string
     }
 
     fetch(
-      `http://localhost:8080/api/score/get-total-run-and-average-response-time?examPaperId=${examPaperId}`,
+
+      `${BASE_URL}${API_ENDPOINTS.studentResponseTime}?examPaperId=${examPaperId}`,
       {
         method: "GET",
         headers: {
@@ -80,12 +81,25 @@ export function BarChartMultipleComponent({ examPaperId }: { examPaperId: string
       .finally(() => setLoading(false));
   }, [examPaperId]);
 
+  if (error) {
+    return (
+      <Card>
+        <CardHeader className="">
+          <CardTitle>Performance Analysis</CardTitle>
+          <CardDescription>
+            No data available for the analysis.
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Performance Analysis</CardTitle>
         <CardDescription>
-          Average Response Time and Total Run Duration by Students
+          Average Response Time and Total Run Duration by Students.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -94,17 +108,22 @@ export function BarChartMultipleComponent({ examPaperId }: { examPaperId: string
         ) : error ? (
           <div>Error: {error}</div>
         ) : (
-          <ChartContainer config={chartConfig}>
+          <ChartContainer config={chartConfig} className="w-full h-[500px]">
             <BarChart data={chartData} accessibilityLayer>
               <CartesianGrid vertical={false} />
-              <XAxis hide={true}
-  dataKey="studentId"
-  tickLine={false}
-  tickMargin={10}
-  axisLine={false}
-  tickFormatter={(value) => value}
-/>
-
+              <XAxis
+                dataKey="studentId"
+                tickLine={true}
+                tickMargin={10}
+                axisLine={true}
+                tickFormatter={(value) => value}
+              />
+              <YAxis
+                tickLine={true}
+                axisLine={true}
+                tickMargin={10}
+                tickFormatter={(value) => Math.floor(value).toString()}
+              />
               <ChartTooltip
                 cursor={false}
                 content={<ChartTooltipContent indicator="dashed" />}
@@ -123,7 +142,11 @@ export function BarChartMultipleComponent({ examPaperId }: { examPaperId: string
           </ChartContainer>
         )}
       </CardContent>
-    
+      <CardFooter className="flex-col items-start gap-2 text-sm">
+        <div className="leading-none text-muted-foreground">
+          Total Students: {chartData.length}
+        </div>
+      </CardFooter>
     </Card>
   );
 }

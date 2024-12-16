@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Settings2 } from "lucide-react";
+import { NoResultPage } from "@/app/authentication/error/page";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -155,7 +156,7 @@ export function DataTableOverview<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  <NoResultPage />
                 </TableCell>
               </TableRow>
             )}

@@ -1,9 +1,9 @@
 import { useHeader } from "@/hooks/use-header";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { CardHeaderAnalysis } from "./card-header";
-import { Book } from "lucide-react";
+import { CircleUser, Frown, Smile } from "lucide-react";
 import { BarChartComponent } from "./bar-chart";
-
+import { BarChartPlagiarismComponent } from "./bar-chart-plagiarism";
 import { RadarChartDotsComponent } from "./radar-chart-dots";
 import { RadarChartDotsAllPassComponent } from "./radar-chart-dots-allpass";
 import { RadarChartDotsNoPassComponent } from "./radar-chart-dots-nopass";
@@ -14,13 +14,14 @@ import { BarChartMultipleComponent } from "./bar-chart-multiple";
 
 export default function Page() {
   const Header = useHeader({
-    breadcrumbLink: "/dashboard",
-    breadcrumbPage: "Dashboard",
+    breadcrumbLink: "/analysis",
+    breadcrumbPage: "Analysis",
   });
 
   const [selectedExamPaper, setSelectedExamPaper] = useState<string | null>(
     null
   );
+
   const [totalStudents, setTotalStudents] = useState<number | null>(null);
   const [studentsWithZeroScore, setStudentsWithZeroScore] = useState<
     number | null
@@ -33,7 +34,7 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Hàm gọi API khi examPaperId thay đổi
+  // 📡 Gọi API để lấy danh sách bài thi
   useEffect(() => {
     if (!selectedExamPaper) return;
 
@@ -64,13 +65,13 @@ export default function Page() {
           );
         }
 
-        const data = await response.text(); // API trả về dạng plaintext
-        setTotalStudents(Number(data)); // Chuyển dữ liệu thành số
+        const data = await response.text();
+        setTotalStudents(Number(data));
         setLoading(false);
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
-        } else setError("An error occurred while fetching data.")
+        } else setError("An error occurred while fetching data.");
         setLoading(false);
       }
     };
@@ -78,7 +79,6 @@ export default function Page() {
     fetchTotalStudents();
   }, [selectedExamPaper]);
 
-  // Gọi API số học sinh có điểm bằng 0
   useEffect(() => {
     if (!selectedExamPaper) return;
 
@@ -115,7 +115,7 @@ export default function Page() {
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
-        } else setError("An error occurred while fetching data.")
+        } else setError("An error occurred while fetching data.");
         setLoading(false);
       }
     };
@@ -123,7 +123,6 @@ export default function Page() {
     fetchStudentsWithZeroScore();
   }, [selectedExamPaper]);
 
-  // Gọi API số học sinh có điểm > 0
   useEffect(() => {
     if (!selectedExamPaper) return;
 
@@ -160,7 +159,7 @@ export default function Page() {
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
-        } else setError("An error occurred while fetching data.")
+        } else setError("An error occurred while fetching data.");
         setLoading(false);
       }
     };
@@ -171,110 +170,92 @@ export default function Page() {
   const handleSelect = (examPaperId: string) => {
     setSelectedExamPaper(examPaperId);
   };
+
   return (
     <SidebarInset>
       {Header}
+
       <div className="p-4 pt-0 space-y-6">
-        <div className="grid grid-cols-4 gap-6">
-          <div className="col-span-4">
+        <div className="border border-gray-200 p-6 rounded-lg shadow-sm">
+          <div className="col-span-4 mb-6">
             <DropdownList onSelect={handleSelect} />
           </div>
-
-          {/* Thông tin tổng học sinh */}
-
-          <div className="col-span-4 md:col-span-4 grid grid-cols-3 gap-6">
-            <div className="col-span-3 md:col-span-1">
+          <div className="grid grid-cols-4 gap-6">
+            <div className="col-span-4 md:col-span-4 grid grid-cols-3 gap-6 mb-6 ">
+              {/* Total student in exam */}
               <CardHeaderAnalysis
                 title="Total Students"
-                content="Student Statistics"
                 description={
                   loading
                     ? "Loading total students..."
                     : error
-                      ? `Error: ${error}`
-                      : totalStudents !== null
-                        ? `Total Students: ${totalStudents}`
-                        : "Overview"
+                    ? "No data to Analysis"
+                    : totalStudents !== null
+                    ? `Count: ${totalStudents}`
+                    : ""
                 }
-                icon={Book}
-              />
-            </div>
-
-            {/* Thông tin học sinh điểm 0 */}
-            <div className="col-span-3 md:col-span-1">
-              <CardHeaderAnalysis
-                title="Students with Zero Score"
+                icon={CircleUser}
                 content="Student Statistics"
+              />
+
+              {/* Total student has score =0 */}
+              <CardHeaderAnalysis
+                title="Total Zero Score"
                 description={
                   loading
                     ? "Loading zero score data..."
                     : error
-                      ? `Error: ${error}`
-                      : studentsWithZeroScore !== null
-                        ? `Zero Score: ${studentsWithZeroScore}`
-                        : "Overview"
+                    ? "No data to Analysis"
+                    : studentsWithZeroScore !== null
+                    ? `Count: ${studentsWithZeroScore}`
+                    : ""
                 }
-                icon={Book}
-              />
-            </div>
-
-            {/* Thông tin học sinh điểm > 0 */}
-            <div className="col-span-3 md:col-span-1">
-              <CardHeaderAnalysis
-                title="Students with Score > 0"
+                icon={Frown}
                 content="Student Statistics"
+              />
+
+              {/* Total student has score >0 */}
+              <CardHeaderAnalysis
+                title="Total Score > 0"
                 description={
                   loading
                     ? "Loading score data..."
                     : error
-                      ? `Error: ${error}`
-                      : studentsWithScoreGreaterThanZero !== null
-                        ? `Score > 0: ${studentsWithScoreGreaterThanZero}`
-                        : "Overview"
+                    ? "No data to Analysis"
+                    : studentsWithScoreGreaterThanZero !== null
+                    ? `Count: ${studentsWithScoreGreaterThanZero}`
+                    : ""
                 }
-                icon={Book}
+                icon={Smile}
+                content="Student Statistics"
+              />
+            </div>
+          </div>
+
+          {/* Chart*/}
+          <div className="space-y-6">
+            {/* Radar Charts */}
+            <div className="col-span-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <RadarChartDotsAllPassComponent
+                examPaperId={selectedExamPaper || ""}
+              />
+              <RadarChartDotsComponent examPaperId={selectedExamPaper || ""} />
+              <RadarChartDotsNoPassComponent
+                examPaperId={selectedExamPaper || ""}
               />
             </div>
 
-          </div>
-        </div>
-
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="col-span-1">
-
+            {/* Bar Chart - Student Scores */}
             <BarChartComponent examPaperId={selectedExamPaper || ""} />
-          </div>
 
+            {/* Bar Chart - Response Time */}
+            <BarChartMultipleComponent examPaperId={selectedExamPaper || ""} />
 
-
-          {/* pass toàn phần */}
-          <div className="col-span-2">
-
-            <RadarChartDotsAllPassComponent examPaperId={selectedExamPaper || ""} />
-
-
-          </div>
-
-
-          {/* pass 1 phần */}
-
-
-          <div className="col-span-1">
-
-            <RadarChartDotsComponent examPaperId={selectedExamPaper || ""} />
-          </div>
-
-
-          {/* pass toàn phần */}
-          <div className="col-span-1">
-            <RadarChartDotsAllPassComponent
+            {/* Bar Chart - Plagiarism */}
+            <BarChartPlagiarismComponent
               examPaperId={selectedExamPaper || ""}
             />
           </div>
-
-
-
         </div>
       </div>
     </SidebarInset>
