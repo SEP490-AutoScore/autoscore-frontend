@@ -18,7 +18,6 @@ interface GherkinDialogProps {
     fetchGherkinPostmanPairs: (questionId: number) => void;
 }
 
-
 export const GherkinDialog: React.FC<GherkinDialogProps> = ({ gherkinScenarioId, storedQuestionId, fetchGherkinPostmanPairs }) => {
     const [gherkinData, setGherkinData] = useState<any | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
@@ -42,33 +41,24 @@ export const GherkinDialog: React.FC<GherkinDialogProps> = ({ gherkinScenarioId,
                         headers: { Authorization: `Bearer ${token}` },
                     }
                 );
-
                 if (!gherkinResponse.ok) {
                     throw new Error("Failed to fetch Gherkin data");
                 }
-
                 const gherkinData = await gherkinResponse.json();
                 setGherkinData(gherkinData);
-
-
-
-
             } catch (error) {
                 setErrorMessage("Could not fetch data. Please try again.");
             } finally {
                 setLoading(false);
             }
         };
-
         fetchGherkinData();
     }, [gherkinScenarioId]);
-
 
     const submitUpdate = async () => {
         setLoading(true);
         setErrorMessage(null);
         setIsSubmitting(true);
-
         try {
             const token = localStorage.getItem("jwtToken");
             if (!token) {
@@ -80,7 +70,7 @@ export const GherkinDialog: React.FC<GherkinDialogProps> = ({ gherkinScenarioId,
             const response = await fetch(`${BASE_URL}${API_ENDPOINTS.updateGherkin}/${gherkinScenarioId}`, {
                 method: "PUT",
                 headers: {
-                
+
                     Authorization: `Bearer ${token}`,
                 },
                 body: formData,
@@ -116,8 +106,6 @@ export const GherkinDialog: React.FC<GherkinDialogProps> = ({ gherkinScenarioId,
         }
     };
 
-
-
     return (
         <DialogContent className="p-8 bg-white shadow-lg rounded-lg max-w-7xl mx-auto">
 
@@ -146,7 +134,7 @@ export const GherkinDialog: React.FC<GherkinDialogProps> = ({ gherkinScenarioId,
                                 <strong>Gherkin Data:</strong>
                             </label>
                             <textarea
-                                  className="w-full border rounded-md p-2 text-sm shadow-sm min-h-[100px] h-[250px] resize-none"
+                                className="w-full border rounded-md p-2 text-sm shadow-sm min-h-[100px] h-[250px] resize-none"
                                 value={gherkinData.gherkinData || ""}
                                 onChange={(e) =>
                                     setGherkinData((prev: any) => ({
@@ -156,22 +144,15 @@ export const GherkinDialog: React.FC<GherkinDialogProps> = ({ gherkinScenarioId,
                                 }
                                 rows={5} // Adjust rows based on expected content size
                                 placeholder="Enter Gherkin Data here..."
-                                style={{ fontSize: '1rem' }} 
-                   
+                                style={{ fontSize: '1rem' }}
                             />
-
                             <p className="text-sm">
                                 <strong>Status:</strong> {gherkinData.status ? "Active" : "Inactive"}
                             </p>
-
-
-
                         </>
                     )}
                 </div>
             )}
-
-
 
             <Button
                 onClick={submitUpdate}
@@ -181,8 +162,6 @@ export const GherkinDialog: React.FC<GherkinDialogProps> = ({ gherkinScenarioId,
             >
                 {isSubmitting ? "Submitting..." : "Submit"}
             </Button>
-
-
         </DialogContent>
     );
 };

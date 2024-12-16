@@ -13,7 +13,6 @@ interface FileCollectionDialogProps {
   open: boolean;
   onClose: () => void;
 }
-
 const FileCollectionDialog: React.FC<FileCollectionDialogProps> = ({
   fileCollectionPostman,
   open,
@@ -21,8 +20,8 @@ const FileCollectionDialog: React.FC<FileCollectionDialogProps> = ({
 }) => {
   return (
     <Dialog open={open}>
-         <DialogContent className="p-6 bg-white shadow-lg rounded-lg mx-auto w-[95%] max-w-6xl h-[80vh]">
-  
+      <DialogContent className="p-6 bg-white shadow-lg rounded-lg mx-auto w-[95%] max-w-6xl h-[80vh]">
+
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">
             File Collection Postman Data
@@ -43,8 +42,6 @@ const FileCollectionDialog: React.FC<FileCollectionDialogProps> = ({
             <p className="text-sm text-muted-foreground">No data available.</p>
           )}
         </div>
-
-
         <Button onClick={onClose} variant="outline" className="w-full mt-6">
           Close
         </Button>

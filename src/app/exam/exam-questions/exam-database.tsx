@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import AddDatabaseForm from './import-database-form';
+import UpdateDatabase from "@/app/exam/exam-questions/update_database_form"
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 
 interface DatabaseResponse {
@@ -88,13 +89,20 @@ const DatabaseInfoComponent: FC<DatabaseInfoProps> = ({ examPaperId }) => {
             </div>
         );
     }
-  
+
     const imageSrc = `data:image/png;base64,${database.databaseImage}`;
 
     return (
         <div className="space-y-4">
             <Card className="bg-white shadow-md rounded-lg border border-gray-200">
-                <CardHeader className="font-semibold text-lg p-4">Database Information</CardHeader>
+                <CardHeader className="font-semibold text-lg p-4">
+                    <div className="flex justify-between items-center">
+                        Database Information
+                        <div className="flex justify-end">
+                            <UpdateDatabase examPaperId={examPaperId} />
+                        </div>
+                    </div>
+                </CardHeader>
                 <CardContent className="p-4 text-sm text-gray-700 space-y-4">
                     <div>
                         <h3 className="font-semibold text-gray-600">Name:</h3>

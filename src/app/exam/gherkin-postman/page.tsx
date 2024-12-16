@@ -29,14 +29,11 @@ import { useGeneratePostmanScript } from "./useGeneratePostmanScript";
 import { useGeneratePostmanScriptMore } from "./useGeneratePostmanScriptMore";
 import { useDeletePostman } from "./useDeletePostman";
 
-
 const GherkinPostmanPage: React.FC = () => {
   const [data, setData] = useState([]);
   const [selectedGherkins, setSelectedGherkins] = useState<number[]>([]);
   const [selectedPostmans, setSelectedPostmans] = useState<number[]>([]);
-
   const [, setSelectedAction] = useState<string>("");
-
   const notify = useToastNotification();
   const token = localStorage.getItem("jwtToken");
   const location = useLocation();
@@ -49,7 +46,6 @@ const GherkinPostmanPage: React.FC = () => {
   const [selectedGherkinId, setSelectedGherkinId] = useState<number | null>(null);
   const [isGherkinDialogOpen, setIsGherkinDialogOpen] = useState(false);
   const [isNewGherkinDialogOpen, setIsNewGherkinDialogOpen] = useState(false);
-
 
   const Header = useHeader({
     breadcrumbLink: "/exams",
@@ -78,30 +74,23 @@ const GherkinPostmanPage: React.FC = () => {
     );
   };
 
-
   useEffect(() => {
     const fetchData = async () => {
       if (!token) {
         return;
       }
-
       try {
         setLoading(true);
-
         const dataResponse = await fetch(`${BASE_URL}${API_ENDPOINTS.gherkinScenarioPairs}${examPaperId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-
         if (!dataResponse.ok) {
           throw new Error("Error");
         }
-
         const Data = await dataResponse.json();
         setData(Data);
-
-
         const questionsResponse = await fetch(`${BASE_URL}${API_ENDPOINTS.getQuestions}`, {
           method: "POST",
           headers: {
@@ -110,21 +99,17 @@ const GherkinPostmanPage: React.FC = () => {
           },
           body: JSON.stringify({ examPaperId }),
         });
-
         if (!questionsResponse.ok) {
           throw new Error("Error call API for questions");
         }
-
         const questionsData = await questionsResponse.json();
         setQuestions(questionsData);
-
       } catch (error) {
         console.error("Error call API:", error);
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
   }, [token, examPaperId]);
 
@@ -139,26 +124,20 @@ const GherkinPostmanPage: React.FC = () => {
 
   const fetchGherkinPostmanPairs = async (questionId: number) => {
     if (!token || questionId === null) return;
-
     try {
       setLoading(true);
-
       const response = await fetch(
         `${BASE_URL}${API_ENDPOINTS.gherkinScenarioPairsByQuestion}?questionId=${questionId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
       if (!response.ok) {
         throw new Error("Error call API");
       }
       const result = await response.json();
-
       setData(result);
-
     } catch (error) {
-
     } finally {
       setLoading(false);
     }
@@ -173,7 +152,6 @@ const GherkinPostmanPage: React.FC = () => {
 
   const handleActionChange = async (action: string) => {
     setSelectedAction(action);
-
     if (action === "handleGenerateGherkin") {
       await generateGherkin();
     }
@@ -181,47 +159,39 @@ const GherkinPostmanPage: React.FC = () => {
       const allGherkinIds = data
         .filter((item: any) => item.gherkin?.gherkinScenarioId)
         .map((item: any) => item.gherkin.gherkinScenarioId);
-
       setSelectedGherkins(allGherkinIds);
       notify({
         title: "Gherkin Selection",
         description: "All Gherkin scenarios have been selected.",
         variant: "default",
       });
-
-
     } else if (action === "deselectAllGherkin") {
-      setSelectedGherkins([]);  // Bỏ chọn tất cả Gherkin
+      setSelectedGherkins([]);
       notify({
         title: "Gherkin Selection",
         description: "All Gherkin scenarios have been deselected.",
         variant: "default",
       });
     }
-
     else if (action === "selectAllPostman") {
       const allPostmanIds = data
         .filter((item: any) => item.postman?.postmanForGradingId)
         .map((item: any) => item.postman.postmanForGradingId);
-
       setSelectedPostmans(allPostmanIds);
       notify({
         title: "Postman Selection",
         description: "All Postman script info have been selected.",
         variant: "default",
       });
-
-
     }
     else if (action === "deselectAllPostman") {
-      setSelectedPostmans([]);  // Bỏ chọn tất cả Gherkin
+      setSelectedPostmans([]);
       notify({
         title: "Postman Selection",
         description: "All Postman script info have been deselected.",
         variant: "default",
       });
     }
-
     else if (action === "handleGenerateGherkinMore") {
       await generateGherkinMore();
     }
@@ -252,7 +222,6 @@ const GherkinPostmanPage: React.FC = () => {
       setSelectedGherkinId(gherkinScenarioId);
       setIsGherkinDialogOpen(true);
     }
-
     else if (action === "generatePostmanScript") {
       await generatePostmanScript();
     }
@@ -277,12 +246,10 @@ const GherkinPostmanPage: React.FC = () => {
     }
   };
 
-
   const handleQuestionClick = (questionId: number) => {
     setStoredQuestionId(questionId);
     fetchGherkinPostmanPairs(questionId);
   };
-
 
   const questionButtons = (
     <div className="flex flex-wrap gap-2">
@@ -293,7 +260,7 @@ const GherkinPostmanPage: React.FC = () => {
           onClick={() => handleQuestionClick(item.examQuestionId)}
           className="w-1/8"
         >
-          Question {item.examQuestionId}
+          {item.httpMethod} {item.endPoint}
         </Button>
       ))}
     </div>
@@ -303,13 +270,10 @@ const GherkinPostmanPage: React.FC = () => {
     if (!storedQuestionId) {
       return <p className="text-center text-gray-600">Select a question to view its details.</p>;
     }
-
     const selectedQuestion = questions.find((q) => q.examQuestionId === storedQuestionId);
-
     if (!selectedQuestion) {
       return <p className="text-center text-red-600">Details not available for this question.</p>;
     }
-
     return (
       <div>
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Question Details</h2>
@@ -318,52 +282,42 @@ const GherkinPostmanPage: React.FC = () => {
             <span className="font-semibold text-gray-700">Question Content:</span>
             <span className="text-gray-900">{selectedQuestion.questionContent}</span>
           </div>
-
           <div className="flex justify-between">
             <span className="font-semibold text-gray-700">Score:</span>
             <span className="text-gray-900">{selectedQuestion.examQuestionScore}</span>
           </div>
-
           <div className="flex justify-between">
             <span className="font-semibold text-gray-700">Endpoint:</span>
             <span className="text-gray-900">{selectedQuestion.endPoint}</span>
           </div>
-
           <div className="flex justify-between">
             <span className="font-semibold text-gray-700">Allowed Roles:</span>
             <span className="text-gray-900">{selectedQuestion.roleAllow}</span>
           </div>
-
           <div className="flex justify-between">
             <span className="font-semibold text-gray-700">HTTP Method:</span>
             <span className="text-gray-900">{selectedQuestion.httpMethod}</span>
           </div>
-
           <div className="flex justify-between">
             <span className="font-semibold text-gray-700">Description:</span>
             <span className="text-gray-900">{selectedQuestion.description}</span>
           </div>
-
           <div className="flex justify-between">
             <span className="font-semibold text-gray-700">Payload Type:</span>
             <span className="text-gray-900">{selectedQuestion.payloadType}</span>
           </div>
-
           <div>
             <span className="font-semibold text-gray-700">Payload:</span>
             <pre className="bg-gray-100 p-2 rounded-md text-sm">{selectedQuestion.payload}</pre>
           </div>
-
           <div>
             <span className="font-semibold text-gray-700">Validation:</span>
             <span className="text-gray-900">{selectedQuestion.validation}</span>
           </div>
-
           <div>
             <span className="font-semibold text-gray-700">Success Response:</span>
             <pre className="bg-gray-100 p-2 rounded-md text-sm">{selectedQuestion.sucessResponse}</pre>
           </div>
-
           <div>
             <span className="font-semibold text-gray-700">Error Response:</span>
             <pre className="bg-gray-100 p-2 rounded-md text-sm">{selectedQuestion.errorResponse}</pre>
@@ -373,15 +327,12 @@ const GherkinPostmanPage: React.FC = () => {
     );
   };
 
-
   const gherkinContent = loading ? (
     <Skeleton className="h-64 w-full" />
   ) : (
     <div>
       {data.map((item: any, index) => {
         const isSelected = selectedGherkins.includes(item.gherkin?.gherkinScenarioId);
-
-
         return (
           <Card
             key={index}
@@ -399,23 +350,19 @@ const GherkinPostmanPage: React.FC = () => {
             <CardContent className="h-32">
               {item.gherkin ? (
                 <>
-
                   <pre className="text-sm whitespace-pre-wrap">
                     {item.gherkin?.gherkinData}
                   </pre>
-
                 </>
               ) : (
                 <p className="italic text-gray-500">No Gherkin data available.</p>
               )}
-
             </CardContent>
           </Card>
         );
       })}
     </div>
   );
-
 
   const postmanContent = loading ? (
     <Skeleton className="h-64 w-full" />
@@ -436,7 +383,6 @@ const GherkinPostmanPage: React.FC = () => {
               }`}
             onClick={() => togglePostmanSelection(item.postman?.postmanForGradingId)}
           >
-
             <CardHeader>
               <CardTitle>
                 Postman Function: {item.postman?.postmanFunctionName}
@@ -451,19 +397,15 @@ const GherkinPostmanPage: React.FC = () => {
                   <p className="text-sm">
                     Score Percentage: {parseFloat((item.postman?.scorePercentage ?? 0).toFixed(1))} %
                   </p>
-
                   <p className="text-sm">
                     Total PM Tests: {item.postman?.totalPmTest}
                   </p>
-
                   <pre className="text-sm whitespace-pre-wrap bg-gray-200 p-2 rounded">
                     {JSON.stringify(JSON.parse(item.postman.fileCollectionPostman), null, 2)}
                   </pre>
-
                   <p className="text-sm">
                     Status: {item.postman?.status ? "Active" : "Inactive"}
                   </p>
-
                 </>
               ) : (
                 <p className="italic text-gray-500">No Postman data available.</p>
@@ -482,7 +424,6 @@ const GherkinPostmanPage: React.FC = () => {
       <div className="w-full border border-gray-200 rounded-lg" style={{ marginLeft: "1rem", marginRight: "1rem", marginBottom: "1rem", maxWidth: "calc(100% - 2rem)" }}>
         <GherkinPostmanLayout
           topleft={
-
             <>
               <div className="text-2xl font-bold tracking-tight">Gherkin Scenario and Postman Script</div>
               <p className="text-muted-foreground">
@@ -530,7 +471,7 @@ const GherkinPostmanPage: React.FC = () => {
                     Generate Postman Script
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleActionChange("generatePostmanScriptMore")}>
-                    Generate More test case in postman script
+                    Generate More Test Case 
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleActionChange("deletePostman")}>
                     Delete Postman
@@ -541,19 +482,16 @@ const GherkinPostmanPage: React.FC = () => {
                   <DropdownMenuSeparator />
                 </DropdownMenuContent>
               </DropdownMenu>
-
               <Button
                 variant="outline"
                 className="mt-3 ml-2"
                 onClick={() => window.location.reload()}
               >
                 <Repeat className="h-4 w-4 " />
-                Load
+                Show All
               </Button>
             </>
-
           }
-
           middle={
             <>
               <div className="flex justify-center p-4">
@@ -561,23 +499,18 @@ const GherkinPostmanPage: React.FC = () => {
               </div>
               <div className="flex justify-center mb-4">
                 <div
-                  className="w-full max-w-4xl h-48 overflow-auto resize-y border border-gray-300 rounded-lg p-4"
+                  className="w-full max-w-7xl h-96 overflow-auto resize-y border border-gray-300 rounded-lg p-4"
                   style={{ resize: 'vertical' }}
                 >
                   {renderQuestionDetails()}
                 </div>
               </div>
-
             </>
           }
-
           left={gherkinContent}
-
           right={postmanContent}
         />
-
       </div>
-
       <Dialog open={isNewGherkinDialogOpen} onOpenChange={setIsNewGherkinDialogOpen}>
         <NewGherkinDataProps
           onClose={() => setIsNewGherkinDialogOpen(false)}
@@ -586,7 +519,6 @@ const GherkinPostmanPage: React.FC = () => {
           questionDetails={questions.find((q) => q.examQuestionId === storedQuestionId) || null} // Pass question details
         />
       </Dialog>
-
       <Dialog open={isPostmanDialogOpen} onOpenChange={() => setIsPostmanDialogOpen(false)}>
         <PostmanDialog
           onClose={() => setIsPostmanDialogOpen(false)}
@@ -595,7 +527,6 @@ const GherkinPostmanPage: React.FC = () => {
           fetchGherkinPostmanPairs={fetchGherkinPostmanPairs}
         />
       </Dialog>
-
       <Dialog open={isGherkinDialogOpen} onOpenChange={() => setIsGherkinDialogOpen(false)}>
         <GherkinDialog
           onClose={() => setIsGherkinDialogOpen(false)}
@@ -604,11 +535,7 @@ const GherkinPostmanPage: React.FC = () => {
           fetchGherkinPostmanPairs={fetchGherkinPostmanPairs}
         />
       </Dialog>
-
     </SidebarInset>
-
   );
-
 };
-
 export default GherkinPostmanPage;

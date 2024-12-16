@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import useSSE from "./grading-hook";
 import { GRADING_URL } from "@/config/apiConfig";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 
 const STATUS_NODES = ["PENDING", "IMPORTANT", "GRADING", "PLAGIARISM", "DONE"];
 
@@ -36,13 +37,13 @@ const SSEComponent: React.FC<SSEComponentProps> = ({ examPaperId }) => {
   }
 
   // Subscribe to SSE events
-  const events: SSEEvent[] = useSSE(`${GRADING_URL}/events`);
+  const events: SSEEvent[] = useSSE(`${GRADING_URL}${API_ENDPOINTS.events}`);
 
   useEffect(() => {
     const fetchInitialProgress = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/grading/ws/progress?examPaperId=${examPaperId}`,
+          `${BASE_URL}${API_ENDPOINTS.gradingProcess}?examPaperId=${examPaperId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

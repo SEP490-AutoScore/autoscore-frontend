@@ -3,6 +3,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import { Button } from "@/components/ui/button";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { checkPermission } from "@/hooks/use-auth";
+import { FolderUp } from "lucide-react";
 
 interface AddDatabaseFormProps {
   examPaperId: number;
@@ -61,11 +62,13 @@ const AddDatabaseForm: React.FC<AddDatabaseFormProps> = ({ examPaperId, onAddSuc
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="mt-4">
-          Import Database
+        <Button
+          variant="outline"
+          className="p-2.5 h-10 w-10 rounded-full border-primary text-primary hover:text-white hover:bg-primary">
+          <FolderUp className="h-6 w-6" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-white p-6 rounded-lg shadow-md max-w-lg w-full">
+      <DialogContent className="bg-white p-6 rounded-lg shadow-md max-w-lg w-full h-[80vh] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add Database</DialogTitle>
           <DialogDescription>
@@ -110,10 +113,12 @@ const AddDatabaseForm: React.FC<AddDatabaseFormProps> = ({ examPaperId, onAddSuc
           <input
             type="file"
             id="sqlFile"
+            accept=".sql" 
             onChange={(e) => handleFileChange(e, setSqlFile)}
             className="w-full mt-2 text-sm text-gray-500 file:border file:border-gray-300 file:rounded file:p-2 file:text-sm file:bg-white file:text-black file:hover:bg-gray-100"
           />
         </div>
+
 
         {/* Image File Upload */}
         <div className="mt-4">
@@ -123,6 +128,7 @@ const AddDatabaseForm: React.FC<AddDatabaseFormProps> = ({ examPaperId, onAddSuc
           <input
             type="file"
             id="imageFile"
+            accept=".png, .jpg, .jpeg, .gif"
             onChange={(e) => handleFileChange(e, setImageFile)}
             className="w-full mt-2 text-sm text-gray-500 file:border file:border-gray-300 file:rounded file:p-2 file:text-sm file:bg-white file:text-black file:hover:bg-gray-100"
           />

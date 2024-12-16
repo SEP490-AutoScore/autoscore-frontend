@@ -1,7 +1,7 @@
 import { useHeader } from "@/hooks/use-header";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { CardHeaderDashboard } from "./card-header";
-import { Book } from "lucide-react";
+import { Book, BookOpen, BookOpenCheck } from "lucide-react";
 import { BarChartComponent } from "./bar-chart";
 import { useState, useEffect } from "react";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
@@ -27,40 +27,35 @@ export default function Page() {
     Spring: 0,
     Summer: 0,
     Fall: 0,
-  }); // Store exam counts by semester for selected year
+  });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-
   const handleYearChange = (selectedYear: string) => {
     setYear(selectedYear);
   };
-
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
-
     if (!token) {
       setError("JWT token not found.");
       setLoading(false);
       return;
     }
 
-    // Gọi API để lấy số lượng Exam
     const fetchExamCount = async () => {
       try {
         const response = await fetch(`${BASE_URL}${API_ENDPOINTS.examCount}`, {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${token}`, // Gửi token trong header
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         });
-
         if (response.ok) {
-          const data = await response.text(); // Dữ liệu trả về là plain text
-          setExamCount(parseInt(data, 10)); // Chuyển đổi dữ liệu trả về thành kiểu số
+          const data = await response.text();
+          setExamCount(parseInt(data, 10));
         } else {
           const errorData = await response.text();
-          setError(errorData); // Hiển thị lỗi nếu API không thành công
+          setError(errorData);
         }
       } catch (err) {
         if (err instanceof Error) {
@@ -72,7 +67,6 @@ export default function Page() {
       }
     };
 
-    // Gọi API để lấy số lượng Exam có gradingAt đã vượt qua thời gian hiện tại
     const fetchExamGradingAtCount = async () => {
       try {
         const response = await fetch(
@@ -80,18 +74,17 @@ export default function Page() {
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${token}`, // Gửi token trong header
+              Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
           }
         );
-
         if (response.ok) {
-          const data = await response.text(); // Dữ liệu trả về là plain text
-          setExamGradingAtCount(parseInt(data, 10)); // Chuyển đổi dữ liệu trả về thành kiểu số
+          const data = await response.text();
+          setExamGradingAtCount(parseInt(data, 10));
         } else {
           const errorData = await response.text();
-          setError(errorData); // Hiển thị lỗi nếu API không thành công
+          setError(errorData);
         }
       } catch (err) {
         if (err instanceof Error) {
@@ -103,7 +96,6 @@ export default function Page() {
       }
     };
 
-    // Gọi API để lấy số lượng Exam có gradingAt đã vượt qua thời gian hiện tại
     const fetchExamGradingAtPassedCount = async () => {
       try {
         const response = await fetch(
@@ -111,18 +103,17 @@ export default function Page() {
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${token}`, // Gửi token trong header
+              Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
           }
         );
-
         if (response.ok) {
-          const data = await response.text(); // Dữ liệu trả về là plain text
-          setExamGradingAtPassedCount(parseInt(data, 10)); // Chuyển đổi dữ liệu trả về thành kiểu số
+          const data = await response.text();
+          setExamGradingAtPassedCount(parseInt(data, 10));
         } else {
           const errorData = await response.text();
-          setError(errorData); // Hiển thị lỗi nếu API không thành công
+          setError(errorData);
         }
       } catch (err) {
         if (err instanceof Error) {
@@ -149,10 +140,9 @@ export default function Page() {
             },
           }
         );
-
         if (response.ok) {
-          const data = await response.json(); 
-          setSemesterData(data); 
+          const data = await response.json();
+          setSemesterData(data);
         } else {
           const errorData = await response.text();
           setError(errorData);
@@ -164,7 +154,6 @@ export default function Page() {
         setError("An error occurred while fetching semester data.");
       }
     };
-
     fetchExamCount();
     fetchExamGradingAtCount();
     fetchExamGradingAtPassedCount();
@@ -174,18 +163,16 @@ export default function Page() {
   return (
     <SidebarInset>
       {Header}
-
       <div className="p-4 pt-0 space-y-6">
-        <div className="border border-gray-200 p-6 rounded-lg shadow-sm">
-          <div className="grid grid-cols-4 gap-6">
+        <div className="border border-gray-200 p-6 rounded-lg shadow-sm ml-11 mr-11">
             <div className="mb-6">
               <h2 className="text-2xl font-bold tracking-tight">Dashboard page</h2>
               <p className="text-muted-foreground">
                 These are charts to analyze scores of all exam
               </p>
             </div>
-            <div className="col-span-4 md:col-span-4 grid grid-cols-3 gap-6 mb-6 ">
-
+          <div className="grid grid-cols-4 gap-6">
+            <div className="col-span-4 md:col-span-4 grid grid-cols-3 gap-6 mb-6 ml-2 mr-2 ">
               {/* Total exam */}
               <CardHeaderDashboard
                 title="Total Exams"
@@ -199,9 +186,8 @@ export default function Page() {
                         : ""
                 }
                 content="Exam Statistics"
-                icon={Book}
+                icon={BookOpen}
               />
-
               {/* Total exam has not been graded */}
               <CardHeaderDashboard
                 title="Exams Not Graded"
@@ -217,7 +203,6 @@ export default function Page() {
                 content="Exam Statistics"
                 icon={Book}
               />
-
               {/* Total exam graded */}
               <CardHeaderDashboard
                 title="Exams Graded"
@@ -231,14 +216,12 @@ export default function Page() {
                         : ""
                 }
                 content="Exam Statistics"
-                icon={Book}
+                icon={BookOpenCheck}
               />
-
             </div>
           </div>
-
           {/* Bar Chart and Pie Chart on the same row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 ml-2 mr-2">
             <div className="col-span-1">
               {/* Total exam each year */}
               <BarChartComponent data={semesterData} error={error} year={year} handleYearChange={handleYearChange} />
@@ -248,21 +231,16 @@ export default function Page() {
               <PieChartComponent />
             </div>
           </div>
-
-          <div className="space-y-6">
+          <div className="space-y-6 ml-2 mr-2">
             {/* Score each student */}
             <LineChartComponent />
-
             {/* Score detail each student */}
             <TableStudentComponent />
-
             {/* All function api */}
             <BarChartCustomLabelComponent />
           </div>
-
         </div>
       </div>
     </SidebarInset>
   );
-
 }

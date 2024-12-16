@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AlertTriangle, TrendingUp } from "lucide-react";
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
-
 import {
   Card,
   CardContent,
@@ -37,7 +35,7 @@ export function RadarChartDotsAllPassComponent({ examPaperId }: { examPaperId: s
   const [chartData, setChartData] = useState<{ functionName: string; passCount: number }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isPlaceholderData, setIsPlaceholderData] = useState(false);
+  const [, setIsPlaceholderData] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,7 +46,6 @@ export function RadarChartDotsAllPassComponent({ examPaperId }: { examPaperId: s
       }
       setLoading(true);
       setError(null);
-
       const token = localStorage.getItem("jwtToken");
       if (!token) {
         setError("JWT token not found.");
@@ -56,7 +53,6 @@ export function RadarChartDotsAllPassComponent({ examPaperId }: { examPaperId: s
         setLoading(false);
         return;
       }
-
       try {
         const response = await fetch(
           `${BASE_URL}${API_ENDPOINTS.analyzeLogAllPass}?examPaperId=${examPaperId}`,
@@ -67,20 +63,17 @@ export function RadarChartDotsAllPassComponent({ examPaperId }: { examPaperId: s
             },
           }
         );
-
         if (!response.ok) {
           throw new Error(`Failed to fetch data: ${response.statusText}`);
         }
-
         const data = await response.json();
         const formattedData = Object.entries(data).map(([key, value]) => ({
           functionName: key,
-          passCount: value as number, // Ensure type safety
+          passCount: value as number,
         }));
         setChartData(formattedData.length > 0 ? formattedData : placeholderData);
         setIsPlaceholderData(formattedData.length === 0);
       } catch (err: unknown) {
-        // setError(err.message || "An unexpected error occurred.");
         if (err instanceof Error) {
           setError(err.message);
         } else {
@@ -92,7 +85,6 @@ export function RadarChartDotsAllPassComponent({ examPaperId }: { examPaperId: s
         setLoading(false);
       }
     };
-
     fetchData();
   }, [examPaperId]);
 
@@ -114,7 +106,6 @@ export function RadarChartDotsAllPassComponent({ examPaperId }: { examPaperId: s
   }
 
   const displayData = chartData.length > 0 ? chartData : placeholderData
-
   return (
     <Card>
       <CardHeader className="">
@@ -144,13 +135,11 @@ export function RadarChartDotsAllPassComponent({ examPaperId }: { examPaperId: s
           </RadarChart>
         </ChartContainer>
       </CardContent>
-
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="leading-none text-muted-foreground">
           Total Functions: {chartData.length}
         </div>
       </CardFooter>
-
     </Card>
   );
 }

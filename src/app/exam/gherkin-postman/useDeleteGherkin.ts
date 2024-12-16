@@ -30,11 +30,9 @@ export const useDeleteGherkin = ({
             });
             return;
         }
-
         try {
-            onLoadingChange(true); // Bắt đầu loading
+            onLoadingChange(true);
             const gherkinIdsQuery = selectedGherkins.join(",");
-
             const response = await fetch(
                 `${BASE_URL}${API_ENDPOINTS.deleteGherkin}?gherkinScenarioIds=${gherkinIdsQuery}&examPaperId=${examPaperId}`,
                 {
@@ -45,13 +43,10 @@ export const useDeleteGherkin = ({
                     },
                 }
             );
-
             if (!response.ok) {
                 throw new Error("Failed to delete Gherkin");
             }
-
             const responseText = await response.text();
-
             if (responseText.startsWith("Successfully deleted Gherkin Scenarios")) {
                 notify({
                     title: "Success",
@@ -65,13 +60,12 @@ export const useDeleteGherkin = ({
                     variant: "destructive",
                 });
             }
-
             if (storedQuestionId !== null) {
                 await fetchGherkinPostmanPairs(storedQuestionId);
-            }  else {
+            } else {
                 setTimeout(() => {
                     window.location.reload();
-                }, 0); 
+                }, 0);
             }
         } catch (error) {
             notify({
@@ -80,9 +74,8 @@ export const useDeleteGherkin = ({
                 variant: "destructive",
             });
         } finally {
-            onLoadingChange(false); 
+            onLoadingChange(false);
         }
     };
-
     return { deleteGherkin };
 };

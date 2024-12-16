@@ -25,14 +25,11 @@ export type AIApiKey = {
 };
 
 export async function updateSelectedKey(aiApiKeyId: number): Promise<AIApiKey> {
-
   const token = localStorage.getItem("jwtToken");
   if (!token) {
     throw new Error("JWT token not found.");
   }
-
   const url = `${BASE_URL}${API_ENDPOINTS.updateSelectedKey}?aiApiKeyId=${aiApiKeyId}`;
-
   const response = await fetch(url, {
     method: "POST",
     headers: {
@@ -40,13 +37,10 @@ export async function updateSelectedKey(aiApiKeyId: number): Promise<AIApiKey> {
       "Content-Type": "application/json",
     },
   });
-
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(`Error updating selected status: ${errorText}`);
   }
-
-
   try {
     const data = await response.json();
     return data;
@@ -56,14 +50,11 @@ export async function updateSelectedKey(aiApiKeyId: number): Promise<AIApiKey> {
 };
 
 export async function deleteAIApiKey(aiApiKeyId: number): Promise<void> {
-
   const token = localStorage.getItem("jwtToken");
   if (!token) {
     throw new Error("JWT token not found.");
   }
-
   const url = `${BASE_URL}${API_ENDPOINTS.deleteAIApiKey}/${aiApiKeyId}`;
-
   const response = await fetch(url, {
     method: "DELETE",
     headers: {
@@ -71,13 +62,10 @@ export async function deleteAIApiKey(aiApiKeyId: number): Promise<void> {
       "Content-Type": "application/json",
     },
   });
-
   if (!response.ok) {
-
     const errorText = await response.text();
     throw new Error(`Error deleting API Key: ${errorText}`);
   }
-
 }
 
 export const createColumns = (
@@ -86,7 +74,6 @@ export const createColumns = (
   handleViewDetail: (aiApiKeyId: number) => Promise<void>
 ): ColumnDef<AIApiKey>[] => {
   return [
-
     {
       accessorKey: "aiName",
       header: "AI Name",

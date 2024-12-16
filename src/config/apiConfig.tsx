@@ -109,6 +109,7 @@ export const API_ENDPOINTS = {
   getPostmanById: "/api/postman-grading",
   updateExamQuestion: "/api/postman-grading/update-exam-question",
   calculateScores: "/api/postman-grading/calculate",
+  fixAuthFilePostman : "/api/postman-grading/fix-auth-postman",
 
   //prompt ai
   showQuestionAskAi: "/api/aiprompt",
@@ -155,4 +156,8 @@ export const API_ENDPOINTS = {
   //notification
   notification: "/api/notifications",
   grading: "/api/grading/exam",
+  gradingProcess: "/api/grading/ws/progress",
+
+  //grading event
+  events: "/events"
 };

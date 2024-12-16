@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import {
@@ -45,16 +44,13 @@ export function BarChartMultipleComponent({ examPaperId }: { examPaperId: string
   useEffect(() => {
     if (!examPaperId) return;
     setLoading(true);
-
     const token = localStorage.getItem("jwtToken");
     if (!token) {
       setError("JWT token not found.");
       setLoading(false);
       return;
     }
-
     fetch(
-
       `${BASE_URL}${API_ENDPOINTS.studentResponseTime}?examPaperId=${examPaperId}`,
       {
         method: "GET",
@@ -80,7 +76,6 @@ export function BarChartMultipleComponent({ examPaperId }: { examPaperId: string
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, [examPaperId]);
-
   if (error) {
     return (
       <Card>
