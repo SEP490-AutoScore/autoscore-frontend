@@ -8,7 +8,6 @@ export const useGenerateGherkin = (
     setLoading: (loading: boolean) => void
 ) => {
     const notify = useToastNotification();
-
     const generateGherkin = async () => {
         if (!token || !storedQuestionId) {
             notify({
@@ -18,16 +17,13 @@ export const useGenerateGherkin = (
             });
             return;
         }
-
         notify({
             title: "Generating Gherkin...",
             description: "Please wait while we generate the Gherkin format.",
             variant: "default",
         });
-
         try {
             setLoading(true);
-
             const response = await fetch(
                 `${BASE_URL}${API_ENDPOINTS.generateGherkin}?examQuestionId=${storedQuestionId}`,
                 {
@@ -38,7 +34,6 @@ export const useGenerateGherkin = (
                     },
                 }
             );
-
             if (!response.ok) {
                 notify({
                     title: "Error",
@@ -46,22 +41,19 @@ export const useGenerateGherkin = (
                     variant: "destructive",
                 });
             }
-
             const result = await response.text();
-
             if (result === "Generate gherkin successfully!") {
                 notify({
                     title: "Success",
                     description: "Generate Gherkin format successfully!",
                     variant: "default",
                 });
-
                 if (storedQuestionId !== null) {
                     await fetchGherkinPostmanPairs(storedQuestionId);
-                }  else {
+                } else {
                     setTimeout(() => {
                         window.location.reload();
-                    }, 1000); 
+                    }, 1000);
                 }
             } else {
                 notify({
@@ -80,6 +72,5 @@ export const useGenerateGherkin = (
             setLoading(false);
         }
     };
-
     return { generateGherkin };
 };

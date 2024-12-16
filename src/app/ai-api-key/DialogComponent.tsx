@@ -11,18 +11,15 @@ import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 import { useToastNotification } from "@/hooks/use-toast-notification";
-
 export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: boolean }) => {
   const [popupData, setPopupData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [isEditing, setIsEditing] = useState<number | null>(null); // Track the editing item ID
-  const [editedAIPrompt, setEditedAIPrompt] = useState<string>(""); // Track the updated content
+  const [isEditing, setIsEditing] = useState<number | null>(null);
+  const [editedAIPrompt, setEditedAIPrompt] = useState<string>("");
   const notify = useToastNotification();
-
   useEffect(() => {
     if (!open) return;
-
     const fetchPopupData = async () => {
       const token = localStorage.getItem("jwtToken");
       if (!token) {
@@ -30,7 +27,6 @@ export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: 
         setLoading(false);
         return;
       }
-
       try {
         const response = await fetch(`${BASE_URL}${API_ENDPOINTS.showQuestionAskAi}`, {
           method: "GET",
@@ -39,7 +35,6 @@ export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: 
             "Content-Type": "application/json",
           },
         });
-
         if (response.ok) {
           const data = await response.json();
           setPopupData(data);
@@ -53,15 +48,12 @@ export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: 
         setLoading(false);
       }
     };
-
     fetchPopupData();
   }, [open]);
-
   const handleEdit = (aiPromptId: number, currentAIPrompt: string) => {
     setIsEditing(aiPromptId);
     setEditedAIPrompt(currentAIPrompt);
   };
-
   const handleSave = async (aiPromptId: number) => {
     const token = localStorage.getItem("jwtToken");
     if (!token) {
@@ -72,7 +64,6 @@ export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: 
       });
       return;
     }
-
     try {
       const response = await fetch(`${BASE_URL}${API_ENDPOINTS.updateQuestionAskAiContent}/${aiPromptId}/question`, {
         method: "PUT",
@@ -82,7 +73,6 @@ export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: 
         },
         body: JSON.stringify(editedAIPrompt),
       });
-
       if (response.ok) {
         notify({
           title: "Success",
@@ -122,7 +112,6 @@ export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: 
             Information about questions and purposes asked by the AI.
           </DialogDescription>
         </DialogHeader>
-
         {loading ? (
           <div className="space-y-2">
             <Skeleton className="h-6 w-2/3" />
@@ -147,7 +136,6 @@ export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: 
                         className="w-full h-32 p-2 border rounded resize-y"
                         placeholder="Enter your text here"
                       />
-
                       <div className="flex justify-end mt-2 space-x-2">
                         <Button
                           onClick={() => handleSave(item.aiPromptId)}
@@ -183,7 +171,6 @@ export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: 
         ) : (
           <p className="text-sm text-muted-foreground">No data available.</p>
         )}
-
         <Button onClick={onClose} variant="outline" className="w-full mt-6">
           Close
         </Button>

@@ -7,7 +7,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-// import { Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface DropdownProps {
@@ -33,18 +32,15 @@ export const DropdownList: React.FC<DropdownProps> = ({ onSelect }) => {
         setLoading(false);
         return;
       }
-
       try {
         const response = await fetch(`${BASE_URL}${API_ENDPOINTS.dropdownList}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-
         if (!response.ok) {
           throw new Error(`Error fetching exams: ${response.statusText}`);
         }
-
         const data = await response.json();
         setItems(data);
         setLoading(false);
@@ -53,7 +49,6 @@ export const DropdownList: React.FC<DropdownProps> = ({ onSelect }) => {
         setLoading(false);
       }
     };
-
     fetchExams();
   }, []);
 

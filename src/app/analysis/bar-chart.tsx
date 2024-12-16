@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
-
 import {
   Card,
   CardContent,
@@ -15,8 +14,6 @@ import {
 import {
   ChartConfig,
   ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
 } from "@/components/ui/chart";
 
 const chartConfig = {
@@ -38,18 +35,15 @@ export function BarChartComponent({ examPaperId }: { examPaperId: string }) {
 
   useEffect(() => {
     if (!examPaperId) return;
-
     const fetchChartData = async () => {
       setLoading(true);
       setError(null);
-
       const token = localStorage.getItem("jwtToken");
       if (!token) {
         setError("JWT token not found.");
         setLoading(false);
         return;
       }
-
       try {
         const response = await fetch(
           `${BASE_URL}${API_ENDPOINTS.studentScoresBarChart}?examPaperId=${examPaperId}`,
@@ -60,20 +54,16 @@ export function BarChartComponent({ examPaperId }: { examPaperId: string }) {
             },
           }
         );
-
         if (!response.ok) {
           throw new Error(`Error fetching chart data: ${response.statusText}`);
         }
-
         const data = await response.json();
-
         const mappedData = data
           .map((item: any) => ({
             student: item.studentCode,
             score: item.totalScore,
           }))
-          .sort((a: ChartDataItem, b: ChartDataItem) => a.score - b.score); // Sort by score
-
+          .sort((a: ChartDataItem, b: ChartDataItem) => a.score - b.score);
         setChartData(mappedData);
       } catch (err: unknown) {
         if (err instanceof Error) {
@@ -83,7 +73,6 @@ export function BarChartComponent({ examPaperId }: { examPaperId: string }) {
         setLoading(false);
       }
     };
-
     fetchChartData();
   }, [examPaperId]);
 
@@ -154,7 +143,6 @@ export function BarChartComponent({ examPaperId }: { examPaperId: string }) {
           Total Students: {chartData.length}
         </div>
       </CardFooter>
-
     </Card>
   );
 }

@@ -9,10 +9,10 @@ export const useGeneratePostmanScriptMore = (
     fetchGherkinPostmanPairs: (questionId: number) => void,
     setLoading: (loading: boolean) => void
 ) => {
-    const [loading, setLoadingState] = useState(false);
+    const [loading] = useState(false);
     const notify = useToastNotification();
-
     const generatePostmanScriptMore = async () => {
+
         if (!selectedPostmans.length) {
             notify({
                 title: "No Selection",
@@ -21,15 +21,11 @@ export const useGeneratePostmanScriptMore = (
             });
             return;
         }
-
         notify({
             title: "Generating Postman script...",
             description: "Please wait while we generate the Postman script.",
             variant: "default",
         });
-
-
-
         try {
             setLoading(true);
             for (const postmanForGradingId of selectedPostmans) {
@@ -43,21 +39,19 @@ export const useGeneratePostmanScriptMore = (
                         },
                     }
                 );
-
                 if (!response.ok) {
                     notify({
                         title: "Error",
                         description: "AI response wrong.",
                         variant: "destructive",
                     });
-                    continue; // Skip this iteration and continue with the next Gherkin scenario
+                    continue;
                 }
-
                 const result = await response.text();
-                if (result === "Postman Collection generated more and update successfully!") {
+                if (result === "Postman Collection generated more successfully!") {
                     notify({
                         title: "Success",
-                        description: "Postman Collection generated more and update successfully!",
+                        description: "Postman Collection generated more successfully!",
                         variant: "default",
                     });
                 } else {
@@ -68,16 +62,13 @@ export const useGeneratePostmanScriptMore = (
                     });
                 }
             }
-
-            // Now call fetchGherkinPostmanPairs once, after all iterations are done
             if (storedQuestionId !== null) {
                 await fetchGherkinPostmanPairs(storedQuestionId);
-            }  else {
+            } else {
                 setTimeout(() => {
                     window.location.reload();
-                }, 1000); 
+                }, 1000);
             }
-
         } catch (error) {
             notify({
                 title: "API Error",
@@ -85,9 +76,8 @@ export const useGeneratePostmanScriptMore = (
                 variant: "destructive",
             });
         } finally {
-            setLoading(false); // Set loading to false after all iterations are complete
+            setLoading(false);
         }
     };
-
     return { generatePostmanScriptMore, loading };
 };

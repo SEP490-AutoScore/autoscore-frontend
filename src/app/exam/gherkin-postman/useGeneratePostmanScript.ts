@@ -9,7 +9,6 @@ export const useGeneratePostmanScript = (
   setLoading: (loading: boolean) => void
 ) => {
   const notify = useToastNotification();
-
   const generatePostmanScript = async () => {
     if (!selectedGherkins.length) {
       notify({
@@ -19,61 +18,62 @@ export const useGeneratePostmanScript = (
       });
       return;
     }
-
     notify({
       title: "Generating Postman script...",
       description: "Please wait while we generate the Postman script.",
       variant: "default",
     });
-
     try {
       setLoading(true);
       for (const gherkinScenarioId of selectedGherkins) {
-        const response = await fetch(
-          `${BASE_URL}${API_ENDPOINTS.generatePostman}?gherkinScenarioId=${gherkinScenarioId}`,
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
+        try {
+          const response = await fetch(
+            `${BASE_URL}${API_ENDPOINTS.generatePostman}?gherkinScenarioId=${gherkinScenarioId}`,
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (!response.ok) {
+            notify({
+              title: "Error",
+              description: `Failed to generate Postman script for Scenario ID: ${gherkinScenarioId}.`,
+              variant: "destructive",
+            });
+          } else {
+            const result = await response.text();
+            if (result === "Postman Collection generated successfully!") {
+              notify({
+                title: "Success",
+                description: `Postman Collection generated successfully for Scenario ID: ${gherkinScenarioId}.`,
+                variant: "default",
+              });
+            } else {
+              notify({
+                title: "Error",
+                description: `Unexpected response for Scenario ID: ${gherkinScenarioId}.`,
+                variant: "destructive",
+              });
+            }
           }
-        );
-
-        if (!response.ok) {
+        } catch (error) {
           notify({
-            title: "Error",
-            description: "AI did not respond, may be AI key wrong.",
-            variant: "destructive",
-          });
-          continue;
-        }
-
-        const result = await response.text();
-        if (result === "Postman Collection generated successfully!") {
-          notify({
-            title: "Success",
-            description: "Postman Collection generated successfully!",
-            variant: "default",
-          });
-        } else {
-          notify({
-            title: "Error",
-            description: "AI response was wrong.",
+            title: "API Error",
+            description: `An error occurred while processing Scenario ID: ${gherkinScenarioId}.`,
             variant: "destructive",
           });
         }
       }
-
       if (storedQuestionId !== null) {
         await fetchGherkinPostmanPairs(storedQuestionId);
-      }
-      else {
+      } else {
         setTimeout(() => {
-            window.location.reload();
-        }, 1000); 
-    }
-
+          window.location.reload();
+        }, 1000);
+      }
     } catch (error) {
       notify({
         title: "API Error",
@@ -84,6 +84,6 @@ export const useGeneratePostmanScript = (
       setLoading(false);
     }
   };
-
   return { generatePostmanScript };
+
 };

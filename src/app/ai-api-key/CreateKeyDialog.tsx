@@ -1,4 +1,4 @@
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -18,28 +18,22 @@ export const CreateKeyDialog = ({ onClose, open }: { onClose: () => void; open: 
     shared: false,
   });
   const [aiNames, setAiNames] = useState<string[]>([]);
-
-
- 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const target = e.target;
-  
     if (target instanceof HTMLInputElement && target.type === "checkbox") {
-      // Handle checkbox specifically
       setForm((prev) => ({
         ...prev,
-        [target.name]: target.checked, // `checked` is valid for checkboxes
+        [target.name]: target.checked,
       }));
     } else {
-      // Handle other input types like text or select
       setForm((prev) => ({
         ...prev,
-        [target.name]: target.value, // `value` is valid for text and select
+        [target.name]: target.value,
       }));
     }
   };
-  
-  
+
+
 
 
   useEffect(() => {
@@ -50,14 +44,14 @@ export const CreateKeyDialog = ({ onClose, open }: { onClose: () => void; open: 
           alert("JWT token not found.");
           return;
         }
-  
+
         const response = await fetch(`${BASE_URL}${API_ENDPOINTS.getAllAINames}`, {
           method: "GET",  // Proper placement of the method
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-  
+
         if (response.ok) {
           const data = await response.json();
           setAiNames(data);  // Store AI Names in the state
@@ -81,12 +75,12 @@ export const CreateKeyDialog = ({ onClose, open }: { onClose: () => void; open: 
         });
       }
     };
-  
+
     if (open) {
       fetchAINames();  // Fetch AI names when the dialog is open
     }
   }, [open, notify]);
-  
+
 
   const handleSubmit = async () => {
     if (!form.aiApiKey.trim()) {
@@ -97,10 +91,10 @@ export const CreateKeyDialog = ({ onClose, open }: { onClose: () => void; open: 
       });
       return;
     }
-  
+
     const payload = {
       ...form,
-      shared: form.shared ?? false, 
+      shared: form.shared ?? false,
     };
     try {
       const token = localStorage.getItem("jwtToken");
@@ -116,11 +110,11 @@ export const CreateKeyDialog = ({ onClose, open }: { onClose: () => void; open: 
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
-       
+
       });
-      
+
       if (response.ok) {
-        const responseText = await response.text(); 
+        const responseText = await response.text();
 
         if (responseText === "Create successfully") {
           notify({
@@ -166,8 +160,8 @@ export const CreateKeyDialog = ({ onClose, open }: { onClose: () => void; open: 
         </DialogHeader>
 
         <div className="space-y-4">
-         {/* AI Name */}
-         <div>
+          {/* AI Name */}
+          <div>
             <label className="block text-sm font-medium">AI Name</label>
             <select
               name="aiName"

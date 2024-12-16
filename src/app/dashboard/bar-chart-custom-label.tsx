@@ -1,15 +1,11 @@
 "use client";
-
 import { useState, useEffect } from "react";
-import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
-
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -20,7 +16,6 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-// Cấu hình cho chart
 const chartConfig = {
   desktop: {
     label: "Desktop",
@@ -39,18 +34,15 @@ export function BarChartCustomLabelComponent() {
   const [chartData, setChartData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("jwtToken");
-
         if (!token) {
           setError("JWT token not found.");
           setLoading(false);
           return;
         }
-
         const response = await fetch(
           `${BASE_URL}${API_ENDPOINTS.analyzeLog}`,
           {
@@ -60,19 +52,15 @@ export function BarChartCustomLabelComponent() {
             },
           }
         );
-
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-
         const data = await response.json();
-
         // Convert data into a format suitable for the chart
         const formattedData = data.map((entry: any) => ({
           function: entry.function,
           occurrences: entry.occurrences,
         }));
-
         setChartData(formattedData);
         setLoading(false);
       } catch (err) {
@@ -80,17 +68,14 @@ export function BarChartCustomLabelComponent() {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
-
 
   if (error) {
     return (
       <Card className="h-full">
         <CardHeader className="">
           <CardTitle>Total Postman Function</CardTitle>
-
           <CardDescription>
             There is no data for statistics
           </CardDescription>
@@ -98,7 +83,6 @@ export function BarChartCustomLabelComponent() {
       </Card>
     );
   }
-
 
   return (
     <Card>
@@ -129,13 +113,11 @@ export function BarChartCustomLabelComponent() {
                 tickMargin={10}
                 axisLine={true}
                 tickFormatter={(value) => value.slice(0, 3)}
-
               />
               <XAxis dataKey="occurrences" type="number"
                 tickLine={true}
                 axisLine={true}
               />
-
               <ChartTooltip
                 cursor={false}
                 content={<ChartTooltipContent indicator="line" />}
@@ -166,7 +148,6 @@ export function BarChartCustomLabelComponent() {
           </ChartContainer>
         )}
       </CardContent>
-
     </Card>
   );
 }

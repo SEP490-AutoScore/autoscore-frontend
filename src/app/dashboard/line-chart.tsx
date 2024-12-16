@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { TrendingUp } from "lucide-react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 
@@ -7,7 +6,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -37,7 +35,6 @@ export function LineChartComponent() {
           setLoading(false);
           return;
         }
-
         const response = await fetch(
           `${BASE_URL}${API_ENDPOINTS.totalScoreOccurrences}`,
           {
@@ -47,21 +44,18 @@ export function LineChartComponent() {
             },
           }
         );
-
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-
         const data = await response.json();
-
         // Transform data: round scores to the nearest integer
         const formattedData: ChartData[] = Object.entries(data)
           .map(([score, occurrences]) => ({
-            score: Math.round(parseFloat(score)), // Round to the nearest integer
+            score: Math.round(parseFloat(score)),
             occurrences: Number(occurrences),
           }))
           .reduce((acc, item) => {
-            // Aggregate occurrences for rounded scores
+
             const existing = acc.find((entry) => entry.score === item.score);
             if (existing) {
               existing.occurrences += item.occurrences;
@@ -70,8 +64,7 @@ export function LineChartComponent() {
             }
             return acc;
           }, [] as ChartData[])
-          .sort((a, b) => a.score - b.score); // Sort by score
-
+          .sort((a, b) => a.score - b.score);
         setChartData(formattedData);
         setLoading(false);
       } catch (err) {
@@ -81,10 +74,8 @@ export function LineChartComponent() {
         setLoading(false);
       }
     };
-
     fetchChartData();
   }, []);
-
 
   const chartConfig = {
     occurrences: {
@@ -142,16 +133,6 @@ export function LineChartComponent() {
           </ChartContainer>
         )}
       </CardContent>
-
-      {/* <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing occurrences of total scores for students.
-        </div>
-      </CardFooter> */}
-
     </Card>
   );
 }
