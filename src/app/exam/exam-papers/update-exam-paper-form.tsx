@@ -8,6 +8,12 @@ import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import { PencilLine } from "lucide-react";
 import { checkPermission } from "@/hooks/use-auth";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Important {
     importantId: number;
@@ -131,14 +137,20 @@ export default function UpdateExamPaper({ examPaperId, subjectId, examId }: Upda
 
     return (
         <>
-            <Button
-                onClick={() => setOpen(true)}
-                variant="outline"
-                className="p-2.5 h-10 w-10 rounded-full border-primary text-primary hover:text-white hover:bg-primary"
-            >
-                <PencilLine />
-            </Button>
-
+            <TooltipProvider delayDuration={0}>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                            onClick={() => setOpen(true)}
+                            variant="outline"
+                            className="p-2.5 h-10 w-10 rounded-full border-primary text-primary hover:text-white hover:bg-primary"
+                        >
+                            <PencilLine />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Create Exam</TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent>
                     <DialogHeader>

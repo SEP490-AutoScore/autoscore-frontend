@@ -70,14 +70,6 @@ export const columns: ColumnDef<ExamPaper>[] = [
     accessorKey: "duration",
     header: "Duration",
   },
-  // {
-  //   accessorKey: "semester.semesterName",
-  //   header: "Semester",
-  // },
-  // {
-  //   accessorKey: "subject.subjectName",
-  //   header: "Subject",
-  // },
   {
     id: "actions",
     header: "Actions",

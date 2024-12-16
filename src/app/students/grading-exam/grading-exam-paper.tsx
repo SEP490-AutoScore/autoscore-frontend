@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";// Assuming you have an Input component
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { checkPermission } from "@/hooks/use-auth";
+import { FilePen } from "lucide-react";
 
 interface ExamPaperIdDialogButtonProps {
   examPaperId: number; // Prop to receive the examPaperId
@@ -57,7 +58,7 @@ const ExamPaperIdDialogButton: React.FC<ExamPaperIdDialogButtonProps> = ({ examP
   };
   const hasPermission = checkPermission({ permission: "CREATE_EXAM_PAPER" });
   if (!hasPermission) {
-      return <></>
+    return <></>
   }
 
   return (
@@ -66,10 +67,10 @@ const ExamPaperIdDialogButton: React.FC<ExamPaperIdDialogButtonProps> = ({ examP
       <DialogTrigger asChild>
         <div className="flex justify-end">
           <Button
-            className="bg-white text-black hover:bg-orange-500 hover:text-white"
+            className="p-2.5 h-10 w-10 rounded-full border border-primary text-primary bg-white hover:bg-primary hover:text-white"
             onClick={() => setIsOpen(true)}
           >
-            Start Grading
+            <FilePen className="h-6 w-6" />
           </Button>
         </div>
       </DialogTrigger>

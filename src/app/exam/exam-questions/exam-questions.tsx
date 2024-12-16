@@ -5,7 +5,6 @@ import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import ExamQuestionItem from "./exam-question-info";
 import ImportQuestion from "@/app/exam/exam-questions/import-question";
 import CreateQuestion from "@/app/exam/exam-questions/create-question-form";
-import { Button } from "@/components/ui/button";
 
 interface ExamQuestion {
     examQuestionId: number;
@@ -77,11 +76,6 @@ const ExamQuestionsList: React.FC<ExamQuestionsListProps> = ({ examPaperId }) =>
     const renderNoQuestionsState = () => (
         <div className="space-y-4">
             <div className="flex justify-end">
-                <Button
-                    size="sm"
-                    className="w-auto border border-gray-300 text-black bg-white hover:bg-orange-500 hover:text-white transition-colors duration-200"
-                >
-                </Button>
                 <div className="flex space-x-4">
                     <CreateQuestion examPaperId={examPaperId} />
                     <ImportQuestion examPaperId={examPaperId} />

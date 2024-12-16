@@ -152,4 +152,8 @@ export const API_ENDPOINTS = {
   //notification
   notification: "/api/notifications",
   grading: "/api/grading/exam",
+  gradingProcess: "/api/grading/ws/progress",
+
+  //grading event
+  events: "/events"
 };

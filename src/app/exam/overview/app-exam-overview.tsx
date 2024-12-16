@@ -3,7 +3,7 @@ import { DataTable } from "@/app/exam/overview/data-table";
 import { useState, useEffect } from "react";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { DataTableSkeleton } from "@/app/exam/overview/data-table-skeleton";
-import { NoResultPage, ErrorPage } from '@/app/authentication/error/page';
+import { ErrorPage } from '@/app/authentication/error/page';
 
 interface Exams {
   examId: number;
@@ -57,12 +57,15 @@ async function getData(): Promise<Exams[]> {
     body: JSON.stringify(payload),
   });
 
+  if (res.status === 204) {
+    const result: Exams[] = [];
+    return result;
+  }
   // Xử lý lỗi nếu API không trả về phản hồi hợp lệ
   if (!res.ok) {
     const error = await res.text();
     throw new Error(`Failed to fetch data: ${error}`);
   }
-
   // Parse và trả về dữ liệu JSON
   const data: Exams[] = await res.json();
   return data;
@@ -85,10 +88,6 @@ export default function Page() {
 
   if (!data) {
     return <DataTableSkeleton />;
-  }
-
-  if (data.length === 0) {
-    return <NoResultPage />;
   }
 
   return (
