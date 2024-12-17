@@ -1,7 +1,7 @@
 // Base URL của API
-export const BASE_URL = "http://autoscore.southeastasia.cloudapp.azure.com";
+export const BASE_URL = "http://34.142.205.176:8080";
 
-export const GRADING_URL = "http://autoscore.southeastasia.cloudapp.azure.com/grading-service";
+export const GRADING_URL = "http://34.142.205.176:8081";
 
 // Các endpoint API
 export const API_ENDPOINTS = {
