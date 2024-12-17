@@ -13,6 +13,7 @@ import FileCollectionDialog from "./FileCollectionDialog";
 import LogRunPostmanDialog from "./LogRunPostmanDialog";
 import { calculateScores } from "./calculate-scores";
 import { fixAuthFilePostman } from "./fixAuthFilePostman";
+import { checkPermission } from "@/hooks/use-auth";
 
 import {
   DropdownMenu,
@@ -611,30 +612,42 @@ const Page: React.FC = () => {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="ml-auto">
                   <Settings2 className="h-4 w-4" />
-                  List action
+                  List Action
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-48">
-                <DropdownMenuLabel>List action</DropdownMenuLabel>
+                <DropdownMenuLabel>List Action</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => handleActionChange("impostFilePostman")}>
-                  Import File Postman
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleActionChange("exportFilePostman")}>
-                  Export File Postman
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleActionChange("mergeAllFilePostman")}>
-                  Merge All File Postman
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleActionChange("fixAuthFilePostman")}>
-                  Fix Auth All File
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleActionChange("calculateScores")}>
-                  Calculate Scores
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleActionChange("updateAndConfirmFilePostman")}>
-                  Update and Confirm Postman Collection
-                </DropdownMenuItem>
+                {checkPermission({ permission: "IMPORT_POSTMAN" }) && (
+                  <DropdownMenuItem onClick={() => handleActionChange("impostFilePostman")}>
+                    Import File Postman
+                  </DropdownMenuItem>
+                )}
+                {checkPermission({ permission: "EXPORT_POSTMAN" }) && (
+                  <DropdownMenuItem onClick={() => handleActionChange("exportFilePostman")}>
+                    Export File Postman
+                  </DropdownMenuItem>
+                )}
+                {checkPermission({ permission: "MERGE_POSTMAN" }) && (
+                  <DropdownMenuItem onClick={() => handleActionChange("mergeAllFilePostman")}>
+                    Merge All Postman Script
+                  </DropdownMenuItem>
+                )}
+                {checkPermission({ permission: "FIX_AUTH_POSTMAN" }) && (
+                  <DropdownMenuItem onClick={() => handleActionChange("fixAuthFilePostman")}>
+                    Fix Auth File Postman
+                  </DropdownMenuItem>
+                )}
+                {checkPermission({ permission: "CALCULATE_SCORE" }) && (
+                  <DropdownMenuItem onClick={() => handleActionChange("calculateScores")}>
+                    Calculate Scores
+                  </DropdownMenuItem>
+                )}
+                {checkPermission({ permission: "UPDATE_POSTMAN" }) && (
+                  <DropdownMenuItem onClick={() => handleActionChange("updateAndConfirmFilePostman")}>
+                    Update and Confirm File Postman
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           }
@@ -653,20 +666,24 @@ const Page: React.FC = () => {
                   <p className="text-sm text-gray-700">
                     <strong className="font-semibold">Total Function: </strong> {totalItem}
                   </p>
-                  <Button
-                    variant="outline"
-                    className="mb-4"
-                    onClick={() => setShowFilePostmanDialog(true)}
-                  >
-                    Show File Collection Data
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="mb-4"
-                    onClick={() => setShowLogRunPostmanDialog(true)}
-                  >
-                    Show log File Collection Data
-                  </Button>
+                  {checkPermission({ permission: "VIEW_GHERKIN_POSTMAN" }) && (
+                    <Button
+                      variant="outline"
+                      className="mb-4"
+                      onClick={() => setShowFilePostmanDialog(true)}
+                    >
+                      Show File Postman Data
+                    </Button>
+                  )}
+                  {checkPermission({ permission: "VIEW_GHERKIN_POSTMAN" }) && (
+                    <Button
+                      variant="outline"
+                      className="mb-4"
+                      onClick={() => setShowLogRunPostmanDialog(true)}
+                    >
+                      Show Log Run File Postman
+                    </Button>
+                  )}
                 </div>
               ) : (
                 <Skeleton />

@@ -11,6 +11,8 @@ import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 import { useToastNotification } from "@/hooks/use-toast-notification";
+import { checkPermission } from "@/hooks/use-auth";
+
 export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: boolean }) => {
   const [popupData, setPopupData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -107,9 +109,9 @@ export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: 
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="p-6 bg-white shadow-lg rounded-lg max-w-4xl mx-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">Question Ask AI</DialogTitle>
+          <DialogTitle className="text-xl font-semibold">AI Prompt</DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground">
-            Information about questions and purposes asked by the AI.
+            List prompt AI for each function are below
           </DialogDescription>
         </DialogHeader>
         {loading ? (
@@ -137,13 +139,15 @@ export const DialogComponent = ({ onClose, open }: { onClose: () => void; open: 
                         placeholder="Enter your text here"
                       />
                       <div className="flex justify-end mt-2 space-x-2">
-                        <Button
-                          onClick={() => handleSave(item.aiPromptId)}
-                          variant="default"
-                          className="text-sm"
-                        >
-                          Save
-                        </Button>
+                        {checkPermission({ permission: "EDIT_PROMPT_AI" }) && (
+                          <Button
+                            onClick={() => handleSave(item.aiPromptId)}
+                            variant="default"
+                            className="text-sm"
+                          >
+                            Save
+                          </Button>
+                        )}
                         <Button
                           onClick={() => {
                             setIsEditing(null);
