@@ -156,8 +156,8 @@ export default function Page() {
     <SidebarInset>
       {Header}
       <div className="p-4 pt-0 space-y-6">
-        <div className="border border-gray-200 p-6 rounded-lg shadow-sm ml-11 mr-11">
-          <div className="col-span-4 mb-6 ml-2 mr-2">
+        <div className="border border-gray-200 p-6 rounded-lg shadow-sm mx-auto">
+          <div className="col-span-4 mb-6 ml-2 mr-2 mt-2">
             
             <DropdownList onSelect={handleSelect} />
           </div>

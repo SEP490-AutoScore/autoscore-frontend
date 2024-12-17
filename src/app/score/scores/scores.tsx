@@ -40,7 +40,7 @@ async function getData(exampaperid: number) {
     return [];
   }
 }
-export default function ScorePage() {
+export default function ScorePage({ exportListScore }: { exportListScore: () => Promise<void> }) {
   const [data, setData] = useState<Score[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const location = useLocation();
@@ -70,5 +70,5 @@ export default function ScorePage() {
     return <ErrorPage />;
   }
 
-  return <DataTable columns={columns} data={data} />;
+  return <DataTable columns={columns} data={data} exportListScore={exportListScore}/>;
 }
