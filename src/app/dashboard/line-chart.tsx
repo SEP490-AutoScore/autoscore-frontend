@@ -105,7 +105,7 @@ export function LineChartComponent() {
                 right: 12,
               }}
             >
-              <CartesianGrid vertical={false} />
+              <CartesianGrid vertical={true} />
               <XAxis
                 dataKey="score"
                 tickLine={true}
@@ -117,6 +117,7 @@ export function LineChartComponent() {
                 tickLine={true}
                 axisLine={true}
                 tickMargin={10}
+
               />
               <ChartTooltip
                 cursor={false}
@@ -126,8 +127,8 @@ export function LineChartComponent() {
                 dataKey="occurrences"
                 type="natural"
                 stroke="#FF8D29"
-                strokeWidth={2}
-                dot={false}
+                strokeWidth={4}
+                dot={true}
               />
             </LineChart>
           </ChartContainer>

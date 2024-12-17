@@ -165,12 +165,12 @@ export default function Page() {
       {Header}
       <div className="p-4 pt-0 space-y-6">
         <div className="border border-gray-200 p-6 rounded-lg shadow-sm mx-auto">
-            <div className="mb-6 ml-2 mr-2  mt-2">
-              <h2 className="text-2xl font-bold tracking-tight">Dashboard page</h2>
-              <p className="text-muted-foreground">
-                These are charts to analyze scores of all exam
-              </p>
-            </div>
+          <div className="mb-6 ml-2 mr-2  mt-2">
+            <h2 className="text-2xl font-bold tracking-tight">Dashboard page</h2>
+            <p className="text-muted-foreground">
+              These are charts to analyze scores of all exam
+            </p>
+          </div>
           <div className="grid grid-cols-4 gap-6">
             <div className="col-span-4 md:col-span-4 grid grid-cols-3 gap-6 mb-6 ml-2 mr-2 ">
               {/* Total exam */}

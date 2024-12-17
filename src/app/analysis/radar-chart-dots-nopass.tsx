@@ -25,18 +25,33 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+const placeholderData = [
+  { functionName: "Function A", passCount: 0 },
+  { functionName: "Function B", passCount: 0 },
+  { functionName: "Function C", passCount: 0 },
+  { functionName: "Function D", passCount: 0 },
+  { functionName: "Function E", passCount: 0 },
+];
+
 export function RadarChartDotsNoPassComponent({ examPaperId }: { examPaperId: string }) {
   const [chartData, setChartData] = useState<{ functionName: string; passCount: number }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [, setIsPlaceholderData] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!examPaperId) {
+        setChartData(placeholderData);
+        setIsPlaceholderData(true);
+        return;
+      }
       setLoading(true);
       setError(null);
       const token = localStorage.getItem("jwtToken");
       if (!token) {
         setError("JWT token not found.");
+        setIsPlaceholderData(true);
         setLoading(false);
         return;
       }
@@ -58,9 +73,16 @@ export function RadarChartDotsNoPassComponent({ examPaperId }: { examPaperId: st
           functionName: key,
           passCount: value as number,
         }));
-        setChartData(formattedData);
-      } catch (err: any) {
-        setError(err.message || "An unexpected error occurred.");
+        setChartData(formattedData.length > 0 ? formattedData : placeholderData);
+        setIsPlaceholderData(formattedData.length === 0);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unexpected error occurred.");
+        }
+        setChartData(placeholderData);
+        setIsPlaceholderData(true);
       } finally {
         setLoading(false);
       }
@@ -83,6 +105,7 @@ export function RadarChartDotsNoPassComponent({ examPaperId }: { examPaperId: st
       </Card>
     );
   }
+  const displayData = chartData.length > 0 ? chartData : placeholderData;
   return (
     <Card>
       <CardHeader className="">
@@ -94,9 +117,9 @@ export function RadarChartDotsNoPassComponent({ examPaperId }: { examPaperId: st
       <CardContent className="pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
+          className="mx-auto max-h-[250px]"
         >
-          <RadarChart data={chartData}>
+          <RadarChart data={displayData}>
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <PolarAngleAxis dataKey="functionName" />
             <PolarGrid />
