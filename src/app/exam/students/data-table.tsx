@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { NoResultPage } from "@/app/authentication/error/page";
 import FileUploadPopover from "@/components/file-upload";
 import {
   ColumnDef,
