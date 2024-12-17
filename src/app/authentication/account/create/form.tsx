@@ -47,7 +47,7 @@ interface Position {
 
 // Định nghĩa schema validation
 const formSchema = z.object({
-  fullName: z.string(),
+  name: z.string(),
   email: z.string(),
   roleId: z.string().nonempty({
     message: "Please select a role.",
@@ -124,7 +124,7 @@ export function AccountForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullName: "",
+      name: "",
       email: "",
       roleId: "0",
       roleName: "",
@@ -230,7 +230,7 @@ export function AccountForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
-          name="fullName"
+          name="name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Full name</FormLabel>

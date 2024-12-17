@@ -126,11 +126,6 @@ const data = {
           url: "/exam-papers",
           permission: "VIEW_EXAM",
         },
-        {
-          title: "Scores",
-          url: "/scores-overview",
-          permission: "VIEW_SCORE",
-        },
       ],
     },
     {
