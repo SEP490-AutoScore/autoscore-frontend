@@ -1,15 +1,20 @@
 import { useHeader } from "@/hooks/use-header";
 import { SidebarInset } from "@/components/ui/sidebar";
 import PlagiarismPage from "@/app/score/plagiarism/plagiarism";
+import { useLocation } from "react-router-dom";
 
 export default function Page() {
+  const location = useLocation();
+  const { examId, examPaperId } = location.state || {};
   const Header = useHeader({
-    breadcrumbLink: "/scores-overview",
-    breadcrumbPage: "Scores Overview",
-    breadcrumbLink_2: "/scores-overview/scores",
-    breadcrumbPage_2: "Scores",
-    breadcrumbLink_3: "/plagiarism",
-    breadcrumbPage_3: "Plagiarism",
+    breadcrumbLink: "/exams",
+    breadcrumbPage: "Exams Overview",
+    breadcrumbLink_2: `/exams/exam-papers`,
+    breadcrumbPage_2: "Exam Details",
+    breadcrumbPage_3: "Exam Papper detail",
+    breadcrumbLink_3: "/exams/exam-papers/exam-questions",
+    breadcrumbPage_4: "Plagiarism",
+    stateGive: { examId: examId, examPaperId: examPaperId },
   });
   return (
     <SidebarInset>
