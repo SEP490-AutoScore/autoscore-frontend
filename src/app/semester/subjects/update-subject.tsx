@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
+import { useNavigate } from "react-router-dom";
 
 interface UpdateSubjectDialogProps {
     subjectId: number;
@@ -17,6 +18,7 @@ const UpdateSubjectDialog: React.FC<UpdateSubjectDialogProps> = ({ subjectId, op
     const [subjectName, setSubjectName] = useState<string>("");
     const [subjectCode, setSubjectCode] = useState<string>("");
     const showToast = useToastNotification();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (subjectId) {
@@ -74,6 +76,7 @@ const UpdateSubjectDialog: React.FC<UpdateSubjectDialogProps> = ({ subjectId, op
                     variant: "default",
                 });
                 onUpdate();
+                navigate(0);
                 onClose(); // Close the dialog after successful update
             })
             .catch((error) => {

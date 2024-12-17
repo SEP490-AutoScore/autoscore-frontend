@@ -21,6 +21,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useNavigate } from "react-router-dom";
 
 interface Important {
   importantId: number;
@@ -49,6 +50,7 @@ export default function UpdateExamPaper({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const showToast = useToastNotification();
+  const navigate = useNavigate();
 
   const handleCancel = () => {
     setOpen(false); // Close the dialog
@@ -139,7 +141,7 @@ export default function UpdateExamPaper({
       })
       .then(() => {
         setOpen(false); // Close dialog
-        window.location.reload(); // Reload the page
+        navigate(0);
       })
       .catch((err) => setErrorMessage(err.message));
   };

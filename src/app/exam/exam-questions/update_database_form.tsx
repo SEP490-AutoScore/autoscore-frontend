@@ -5,7 +5,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogFooter,
-  DialogTrigger,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { FolderUp } from "lucide-react";
@@ -17,6 +16,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useNavigate } from "react-router-dom";
 
 interface UpdateDatabaseProps {
   examPaperId: number; // Pass the JWT token as a prop
@@ -31,8 +31,9 @@ const UpdateDatabase: React.FC<UpdateDatabaseProps> = ({ examPaperId }) => {
   const [successMessage, setSuccessMessage] = useState<string>("");
   const token = localStorage.getItem("jwtToken");
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const navigate = useNavigate();
 
-  const hasPermission = checkPermission({ permission: "CREATE_DATABASE" });
+  const hasPermission = checkPermission({ permission: "UPDATE_EXAM_DATABASE" });
   if (!hasPermission) {
     return <></>;
   }
@@ -102,6 +103,7 @@ const UpdateDatabase: React.FC<UpdateDatabaseProps> = ({ examPaperId }) => {
       }
 
       setSuccessMessage("Database updated successfully!");
+      navigate(0);
       setError("");
     } catch (err: any) {
       setError(err.message);

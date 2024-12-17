@@ -14,6 +14,7 @@ import { useToastNotification } from "@/hooks/use-toast-notification";
 import { FolderUp } from "lucide-react";
 import { checkPermission } from "@/hooks/use-auth";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useNavigate } from "react-router-dom";
 
 interface ImportWordDialogProps {
   examPaperId: number; // Nhận examPaperId dưới dạng prop
@@ -24,6 +25,7 @@ const ImportWordDialog: React.FC<ImportWordDialogProps> = ({ examPaperId }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
@@ -78,6 +80,7 @@ const ImportWordDialog: React.FC<ImportWordDialogProps> = ({ examPaperId }) => {
         description: "Import questions success",
         variant: "default",
       });
+      navigate(0);
       setIsOpen(false);
       setSelectedFile(null);
     } catch (error) {
@@ -107,7 +110,7 @@ const ImportWordDialog: React.FC<ImportWordDialogProps> = ({ examPaperId }) => {
               <FolderUp />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Import Database</TooltipContent>
+          <TooltipContent>Import Exam Questions</TooltipContent>
         </Tooltip>
       </TooltipProvider>
 
@@ -170,7 +173,7 @@ const ImportWordDialog: React.FC<ImportWordDialogProps> = ({ examPaperId }) => {
               className="bg-primary text-white hover:bg-orange-500"
               disabled={isUploading}
             >
-              {isUploading ? "Đang tải lên..." : "Import"}
+              {isUploading ? "Processing..." : "Import"}
             </Button>
           </DialogFooter>
         </DialogContent>

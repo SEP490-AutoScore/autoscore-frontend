@@ -22,6 +22,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useToastNotification } from "@/hooks/use-toast-notification";
 
 interface ExamPaperIdDialogButtonProps {
   examPaperId: number; // Prop to receive the examPaperId
@@ -34,6 +35,7 @@ const ExamPaperIdDialogButton: React.FC<ExamPaperIdDialogButtonProps> = ({
   const [numberDeploy] = useState<number>(1);
   const [isOpen, setIsOpen] = useState<boolean>(false); // State to control dialog visibility
   const token = localStorage.getItem("jwtToken");
+  const showToast = useToastNotification();
 
   const handleCancel = () => {
     setIsOpen(false); // Close the dialog
@@ -69,10 +71,19 @@ const ExamPaperIdDialogButton: React.FC<ExamPaperIdDialogButtonProps> = ({
         throw new Error(error.message || "Failed to start grading.");
       }
 
-      alert("Grading started successfully!");
+      showToast({
+        title: "Grading process",
+        description: "Your grading process has been created",
+        variant: "default",
+    });
+
       setIsOpen(false); // Close the dialog after successful submission
     } catch (error) {
-      alert(`Error`);
+      showToast({
+        title: "Grading process",
+        description: "Your grading process request fail! Please check and try again!",
+        variant: "destructive",
+    });
     }
   };
   const hasPermission = checkPermission({ permission: "CREATE_EXAM_PAPER" });
