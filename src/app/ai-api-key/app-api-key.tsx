@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { CreateKeyDialog } from "@/app/ai-api-key/CreateKeyDialog";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import ViewDetailDialog from "./AIApiKeyDetail";
+import { checkPermission } from "@/hooks/use-auth";
+
 export async function getAIApiKeys(): Promise<AIApiKey[]> {
   const token = localStorage.getItem("jwtToken");
   const response = await fetch(`${BASE_URL}${API_ENDPOINTS.aiApiKeys}`, {
@@ -112,12 +114,16 @@ export default function AIApiKeysPage() {
   return (
     <div className="container mx-auto">
       <div className="mb-4 flex justify-end gap-x-2">
-        <Button variant="outline" onClick={() => setShowDialog(true)}>
-          Show question ask AI
-        </Button>
-        <Button variant="outline" onClick={() => setShowCreateDialog(true)}>
-          Create new key
-        </Button>
+        {checkPermission({ permission: "VIEW_GHERKIN_POSTMAN" }) && (
+          <Button variant="outline" onClick={() => setShowDialog(true)}>
+            Show AI Prompt
+          </Button>
+        )}
+        {checkPermission({ permission: "CREATE_API_KEY" }) && (
+          <Button variant="outline" onClick={() => setShowCreateDialog(true)}>
+            Create New AI Key
+          </Button>
+        )}
       </div>
       <DataTable columns={columns} data={data} />
       <DialogComponent open={showDialog} onClose={() => setShowDialog(false)} />

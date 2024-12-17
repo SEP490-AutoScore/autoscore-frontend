@@ -1,7 +1,6 @@
 import * as React from "react";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -13,6 +12,7 @@ import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { checkPermission } from "@/hooks/use-auth";
 import { FolderUp } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useNavigate } from "react-router-dom";
 
 interface AddDatabaseFormProps {
   examPaperId: number;
@@ -30,6 +30,7 @@ const AddDatabaseForm: React.FC<AddDatabaseFormProps> = ({
   const [error, setError] = React.useState<string>("");
   const token = localStorage.getItem("jwtToken");
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
+  const navigate = useNavigate();
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -67,7 +68,7 @@ const AddDatabaseForm: React.FC<AddDatabaseFormProps> = ({
       if (!response.ok) {
         throw new Error("Failed to add database");
       }
-
+      navigate(0);
       onAddSuccess(); // Notify parent component to reload data
     } catch (err: any) {
       setError(err.message);

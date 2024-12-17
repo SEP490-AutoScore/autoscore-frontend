@@ -34,10 +34,9 @@ const ExamQuestionItem: React.FC<ExamQuestionItemProps> = ({
   return (
     <div
       className="border p-4 rounded-lg space-y-2 mx-4 cursor-pointer hover:shadow-lg mb-6"
-      onClick={onToggle}
     >
       <div className="flex justify-between items-center">
-        <div className="flex space-x-2 min-w-[80%]">
+        <div className="flex space-x-2 min-w-[80%]" onClick={onToggle}>
           <h3 className="font-semibold text-lg">{question.questionContent}</h3>
         </div>
         <div>
@@ -74,7 +73,7 @@ const ExamQuestionItem: React.FC<ExamQuestionItemProps> = ({
           {question.validation && (
             <div>
               <strong>Validation:</strong>
-              <pre className="p-2 border rounded bg-gray-50">
+              <pre className="p-2 border rounded bg-gray-50 whitespace-pre-wrap">
                 {question.validation}
               </pre>
             </div>
@@ -82,7 +81,7 @@ const ExamQuestionItem: React.FC<ExamQuestionItemProps> = ({
           {question.payload && (
             <div>
               <strong>Payload:</strong>
-              <pre className="p-2 border rounded bg-gray-50">
+              <pre className="p-2 border rounded bg-gray-50 whitespace-pre-wrap">
                 {question.payload}
               </pre>
             </div>
@@ -90,7 +89,7 @@ const ExamQuestionItem: React.FC<ExamQuestionItemProps> = ({
           {question.sucessResponse && (
             <div>
               <strong>Success Response:</strong>
-              <pre className="p-2 border rounded bg-gray-50">
+              <pre className="p-2 border rounded bg-gray-50 whitespace-pre-wrap">
                 {question.sucessResponse}
               </pre>
             </div>
@@ -98,7 +97,7 @@ const ExamQuestionItem: React.FC<ExamQuestionItemProps> = ({
           {question.errorResponse && (
             <div>
               <strong>Error Response:</strong>
-              <pre className="p-2 border rounded bg-gray-50">
+              <pre className="p-2 border rounded bg-gray-50 whitespace-pre-wrap">
                 {question.errorResponse}
               </pre>
             </div>

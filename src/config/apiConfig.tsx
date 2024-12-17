@@ -107,9 +107,9 @@ export const API_ENDPOINTS = {
   infoFilePostmanExamPaper: "/api/exam-paper/infoFilePostman",
   confirmFilePostman: "/api/exam-paper/confirmFilePostman",
   getPostmanById: "/api/postman-grading",
-  updateExamQuestion: "/api/postman-grading/update-exam-question",
+  updateQuestionPostman: "/api/postman-grading/update-exam-question",
   calculateScores: "/api/postman-grading/calculate",
-  fixAuthFilePostman : "/api/postman-grading/fix-auth-postman",
+  fixAuthFilePostman: "/api/postman-grading/fix-auth-postman",
 
   //prompt ai
   showQuestionAskAi: "/api/aiprompt",

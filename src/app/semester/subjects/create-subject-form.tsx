@@ -3,6 +3,8 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
+import { checkPermission } from "@/hooks/use-auth";
+import { useNavigate } from "react-router-dom";
 
 const CreateSubjectDialog: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,6 +12,12 @@ const CreateSubjectDialog: React.FC = () => {
   const [subjectCode, setSubjectCode] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  const hasPermission = checkPermission({ permission: "CREATE_SUBJECT" });
+  if (!hasPermission) {
+    return <></>
+  }
 
   const handleCreateSubject = async () => {
     setLoading(true);
@@ -35,7 +43,7 @@ const CreateSubjectDialog: React.FC = () => {
         setSubjectName('');
         setSubjectCode('');
         setIsOpen(false); // Đóng dialog sau khi tạo thành công
-        window.location.reload(); // Reload lại trang
+        navigate(0);
       } else {
         const error = await response.json();
         setMessage(`Error: ${error.message || 'Failed to create subject.'}`);
@@ -101,9 +109,8 @@ const CreateSubjectDialog: React.FC = () => {
           </DialogFooter>
           {message && (
             <p
-              className={`mt-4 text-sm ${
-                message.startsWith('Error') ? 'text-red-600' : 'text-green-600'
-              }`}
+              className={`mt-4 text-sm ${message.startsWith('Error') ? 'text-red-600' : 'text-green-600'
+                }`}
             >
               {message}
             </p>

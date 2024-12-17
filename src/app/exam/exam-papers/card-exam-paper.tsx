@@ -4,7 +4,7 @@ import {
   CardDescription,
   CardTitle,
 } from "@/components/ui/card";
-import { Download, NotebookText, SquareChartGantt, Target } from "lucide-react";
+import { Download, NotebookText, SquareChartGantt, Target, FileDownIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
@@ -15,6 +15,7 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 import { TooltipTrigger } from "@radix-ui/react-tooltip";
+import { checkPermission } from "@/hooks/use-auth";
 
 interface Important {
   importantId: number;
@@ -182,53 +183,57 @@ export function ExamPaperCard({
                   <TooltipContent>View Paper Details</TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    className="p-4 h-10 w-10 border rounded-full border-primary text-primary bg-white hover:bg-primary hover:text-white transition-colors duration-200"
-                    onClick={handleExportLog}
-                  >
-                    <Download />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Export Log</TooltipContent>
-              </Tooltip>
-
-              <TooltipProvider delayDuration={0}>
+              {checkPermission({ permission: "EXPORT_LOG" }) && (
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
                       className="p-4 h-10 w-10 border rounded-full border-primary text-primary bg-white hover:bg-primary hover:text-white transition-colors duration-200"
-                      onClick={() =>
-                        navigate("/exams/exam-papers/gherkin-postman", {
-                          state: { examId, examPaperId: examPaper.examPaperId },
-                        })
-                      }
+                      onClick={handleExportLog}
                     >
-                      <SquareChartGantt />
+                      <Download />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent>View Gherkin Postman</TooltipContent>
+                  <TooltipContent>Export Log</TooltipContent>
                 </Tooltip>
-              </TooltipProvider>
-              <TooltipProvider delayDuration={0}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      className="p-4 h-10 w-10 border rounded-full border-primary text-primary bg-white hover:bg-primary hover:text-white transition-colors duration-200"
-                      onClick={() =>
-                        navigate("/exams/exam-papers/postman-for-grading", {
-                          state: { examId, examPaperId: examPaper.examPaperId },
-                        })
-                      }
-                    >
-                      <Target />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>View Postman Grading</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              )}
+              {checkPermission({ permission: "VIEW_GHERKIN_POSTMAN" }) && (
+                <TooltipProvider delayDuration={0}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        className="p-4 h-10 w-10 border rounded-full border-primary text-primary bg-white hover:bg-primary hover:text-white transition-colors duration-200"
+                        onClick={() =>
+                          navigate("/exams/exam-papers/gherkin-postman", {
+                            state: { examId, examPaperId: examPaper.examPaperId },
+                          })
+                        }
+                      >
+                        <SquareChartGantt />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>View Gherkin Postman</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+              {checkPermission({ permission: "VIEW_GHERKIN_POSTMAN" }) && (
+                <TooltipProvider delayDuration={0}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        className="p-4 h-10 w-10 border rounded-full border-primary text-primary bg-white hover:bg-primary hover:text-white transition-colors duration-200"
+                        onClick={() =>
+                          navigate("/exams/exam-papers/postman-for-grading", {
+                            state: { examId, examPaperId: examPaper.examPaperId },
+                          })
+                        }
+                      >
+                        <Target />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>View Postman Grading</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
               <TooltipProvider delayDuration={0}>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -236,7 +241,7 @@ export function ExamPaperCard({
                       className="p-4 h-10 w-10 border rounded-full border-primary text-primary bg-white hover:bg-primary hover:text-white transition-colors duration-200"
                       onClick={handleDownloadWord}
                     >
-                      <Download />
+                      <FileDownIcon />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Export Word</TooltipContent>

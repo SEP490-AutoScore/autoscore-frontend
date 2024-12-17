@@ -11,6 +11,7 @@ import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CardContent } from "@/components/ui/card";
+import { checkPermission } from "@/hooks/use-auth";
 
 interface PostmanDialogProps {
     onClose: () => void;
@@ -111,7 +112,7 @@ export const PostmanDialog: React.FC<PostmanDialogProps> = ({ postmanId, storedQ
         setIsSubmitting(true);
         try {
             const token = localStorage.getItem("jwtToken");
-            const response = await fetch(`${BASE_URL}${API_ENDPOINTS.updateExamQuestion}/${postmanData.postmanForGradingId}/${postmanData.examQuestionId}`, {
+            const response = await fetch(`${BASE_URL}${API_ENDPOINTS.updateQuestionPostman}/${postmanData.postmanForGradingId}/${postmanData.examQuestionId}`, {
                 method: "PUT",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -204,14 +205,16 @@ export const PostmanDialog: React.FC<PostmanDialogProps> = ({ postmanId, storedQ
                     )}
                 </div>
             )}
-            <Button
-                onClick={submitUpdate}
-                disabled={isSubmitting}
-                variant="outline"
-                className="w-full py-3 text-lg font-semibold shadow-md focus:ring-2 focus:ring-400 mt-4"
-            >
-                {isSubmitting ? "Submitting..." : "Submit"}
-            </Button>
+            {checkPermission({ permission: "UPDATE_QUESTION_POSTMAN" }) && (
+                <Button
+                    onClick={submitUpdate}
+                    disabled={isSubmitting}
+                    variant="outline"
+                    className="w-full py-3 text-lg font-semibold shadow-md focus:ring-2 focus:ring-400 mt-4"
+                >
+                    {isSubmitting ? "Submitting..." : "Submit"}
+                </Button>
+            )}
         </DialogContent>
     );
 };

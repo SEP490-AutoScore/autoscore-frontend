@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 import { checkPermission } from "@/hooks/use-auth";
+import { useNavigate } from "react-router-dom";
 
 const CreateSemesterDialog: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,6 +12,7 @@ const CreateSemesterDialog: React.FC = () => {
   const [semesterCode, setSemesterCode] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleCreateSemester = async () => {
     setLoading(true);
@@ -35,6 +37,7 @@ const CreateSemesterDialog: React.FC = () => {
         setMessage('Semester created successfully!');
         setSemesterName('');
         setSemesterCode('');
+        navigate(0);
         setIsOpen(false); // Đóng dialog sau khi tạo thành công
         window.location.reload(); // Reload lại trang
       } else {
