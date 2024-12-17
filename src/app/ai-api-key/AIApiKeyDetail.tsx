@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { useToastNotification } from "@/hooks/use-toast-notification";
-
+import { checkPermission } from "@/hooks/use-auth";
 
 type ViewDetailDialogProps = {
   aiApiKeyId: number;
@@ -190,9 +190,11 @@ const ViewDetailDialog = ({ aiApiKeyId, open, onClose, onUpdateSuccess }: ViewDe
           <div className="text-red-500">Loading...</div>
         )}
         <div className="mt-6 flex justify-end space-x-2">
-          <Button variant="default" onClick={handleSave}>
-            Save
-          </Button>
+          {checkPermission({ permission: "UPDATE_API_KEY" }) && (
+            <Button variant="default" onClick={handleSave}>
+              Save
+            </Button>
+          )}
           <Button variant="outline" onClick={onClose}>
             Close
           </Button>

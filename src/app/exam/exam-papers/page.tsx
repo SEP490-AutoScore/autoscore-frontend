@@ -180,8 +180,10 @@ export default function ExamDetailPage() {
               </div>
             </div>
           )}
-          {activeTab === "students" && <StudentsPage />}
-          {activeTab === "sources" && <Sources />}
+          {activeTab === "students" && onReload && <StudentsPage />}
+          {activeTab === "students" && !onReload && <StudentsPage />}
+          {activeTab === "sources" && onSourceReload && <Sources />}
+          {activeTab === "sources" && !onSourceReload && <Sources />}
         </div>
       </div>
     </SidebarInset>
