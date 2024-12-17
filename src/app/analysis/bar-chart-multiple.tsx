@@ -66,10 +66,12 @@ export function BarChartMultipleComponent({ examPaperId }: { examPaperId: string
         return response.json() as Promise<ApiResponse>;
       })
       .then((data) => {
-        const formattedData = Object.entries(data).map(([studentId, scores]) => {
-          const { averageResponseTime, totalRunDuration } = scores;
-          return { studentId, averageResponseTime, totalRunDuration };
-        });
+        const formattedData = Object.entries(data)
+          .map(([studentId, scores]) => {
+            const { averageResponseTime, totalRunDuration } = scores;
+            return { studentId, averageResponseTime, totalRunDuration };
+          })
+          .sort((a, b) => a.totalRunDuration - b.totalRunDuration);
         setChartData(formattedData);
         setError(null);
       })

@@ -117,7 +117,7 @@ export function RadarChartDotsAllPassComponent({ examPaperId }: { examPaperId: s
       <CardContent className="pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-video max-h-[250px]"
+          className="mx-auto max-h-[250px]"
         >
           <RadarChart data={displayData}>
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />

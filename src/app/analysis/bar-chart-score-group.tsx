@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import {
@@ -20,13 +20,13 @@ const chartConfig = {
     },
 } satisfies ChartConfig;
 
-interface PlagiarismData {
-    studentCodePlagiarism: string;
-    plagiarismPercentage: number;
+interface ChartDataItem {
+    score: number;
+    count: number;
 }
 
-export function BarChartPlagiarismComponent({ examPaperId }: { examPaperId: string }) {
-    const [chartData, setChartData] = useState<PlagiarismData[]>([]);
+export function BarChartScoreGroupComponent({ examPaperId }: { examPaperId: string }) {
+    const [chartData, setChartData] = useState<ChartDataItem[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -43,7 +43,7 @@ export function BarChartPlagiarismComponent({ examPaperId }: { examPaperId: stri
             }
             try {
                 const response = await fetch(
-                    `${BASE_URL}${API_ENDPOINTS.codePlagiarismDetails}?examPaperId=${examPaperId}`,
+                    `${BASE_URL}${API_ENDPOINTS.studentScoresBarChart}?examPaperId=${examPaperId}`,
                     {
                         method: "GET",
                         headers: {
@@ -55,44 +55,43 @@ export function BarChartPlagiarismComponent({ examPaperId }: { examPaperId: stri
                     throw new Error(`Error fetching chart data: ${response.statusText}`);
                 }
                 const data = await response.json();
-                const mappedData: PlagiarismData[] = data
-                    .map((item: any): PlagiarismData => ({
-                        studentCodePlagiarism: item.studentCodePlagiarism,
-                        plagiarismPercentage: parseFloat(item.plagiarismPercentage.replace('%', '')),
-                    }))
-                    .sort((a: PlagiarismData, b: PlagiarismData) => a.plagiarismPercentage - b.plagiarismPercentage);
-                setChartData(mappedData);
+                const scoreMap: Record<number, number> = {};
+                data.forEach((item: any) => {
+                    const roundedScore = Math.floor(item.totalScore);
+                    scoreMap[roundedScore] = (scoreMap[roundedScore] || 0) + 1;
+                });
+                const formattedData = Object.entries(scoreMap).map(([score, count]) => ({
+                    score: parseInt(score, 10),
+                    count,
+                }));
+                setChartData(formattedData.sort((a, b) => a.score - b.score));
             } catch (err: unknown) {
                 if (err instanceof Error) {
                     setError(err.message);
-                } else {
-                    setError("An error occurred while fetching data.");
-                }
+                } else setError("An error occurred while fetching data.");
             } finally {
                 setLoading(false);
             }
         };
         fetchChartData();
     }, [examPaperId]);
+
     if (error) {
         return (
             <Card>
-                <CardHeader className="">
-                    <CardTitle>Student Plagiarism</CardTitle>
-                    <CardDescription>
-                        No data available for the analysis.
-                    </CardDescription>
+                <CardHeader>
+                    <CardTitle>Score Distribution</CardTitle>
+                    <CardDescription>No data available for the analysis.</CardDescription>
                 </CardHeader>
             </Card>
         );
     }
+
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Student Plagiarism</CardTitle>
-                <CardDescription>
-                    Percentage of plagiarism each student.
-                </CardDescription>
+                <CardTitle>Score Distribution</CardTitle>
+                <CardDescription>Distribution of students' scores</CardDescription>
             </CardHeader>
             <CardContent>
                 {loading ? (
@@ -102,49 +101,39 @@ export function BarChartPlagiarismComponent({ examPaperId }: { examPaperId: stri
                         <BarChart data={chartData} barSize={60}>
                             <CartesianGrid vertical={false} />
                             <XAxis
-                                dataKey="studentCodePlagiarism"
-                                tickLine={true}
+                                dataKey="score"
+                                tickLine
+                                axisLine
                                 tickMargin={10}
-                                axisLine={true}
+                                label={{ value: "Score (Rounded)", position: "bottom", dy: 10 }}
                             />
                             <YAxis
-                                tickLine={true}
-                                axisLine={true}
+                                tickLine
+                                axisLine
                                 tickMargin={10}
-                                label={{
-                                    value: "",
-                                    angle: -90,
-                                    position: "insideLeft",
-                                }}
                             />
                             <Tooltip
                                 content={({ payload }) => {
                                     if (payload && payload.length > 0) {
-                                        const { studentCodePlagiarism, plagiarismPercentage } = payload[0].payload;
+                                        const { score, count } = payload[0].payload;
                                         return (
                                             <div className="p-2 bg-white shadow-lg rounded">
-                                                <div>
-                                                    <strong>Student: </strong>
-                                                    {studentCodePlagiarism}
-                                                </div>
-                                                <div>
-                                                    <strong>Plagiarism: </strong>
-                                                    {plagiarismPercentage}%
-                                                </div>
+                                                <div><strong>Score: </strong>{score}</div>
+                                                <div><strong>Number of Students: </strong>{count}</div>
                                             </div>
                                         );
                                     }
                                     return null;
                                 }}
                             />
-                            <Bar dataKey="plagiarismPercentage" fill="#FF8D29" radius={8} />
+                            <Bar dataKey="count" fill="#FF8D29" radius={8} />
                         </BarChart>
                     </ChartContainer>
                 )}
             </CardContent>
             <CardFooter className="flex-col items-start gap-2 text-sm">
                 <div className="leading-none text-muted-foreground">
-                    Total Students: {chartData.length}
+                    Total Students: {chartData.reduce((sum, item) => sum + item.count, 0)}
                 </div>
             </CardFooter>
         </Card>

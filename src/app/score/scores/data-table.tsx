@@ -38,12 +38,14 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   exportListScore: () => Promise<void>;
+  exportLogRun: () => Promise<void>;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   exportListScore,
+  exportLogRun,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -85,7 +87,7 @@ export function DataTable<TData, TValue>({
         <TooltipProvider delayDuration={0}>
         <Tooltip>
             <TooltipTrigger asChild>
-              <Button onClick={exportListScore} variant="outline" className="p-2.5 h-10 w-10 rounded-full border-primary text-primary hover:text-white hover:bg-primary">
+              <Button onClick={exportLogRun} variant="outline" className="p-2.5 h-10 w-10 rounded-full border-primary text-primary hover:text-white hover:bg-primary">
                 <ScrollText/>
               </Button>
             </TooltipTrigger>
