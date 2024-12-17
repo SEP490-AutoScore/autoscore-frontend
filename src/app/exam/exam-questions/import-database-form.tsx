@@ -50,8 +50,6 @@ const AddDatabaseForm: React.FC<AddDatabaseFormProps> = ({
     formData.append("file.sql", sqlFile);
     formData.append("fileimage", imageFile);
     formData.append("examPaperId", examPaperId.toString());
-    formData.append("databaseNote", note);
-    formData.append("databaseDescription", description);
 
     try {
       const response = await fetch(

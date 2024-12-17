@@ -196,6 +196,8 @@ export default function ExamPaperDetails() {
     );
   };
 
+  console.log(MyComponent)
+
   // Handle loading and errors
   if (!examId || !examPaperId) {
     return (

@@ -81,6 +81,9 @@ const ExamQuestionsList: React.FC<ExamQuestionsListProps> = ({
 
   const renderNoQuestionsState = () => (
     <div className="space-y-4">
+        <div className="mx-4">
+          <Separator className="h-1 bg-primary rounded" />
+        </div>
       <div className="flex justify-end">
         <div className="flex space-x-4">
           <CreateQuestion examPaperId={examPaperId} />
