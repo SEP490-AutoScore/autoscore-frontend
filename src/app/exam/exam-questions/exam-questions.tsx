@@ -80,18 +80,32 @@ const ExamQuestionsList: React.FC<ExamQuestionsListProps> = ({
   );
 
   const renderNoQuestionsState = () => (
-    <div className="space-y-4">
-      <div className="flex justify-end">
-        <div className="flex space-x-4">
-          <CreateQuestion examPaperId={examPaperId} />
-          <ImportQuestion examPaperId={examPaperId} />
+    <>
+      <div className="space-y-4 mx-2">
+        <div className="mx-4">
+          <Separator className="h-1 bg-primary rounded" />
+        </div>
+        <div>
+          <CardHeader className="font-semibold text-2xl p-4">
+            <div className="flex justify-between items-center">
+              Questions
+              <div className="space-x-2 flex">
+                <CreateQuestion examPaperId={examPaperId} />
+                <ImportQuestion examPaperId={examPaperId} />
+              </div>
+            </div>
+          </CardHeader>
+          <div className="p-4 pb-6">
+            <Alert variant="default">
+              <AlertTitle>No Questions Found</AlertTitle>
+              <AlertDescription>
+                This exam paper has no questions.
+              </AlertDescription>
+            </Alert>
+          </div>
         </div>
       </div>
-      <Alert variant="default">
-        <AlertTitle>No Questions Found</AlertTitle>
-        <AlertDescription>This exam paper has no questions.</AlertDescription>
-      </Alert>
-    </div>
+    </>
   );
 
   const renderQuestionsList = () => (
