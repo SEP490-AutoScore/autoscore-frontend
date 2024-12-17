@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
+import { useNavigate } from "react-router-dom";
 
 interface UpdateSemesterDialogProps {
   semesterId: number;
@@ -17,6 +18,7 @@ const UpdateSemesterDialog: React.FC<UpdateSemesterDialogProps> = ({ semesterId,
   const [semesterName, setSemesterName] = useState<string>("");
   const [semesterCode, setSemesterCode] = useState<string>("");
   const showToast = useToastNotification();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (semesterId) {
@@ -72,6 +74,7 @@ const UpdateSemesterDialog: React.FC<UpdateSemesterDialogProps> = ({ semesterId,
           description: "Semester updated successfully",
           variant: "default",
         });
+        navigate(0);
         onUpdate();
         onClose(); // Close the dialog after successful update
       })

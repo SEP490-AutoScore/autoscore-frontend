@@ -14,6 +14,7 @@ import { useToastNotification } from "@/hooks/use-toast-notification";
 import { Plus } from "lucide-react";
 import { checkPermission } from "@/hooks/use-auth";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useNavigate } from "react-router-dom";
 
 interface ExamQuestionsCreateProps {
   examPaperId: number;
@@ -34,6 +35,7 @@ const CreateQuestionForm: React.FC<ExamQuestionsCreateProps> = ({
   const [sucessResponse, setSuccessResponse] = useState<string>("");
   const [errorResponse, setErrorResponse] = useState<string>("");
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
+  const navigate = useNavigate();
 
   const showToast = useToastNotification();
   const hasPermission = checkPermission({ permission: "CREATE_QUESTION" });
@@ -68,6 +70,7 @@ const CreateQuestionForm: React.FC<ExamQuestionsCreateProps> = ({
           description: "Create new exam paper success",
           variant: "default",
         });
+        navigate(0);
       })
       .catch((error) => {
         console.error("Error:", error);

@@ -13,6 +13,7 @@ import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { useToastNotification } from "@/hooks/use-toast-notification";
 import { PencilLine } from "lucide-react";
 import { checkPermission } from "@/hooks/use-auth";
+import { useNavigate } from "react-router-dom";
 import {
   Tooltip,
   TooltipContent,
@@ -61,6 +62,7 @@ const UpdateExamDialog: React.FC<UpdateExamDialogProps> = ({
   const [dialogOpen, setDialogOpen] = useState(false);
   const token = localStorage.getItem("jwtToken");
   const showToast = useToastNotification();
+  const navigate = useNavigate();
   const hasPermission = checkPermission({ permission: "CREATE_EXAM"});
   if (!hasPermission) {
     return <></>
@@ -185,9 +187,7 @@ const UpdateExamDialog: React.FC<UpdateExamDialogProps> = ({
         description: "Exam updated successfully.",
         variant: "default",
       });
-
-      // Tự động reload lại trang
-      window.location.reload(); // Trang sẽ reload lại sau khi cập nhật thành công
+      navigate(0);
     } catch (err) {
       const errorMessage = (err as Error).message || "Error updating exam.";
       showToast({

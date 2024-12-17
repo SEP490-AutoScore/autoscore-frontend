@@ -105,10 +105,10 @@ const SSEComponent: React.FC<SSEComponentProps> = ({ examPaperId }) => {
         <div className="flex items-center justify-between space-y-2 mb-4">
               <div>
                 <h2 className="text-2xl font-bold tracking-tight">
-                  Exams Paper
+                  Exams Paper Grading ProcessProcess
                 </h2>
                 <p className="text-muted-foreground">
-                  Here is a exam paper with details.
+                  Here is grading process of this exam paper.
                 </p>
               </div>
         </div>
