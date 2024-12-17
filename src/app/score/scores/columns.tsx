@@ -16,14 +16,14 @@ import { Link } from "react-router-dom";
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Score = {
-  id: string;
+  scoreId: string;
   examId: string;
   examPaperId: string;
   studentCode: string;
   studentEmail: string;
   gratedAt: Date;
   totalScore: number;
-  reason: string;
+  levelOfPlagiarism: string;
 };
 export const columns: ColumnDef<Score>[] = [
   {
@@ -47,8 +47,8 @@ export const columns: ColumnDef<Score>[] = [
     header: "Score",
   },
   {
-    accessorKey: "reason",
-    header: "Reason",
+    accessorKey: "levelOfPlagiarism",
+    header: "Level Of Plagiarism",
   },
   {
     id: "actions",
@@ -71,9 +71,9 @@ export const columns: ColumnDef<Score>[] = [
               Copy student code
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <Link to="/exams/exam-papers/plagiarism" state={{ scoreId: score.id, examId: score.examId, examPaperId: score.examPaperId }}>
+            <Link to="/exams/exam-papers/plagiarism" state={{ scoreId: score.scoreId, examId: score.examId, examPaperId: score.examPaperId }}>
             <DropdownMenuItem>View plagiarism</DropdownMenuItem></Link>
-            <Link to="/exams/exam-papers/score-details" state={{ scoreId: score.id, examId: score.examId, examPaperId: score.examPaperId }}>
+            <Link to="/exams/exam-papers/score-details" state={{ scoreId: score.scoreId, examId: score.examId, examPaperId: score.examPaperId }}>
               <DropdownMenuItem>View score details</DropdownMenuItem>
             </Link>
           </DropdownMenuContent>

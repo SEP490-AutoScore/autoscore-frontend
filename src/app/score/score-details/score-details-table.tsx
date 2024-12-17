@@ -9,7 +9,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 
-interface ScoreDetail {
+interface ScoreDetails {  
   scoreDetailId: number
   postmanFunctionName: string
   scoreOfFunction: number
@@ -18,8 +18,11 @@ interface ScoreDetail {
   noPmtestAchieve: number
   examQuestionId: number
 }
+interface ScoreDetailsTableProps {
+  details: ScoreDetails[];
+}
 
-export function ScoreDetailsTable({ details }: { details: ScoreDetail[] }) {
+export function ScoreDetailsTable({ details }: ScoreDetailsTableProps) {
   return (
     <Card>
       <CardHeader>
