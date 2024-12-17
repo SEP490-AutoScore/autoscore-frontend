@@ -30,17 +30,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Settings2 } from "lucide-react";
+import { FileDown, ScrollText, Settings2 } from "lucide-react";
 import { NoResultPage } from "@/app/authentication/error/page";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  exportListScore: () => Promise<void>;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  exportListScore,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -77,6 +80,32 @@ export function DataTable<TData, TValue>({
           <p className="text-muted-foreground">
             Here's the list of students who took this exam!
           </p>
+        </div>
+        <div className="flex space-x-2">
+        <TooltipProvider delayDuration={0}>
+        <Tooltip>
+            <TooltipTrigger asChild>
+              <Button onClick={exportListScore} variant="outline" className="p-2.5 h-10 w-10 rounded-full border-primary text-primary hover:text-white hover:bg-primary">
+                <ScrollText/>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Export Log Run Postman</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button onClick={exportListScore} variant="outline" className="p-2.5 h-10 w-10 rounded-full border-primary text-primary hover:text-white hover:bg-primary">
+                <FileDown/>
+                {/* className="h-4 w-4 mr-2" 
+                Export Scores */}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Export scores to Excel</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         </div>
       </div>
       <div className="flex items-center py-4">
