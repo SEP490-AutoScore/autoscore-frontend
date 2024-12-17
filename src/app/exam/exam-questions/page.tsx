@@ -194,6 +194,7 @@ export default function ExamPaperDetails() {
     }
   };
 
+
   // Handle loading and errors
   if (!examId || !examPaperId) {
     return (

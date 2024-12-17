@@ -46,7 +46,7 @@ export const CreateExamPaperDialog: React.FC<CreateExamPaperDialogProps> = ({
   const [selectedImportants, setSelectedImportants] = React.useState<Set<number>>(
     new Set()
   );
-  const hasPermission = checkPermission({ permission: "CREATE_EXAM" });
+  const hasPermission = checkPermission({ permission: "CREATE_EXAM_PAPER" });
   const [error, setError] = React.useState<string>("");
   const navigate = useNavigate();
 
@@ -149,7 +149,7 @@ export const CreateExamPaperDialog: React.FC<CreateExamPaperDialogProps> = ({
       showToast({
         title: "Create success",
         description: "Create new exam paper success",
-        variant: "destructive",
+        variant: "default",
       });
       setExamPaperCode("");
       setDuration(0);
