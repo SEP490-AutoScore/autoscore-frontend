@@ -132,17 +132,18 @@ const data = {
       title: "Other",
       url: "!!",
       allowedRoles: ["ADMIN", "EXAMINER", "LECTURER", "HEAD_OF_DEPARTMENT"],
+      permission: "VIEW_SEMESTER",
       icon: NotebookPen,
       items: [
         {
           title: "Subjects",
           url: "/subjects",
-          permission: "VIEW_EXAM",
+          permission: "VIEW_SEMESTER",
         },
         {
           title: "Semesters",
           url: "/semesters",
-          permission: "VIEW_EXAM",
+          permission: "VIEW_SEMESTER",
         },
       ],
     },
