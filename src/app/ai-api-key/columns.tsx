@@ -10,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { checkPermission } from "@/hooks/use-auth";
 
 export type AIApiKey = {
   aiApiKeyId: number;
@@ -158,19 +159,25 @@ export const createColumns = (
                 Copy API Key
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleViewDetail(aiApiKey.aiApiKeyId)}>
-                View detail
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleDeleteKey(aiApiKey.aiApiKeyId)}
-              >
-                Delete
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleSelectKey(aiApiKey.aiApiKeyId)}
-              >
-                Select this key
-              </DropdownMenuItem>
+              {checkPermission({ permission: "VIEW_API_KEY" }) && (
+                <DropdownMenuItem onClick={() => handleViewDetail(aiApiKey.aiApiKeyId)}>
+                  View detail
+                </DropdownMenuItem>
+              )}
+              {checkPermission({ permission: "DELETE_API_KEY" }) && (
+                <DropdownMenuItem
+                  onClick={() => handleDeleteKey(aiApiKey.aiApiKeyId)}
+                >
+                  Delete
+                </DropdownMenuItem>
+              )}
+              {checkPermission({ permission: "SELECT_OTHER_KEY" }) && (
+                <DropdownMenuItem
+                  onClick={() => handleSelectKey(aiApiKey.aiApiKeyId)}
+                >
+                  Select this key
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         );

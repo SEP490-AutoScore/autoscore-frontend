@@ -11,6 +11,7 @@ import { useToastNotification } from "@/hooks/use-toast-notification";
 import { Button } from "@/components/ui/button";
 import NewGherkinDataProps from "./NewGherkinDataProps";
 import { Dialog } from "@/components/ui/dialog";
+import { checkPermission } from "@/hooks/use-auth";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -433,52 +434,72 @@ const GherkinPostmanPage: React.FC = () => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="mt-3 ml-auto">
                     <Settings2 className="h-4 w-4" />
-                    List action
+                    List Action
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-50">
-                  <DropdownMenuLabel>List action for gherkin</DropdownMenuLabel>
+                  <DropdownMenuLabel>For Gherkin Scenario</DropdownMenuLabel>
                   <DropdownMenuItem onClick={() => handleActionChange("selectAllGherkin")}>
-                    Select all gherkin
+                    Select All
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleActionChange("deselectAllGherkin")}>
-                    Deselect all gherkin
+                    Deselect All
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleActionChange("handleGenerateGherkin")}>
-                    Generate Gherkin
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleActionChange("handleGenerateGherkinMore")}>
-                    Generate Gherkin More
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleActionChange("deleteGherkin")}>
-                    Delete Gherkin
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleActionChange("newGherkinData")}>
-                    New Gherkin Data
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleActionChange("getGherkinById")}>
-                    Show Gherkin Details
-                  </DropdownMenuItem>
+
+                  {checkPermission({ permission: "GENERATE_GHERKIN_SCENARIO" }) && (
+                    <DropdownMenuItem onClick={() => handleActionChange("handleGenerateGherkin")}>
+                      Generate Gherkin Scenario
+                    </DropdownMenuItem>
+                  )}
+
+                  {checkPermission({ permission: "GENERATE_GHERKIN_SCENARIO" }) && (
+                    <DropdownMenuItem onClick={() => handleActionChange("handleGenerateGherkinMore")}>
+                      Generate More
+                    </DropdownMenuItem>
+                  )}
+                  {checkPermission({ permission: "DELETE_GHERKIN_SCENARIO" }) && (
+                    <DropdownMenuItem onClick={() => handleActionChange("deleteGherkin")}>
+                      Delete
+                    </DropdownMenuItem>
+                  )}
+                  {checkPermission({ permission: "CREATE_GHERKIN_SCENARIO" }) && (
+                    <DropdownMenuItem onClick={() => handleActionChange("newGherkinData")}>
+                      New Gherkin Scenario
+                    </DropdownMenuItem>
+                  )}
+                  {checkPermission({ permission: "VIEW_GHERKIN_POSTMAN" }) && (
+                    <DropdownMenuItem onClick={() => handleActionChange("getGherkinById")}>
+                      Show Details
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuSeparator />
-                  <DropdownMenuLabel>List action for postman</DropdownMenuLabel>
+                  <DropdownMenuLabel>For Postman Script</DropdownMenuLabel>
                   <DropdownMenuItem onClick={() => handleActionChange("selectAllPostman")}>
-                    Select all postman
+                    Select All
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleActionChange("deselectAllPostman")}>
-                    Deselect all Postman
+                    Deselect All
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleActionChange("generatePostmanScript")}>
-                    Generate Postman Script
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleActionChange("generatePostmanScriptMore")}>
-                    Generate More Test Case 
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleActionChange("deletePostman")}>
-                    Delete Postman
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleActionChange("getPostmanById")}>
-                    Show Postman Details
-                  </DropdownMenuItem>
+                  {checkPermission({ permission: "GENERATE_POSTMAN" }) && (
+                    <DropdownMenuItem onClick={() => handleActionChange("generatePostmanScript")}>
+                      Generate Postman Script
+                    </DropdownMenuItem>
+                  )}
+                  {checkPermission({ permission: "GENERATE_POSTMAN" }) && (
+                    <DropdownMenuItem onClick={() => handleActionChange("generatePostmanScriptMore")}>
+                      Generate More Test Case
+                    </DropdownMenuItem>
+                  )}
+                  {checkPermission({ permission: "DELETE_POSTMAN" }) && (
+                    <DropdownMenuItem onClick={() => handleActionChange("deletePostman")}>
+                      Delete
+                    </DropdownMenuItem>
+                  )}
+                  {checkPermission({ permission: "VIEW_GHERKIN_POSTMAN" }) && (
+                    <DropdownMenuItem onClick={() => handleActionChange("getPostmanById")}>
+                      Show Details
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuSeparator />
                 </DropdownMenuContent>
               </DropdownMenu>
