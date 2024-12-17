@@ -11,8 +11,6 @@ import {
   CartesianGrid,
   XAxis,
   YAxis,
-  Tooltip,
-  Legend,
   LabelList,
 } from "recharts";
 import {
