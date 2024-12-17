@@ -1,22 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ExamInfoCard } from "@/app/score/score-details/exam-infor-card";
+// import { ExamInfoCard } from "@/app/score/score-details/exam-infor-card";
 import { ScoreDetailsTable } from "@/app/score/score-details/score-details-table";
 // import { Skeleton } from "@/components/ui/skeleton"
 import { DataTableSkeleton } from "@/app/score/score-details/score-details-skeleton";
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 import { useLocation } from "react-router-dom";
 
-const mockExamInfo = {
-  examName: "PRN231",
-  subjectCode: "PRN231",
-  semester: "Fall 2024",
-  examCode: "PE_PRN231_FA24_006006",
-  examDate: "10.11.2024",
-  gradingDate: "12.11.2024",
-  gradedBy: "Auto Score",
-};
+// const mockExamInfo = {
+//   examName: "PRN231",
+//   subjectCode: "PRN231",
+//   semester: "Fall 2024",
+//   examCode: "PE_PRN231_FA24_006006",
+//   examDate: "10.11.2024",
+//   gradingDate: "12.11.2024",
+//   gradedBy: "Auto Score",
+// };
 // interface ExamInfo {
 //   examName: string;
 //   subjectCode: string;
@@ -75,15 +75,15 @@ interface ScoreDetails {
 //   },
 // ];
 
-interface ApiResponse {
-  // examInfo: mockExamInfo;
-  scoreDetails: ScoreDetails[];
-}
+// interface ApiResponse {
+//   // examInfo: mockExamInfo;
+//   scoreDetails: ScoreDetails[];
+// }
 
 export default function ExamDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState<ApiResponse | null>(null);
+  const [data, setData] = useState<ScoreDetails[] | null>(null);
   const location = useLocation();
   const { scoreId } = location.state || {};
 
@@ -97,6 +97,7 @@ export default function ExamDetailsPage() {
 
       try {
         const response = await fetch(`${BASE_URL}${API_ENDPOINTS.scoreDetail}?scoreId=${scoreId}`, {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
@@ -104,13 +105,23 @@ export default function ExamDetailsPage() {
         });
 
         if (!response.ok) {
-          throw new Error("Failed to fetch score details");
+          if (response.status === 401) {
+            setError("Unauthorized access. Please log in again.");
+            return;
+          }
+      
+          if (response.status === 204) {
+            // setData({ scoreDetails: [] });
+            return;
+          }
+          throw new Error(`Failed to fetch score details.  Status: ${response.status}`);
         }
 
-        const result: ApiResponse = await response.json();
+        const result = await response.json();
         setData(result);
       } catch (err) {
-        setError("An error occurred while fetching the data. Please try again.");
+        // setData({ scoreDetails: [] });
+        // setError("An error occurred while fetching the data. Please try again.");
         console.error(err);
       } finally {
         setLoading(false);
@@ -137,10 +148,18 @@ export default function ExamDetailsPage() {
     return <div className="container mx-auto py-0">No data available</div>;
   }
 
+  // if (data?.scoreDetails.length === 0) {
+  //   return (
+  //     <div className="container mx-auto py-0">
+  //       <p className="text-gray-500">No score details available for this exam.</p>
+  //     </div>
+  //   );
+  // }
+
   return (
     <div className="container mx-auto py-0 space-y-8">
-      <ExamInfoCard examInfo={mockExamInfo} />
-      <ScoreDetailsTable details={data.scoreDetails} />
+      {/* <ExamInfoCard examInfo={mockExamInfo} /> */}
+      <ScoreDetailsTable details={data} />
     </div>
   );
 }

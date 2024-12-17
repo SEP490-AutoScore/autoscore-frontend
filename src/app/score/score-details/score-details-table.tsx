@@ -10,13 +10,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 
 interface ScoreDetails {  
-  scoreDetailId: number
+  scoreDetailId: string
   postmanFunctionName: string
   scoreOfFunction: number
   totalPmtest: number
   scoreAchieve: number
   noPmtestAchieve: number
-  examQuestionId: number
+  examQuestionId: string
 }
 interface ScoreDetailsTableProps {
   details: ScoreDetails[];
