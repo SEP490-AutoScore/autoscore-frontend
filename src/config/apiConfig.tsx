@@ -57,6 +57,7 @@ export const API_ENDPOINTS = {
   scoreDetail: "/api/score-details/details",
   plagiarism: "/api/score/code-plagiarism",
   exportScore: "/api/score/export",
+  txtLog: "/api/score/txtLog",
   createExam: "/api/exam/",
 
   //Score
