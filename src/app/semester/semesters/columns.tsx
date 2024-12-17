@@ -31,7 +31,7 @@ export const columns: ColumnDef<Semester>[] = [
         setOpenDialog(false); // Close dialog after update
         // Optionally trigger a data refresh here
       };
-      const hasPermission = checkPermission({ permission: "ALL_ACCESS" });
+      const hasPermission = checkPermission({ permission: "CREATE_SEMESTER" });
 
       return (
         <>

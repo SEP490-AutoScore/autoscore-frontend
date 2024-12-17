@@ -14,6 +14,7 @@ import { Card } from "@/components/ui/card";
 import UpdateExamPaper from "../exam-papers/update-exam-paper-form";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import ScorePage from "@/app/score/scores/scores";
+import axios from "axios";
 
 interface Subject {
   subjectId: number;
@@ -67,7 +68,7 @@ export default function ExamPaperDetails() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>("details");
   const onGradingReload = location.state?.onGradingReload || false;
-  const onScoreReload = location.state?.onScoreReload || false;
+  // const onScoreReload = location.state?.onScoreReload || false;
 
   const Header = useHeader({
     breadcrumbLink: "/exams",
@@ -133,6 +134,67 @@ export default function ExamPaperDetails() {
       getData();
     }
   }, [examId, examPaperId, getData]);
+
+  const exportListScore = async () => {
+    if (!examPaper) return;
+    try {
+      const response = await fetch(
+        `${BASE_URL}${API_ENDPOINTS.exportScore}?exampaperid=${examPaper.examPaperId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to export scores");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${examPaper.examPaperCode}_scores.xlsx`;
+      link.click();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to export scores. Please try again.");
+    }
+  };
+
+  const MyComponent: React.FC = () => {
+    const handleDownload = async (examPaperId: number) => {
+      try {
+        const response = await axios.get(`/txtLog/${examPaperId}`, {
+          responseType: "blob", // Đảm bảo nhận lại file dưới dạng blob
+        });
+  
+        // Tạo một URL cho file blob
+        const blob = new Blob([response.data], { type: "application/zip" });
+        const link = document.createElement("a");
+  
+        // Tạo một URL tạm thời cho file blob
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = "studentcode.zip"; // Tên file tải về
+        link.click();
+  
+        // Giải phóng URL tạm thời sau khi tải xong
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error("Error downloading the file:", error);
+      }
+    };
+  
+    return (
+      <div>
+        <button onClick={() => handleDownload(123)}>Download Exam Paper ZIP</button>
+      </div>
+    );
+  };
 
   // Handle loading and errors
   if (!examId || !examPaperId) {
@@ -234,8 +296,10 @@ export default function ExamPaperDetails() {
         )}
         {activeTab === "grading" && onGradingReload && <GradingProcess examPaperId={examPaperId}/>}
         {activeTab === "grading" && !onGradingReload && <GradingProcess examPaperId={examPaperId} />}
-        {activeTab === "scores" && onScoreReload && <ScorePage />}
-        {activeTab === "scores" && !onScoreReload && <ScorePage />}
+        {activeTab === "scores" && (
+            <ScorePage exportListScore={exportListScore} />
+          )}
+        {/* {activeTab === "scores" && !onScoreReload && <ScorePage />} */}
       </div>
     </>
   );

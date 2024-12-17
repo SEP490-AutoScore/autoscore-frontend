@@ -13,6 +13,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { useToastNotification } from "@/hooks/use-toast-notification";
+import { useNavigate } from "react-router-dom";
 
 interface Subject {
   subjectId: number;
@@ -47,6 +48,7 @@ export const CreateExamPaperDialog: React.FC<CreateExamPaperDialogProps> = ({
   );
   const hasPermission = checkPermission({ permission: "CREATE_EXAM" });
   const [error, setError] = React.useState<string>("");
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     fetchSubjects();
@@ -156,6 +158,7 @@ export const CreateExamPaperDialog: React.FC<CreateExamPaperDialogProps> = ({
       setSelectedSubject(null);
       setImportants([]);
       setSelectedImportants(new Set());
+      navigate(0);
 
       if (onExamPaperCreated) onExamPaperCreated();
     } catch (err: any) {

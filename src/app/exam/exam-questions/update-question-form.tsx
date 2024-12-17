@@ -20,6 +20,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useNavigate } from "react-router-dom";
 
 interface UpdateQuestionProps {
   examPaperId: number;
@@ -52,6 +53,7 @@ export default function UpdateQuestion({
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const showToast = useToastNotification();
+  const navigate = useNavigate();
 
   const token = localStorage.getItem("jwtToken");
 
@@ -89,17 +91,29 @@ export default function UpdateQuestion({
 
   const handleFormSubmit = () => {
     if (!formData.questionContent || formData.examQuestionScore <= 0) {
-      setErrorMessage("Please fill in all fields correctly.");
+      showToast({
+        title: "Update",
+        description: "Please fill in all fields correctly.",
+        variant: "default",
+      });
       return;
     }
 
-    if (!["JSON", "URL Parameter"].includes(formData.payloadType || "")) {
-      setErrorMessage("Invalid Payload Type selected.");
+    if (!["JSON", "URL Parameter"].includes(formData.payloadType)) {
+      showToast({
+        title: "Update",
+        description: "Invalid Payload Type selected.",
+        variant: "default",
+      });
       return;
     }
 
     if (!["GET", "POST", "PUT", "DELETE"].includes(formData.httpMethod)) {
-      setErrorMessage("Invalid HTTP Method selected.");
+      showToast({
+        title: "Update",
+        description: "Invalid HTTP Method selected.",
+        variant: "default",
+      });
       return;
     }
 
@@ -122,6 +136,7 @@ export default function UpdateQuestion({
           description: "Question updated successfully.",
           variant: "default",
         });
+        navigate(0);
         setOpen(false);
       })
       .catch((err) => setErrorMessage(err.message))
