@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { TrendingUp } from "lucide-react";
 import { Label, Pie, PieChart, Cell, Legend } from "recharts";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 
@@ -9,7 +8,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -89,7 +87,8 @@ export function PieChartComponent() {
         setChartData(formattedData);
         setLoading(false);
       } catch (err) {
-        setError("Failed to fetch data.");
+        if(err)
+        setError("Failed to fetch data." + err);
         setLoading(false);
       }
     };

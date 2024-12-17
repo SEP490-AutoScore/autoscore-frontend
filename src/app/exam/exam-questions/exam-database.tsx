@@ -19,7 +19,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { FilePenLine, Telescope, Upload } from "lucide-react";
+import {Telescope } from "lucide-react";
 
 interface DatabaseResponse {
   examDatabaseId: number;
@@ -78,8 +78,11 @@ const DatabaseInfoComponent: FC<DatabaseInfoProps> = ({ examPaperId }) => {
 
       const data: DatabaseResponse = await response.json();
       setDatabase(data);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if(err instanceof Error){
+        setError(err.message);
+      }
+      setError("Something when wrong");
     } finally {
       setLoading(false);
     }

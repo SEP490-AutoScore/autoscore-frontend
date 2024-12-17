@@ -1,4 +1,7 @@
-runtime: nodejs20
+runtime: nodejs
+env: standard
+runtime_config:
+  node_version: 20.8.1
 
 handlers:
 - url: /
