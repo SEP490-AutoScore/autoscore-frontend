@@ -51,8 +51,8 @@ const AppRoutes = () => {
           <Route path="exams" element={<Exams />} />
           <Route path="scores-overview/scores" element={<ScoresPage />} />
           <Route path="scores-overview" element={<ScoresOverviewPage />} />
-          <Route path="scores-overview/scores/score-details" element={<ScoreDetailPage />} />
-          <Route path="scores-overview/scores/plagiarism" element={<PlagiarismPage />} />
+          <Route path="exams/exam-papers/score-details" element={<ScoreDetailPage />} />
+          <Route path="exams/exam-papers/plagiarism" element={<PlagiarismPage />} />
           <Route path="exams/new-exam" element={<NewExam />} />
           <Route path="exams/exam-papers" element={<ExamPapers />} />
           <Route path="exams/exam-papers/gherkin-postman" element={<GherkinPostman />} />

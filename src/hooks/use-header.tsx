@@ -8,7 +8,9 @@ export function useHeader({
   breadcrumbPage,
   breadcrumbLink_2,
   breadcrumbPage_2,
+  breadcrumbLink_3,
   breadcrumbPage_3,
+  breadcrumbPage_4,
   stateGive, // Optional state parameter
 }: {
   breadcrumbLink?: string;
@@ -17,6 +19,8 @@ export function useHeader({
   breadcrumbPage_2?: string;
   breadcrumbPage_3?: string;
   breadcrumbLink_3?: string;
+  breadcrumbPage_4?: string;
+  breadcrumbLink_4?: string;
   stateGive?: any; // Optional state type (can be anything, adjust as necessary)
 }) {
   return (
@@ -52,8 +56,22 @@ export function useHeader({
             {breadcrumbPage_3 && (
               <>
                 <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem className="hidden md:block">
+                  {breadcrumbPage_4 ? (
+                    <BreadcrumbLink asChild>
+                      <Link to={breadcrumbLink_3 || ""} state={stateGive}>{breadcrumbPage_3}</Link>
+                    </BreadcrumbLink>
+                  ) : (
+                    <BreadcrumbPage>{breadcrumbPage_3}</BreadcrumbPage>
+                  )}
+                </BreadcrumbItem>
+              </>
+            )}
+            {breadcrumbPage_4 && (
+              <>
+                <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>{breadcrumbPage_3}</BreadcrumbPage>
+                  <BreadcrumbPage>{breadcrumbPage_4}</BreadcrumbPage>
                 </BreadcrumbItem>
               </>
             )}
