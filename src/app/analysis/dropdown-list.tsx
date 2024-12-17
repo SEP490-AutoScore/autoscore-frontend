@@ -24,7 +24,7 @@ interface ExamItem {
 
 export const DropdownList: React.FC<DropdownProps> = ({ onSelect }) => {
   const [items, setItems] = useState<ExamItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [position, setPosition] = useState<string | "">("");
   const [selectedItem, setSelectedItem] = useState<string | "">("");

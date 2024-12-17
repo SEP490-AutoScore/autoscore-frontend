@@ -21,7 +21,7 @@ export default function PlagiarismPage() {
       const data = await fetchCodePlagiarism(scoreId)
       setPlagiarismData(data)
     } catch (err) {
-      setError("Failed to fetch plagiarism data. Please try again.")
+      setError("Failed to fetch plagiarism data. Please try again." + err)
     } finally {
       setLoading(false)
     }
