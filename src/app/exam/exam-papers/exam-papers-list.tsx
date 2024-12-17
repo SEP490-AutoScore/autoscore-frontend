@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { NotFoundPage } from "@/app/authentication/error/page";
+import { NoResultPage } from "@/app/authentication/error/page";
 
 interface Important {
   importantId: number;
@@ -150,7 +150,7 @@ export function ExamPaperList({
         <Separator />
         <CardContent>
           {examPapers.length === 0 ? (
-            <NotFoundPage />
+            <NoResultPage />
           ) : (
             <div className=" mt-6">
               {examPapers.map((examPaper) => (
