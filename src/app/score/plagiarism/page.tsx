@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 
 export default function Page() {
   const location = useLocation();
-  const { examId, examPaperId } = location.state || {};
+  const { examId, examPaperId, scoreId } = location.state || {};
   const Header = useHeader({
     breadcrumbLink: "/exams",
     breadcrumbPage: "Exams Overview",
@@ -14,7 +14,7 @@ export default function Page() {
     breadcrumbPage_3: "Exam Papper detail",
     breadcrumbLink_3: "/exams/exam-papers/exam-questions",
     breadcrumbPage_4: "Plagiarism",
-    stateGive: { examId: examId, examPaperId: examPaperId },
+    stateGive: { examId: examId, examPaperId: examPaperId, scoreId: scoreId },
   });
   return (
     <SidebarInset>
