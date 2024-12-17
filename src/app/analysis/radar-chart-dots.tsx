@@ -30,7 +30,6 @@ const placeholderData = [
   { functionName: "Function B", passCount: 0 },
   { functionName: "Function C", passCount: 0 },
   { functionName: "Function D", passCount: 0 },
-  { functionName: "Function E", passCount: 0 },
 ]
 
 export function RadarChartDotsComponent({ examPaperId }: { examPaperId: string }) {
@@ -117,7 +116,7 @@ export function RadarChartDotsComponent({ examPaperId }: { examPaperId: string }
       <CardContent className="pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-video max-h-[250px]"
+          className="mx-auto max-h-[250px]"
         >
           <RadarChart data={displayData}>
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />

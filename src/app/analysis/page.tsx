@@ -11,6 +11,7 @@ import { DropdownList } from "./dropdown-list";
 import { useState, useEffect } from "react";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { BarChartMultipleComponent } from "./bar-chart-multiple";
+import { BarChartScoreGroupComponent } from "./bar-chart-score-group";
 
 export default function Page() {
   const Header = useHeader({
@@ -158,11 +159,11 @@ export default function Page() {
       <div className="p-4 pt-0 space-y-6">
         <div className="border border-gray-200 p-6 rounded-lg shadow-sm mx-auto">
           <div className="col-span-4 mb-6 ml-2 mr-2 mt-2">
-            
+
             <DropdownList onSelect={handleSelect} />
           </div>
           <div className="grid grid-cols-4 gap-6">
-           
+
             <div className="col-span-4 md:col-span-4 grid grid-cols-3 gap-6 mb-6 ml-2 mr-2">
               {/* Total student in exam */}
               <CardHeaderAnalysis
@@ -171,10 +172,10 @@ export default function Page() {
                   loading
                     ? "Loading total students..."
                     : error
-                    ? "No data to Analysis"
-                    : totalStudents !== null
-                    ? `Count: ${totalStudents}`
-                    : ""
+                      ? "No data to Analysis"
+                      : totalStudents !== null
+                        ? `Count: ${totalStudents}`
+                        : ""
                 }
                 icon={CircleUser}
                 content="Student Statistics"
@@ -186,10 +187,10 @@ export default function Page() {
                   loading
                     ? "Loading zero score data..."
                     : error
-                    ? "No data to Analysis"
-                    : studentsWithZeroScore !== null
-                    ? `Count: ${studentsWithZeroScore}`
-                    : ""
+                      ? "No data to Analysis"
+                      : studentsWithZeroScore !== null
+                        ? `Count: ${studentsWithZeroScore}`
+                        : ""
                 }
                 icon={Frown}
                 content="Student Statistics"
@@ -201,10 +202,10 @@ export default function Page() {
                   loading
                     ? "Loading score data..."
                     : error
-                    ? "No data to Analysis"
-                    : studentsWithScoreGreaterThanZero !== null
-                    ? `Count: ${studentsWithScoreGreaterThanZero}`
-                    : ""
+                      ? "No data to Analysis"
+                      : studentsWithScoreGreaterThanZero !== null
+                        ? `Count: ${studentsWithScoreGreaterThanZero}`
+                        : ""
                 }
                 icon={Smile}
                 content="Student Statistics"
@@ -212,7 +213,7 @@ export default function Page() {
             </div>
           </div>
           {/* Chart*/}
-          <div className="space-y-6 ml-2 mr-2  ">
+          <div className="space-y-6 ml-2 mr-2">
             {/* Radar Charts */}
             <div className="col-span-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
               <RadarChartDotsAllPassComponent
@@ -225,6 +226,8 @@ export default function Page() {
             </div>
             {/* Bar Chart - Student Scores */}
             <BarChartComponent examPaperId={selectedExamPaper || ""} />
+            {/* Bar Chart - Student Scores Group */}
+            <BarChartScoreGroupComponent examPaperId={selectedExamPaper || ""} />
             {/* Bar Chart - Response Time */}
             <BarChartMultipleComponent examPaperId={selectedExamPaper || ""} />
             {/* Bar Chart - Plagiarism */}
