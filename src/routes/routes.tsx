@@ -8,7 +8,6 @@ import Login from "@/app/authentication/login/page";
 import Dashboard from "@/app/dashboard/page";
 import Analysic from "@/app/analysis/page";
 import Exams from "@/app/exam/overview/page";
-import ScoresPage from "@/app/score/scores/page";
 import ScoresOverviewPage from "@/app/score/overview/page";
 import ScoreDetailPage from "@/app/score/score-details/page";
 import PlagiarismPage from "@/app/score/plagiarism/page";
@@ -49,7 +48,6 @@ const AppRoutes = () => {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="analysis" element={<Analysic />} />
           <Route path="exams" element={<Exams />} />
-          <Route path="scores-overview/scores" element={<ScoresPage />} />
           <Route path="scores-overview" element={<ScoresOverviewPage />} />
           <Route path="exams/exam-papers/score-details" element={<ScoreDetailPage />} />
           <Route path="exams/exam-papers/plagiarism" element={<PlagiarismPage />} />
