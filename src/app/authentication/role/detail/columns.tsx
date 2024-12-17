@@ -1,10 +1,15 @@
+// columns.ts
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Permission } from "./data-table-permission-category";
 import { Switch } from "@/components/ui/switch";
+import { checkPermission } from "@/hooks/use-auth";
 
-export const columns: ColumnDef<Permission>[] = [
+export const createColumns = (
+  roleCode: string,
+  onUpdateStatus: (id: number, status: boolean) => void
+): ColumnDef<Permission>[] => [
   {
     accessorKey: "action",
     header: ({ column }) => (
@@ -31,11 +36,19 @@ export const columns: ColumnDef<Permission>[] = [
     cell: ({ row }) => (
       <Switch
         checked={row.getValue("status")}
-        disabled
-        aria-readonly
+        disabled={
+          checkPermission({ permission: "UPDATE_ROLE" })
+            ? roleCode === "ADMIN"
+              ? true
+              : row.original.action === "ALL_ACCESS"
+            : true
+        }
+        onCheckedChange={(checked) => {
+          const permissionId = row.original.permissionId;
+          onUpdateStatus(permissionId, checked);
+        }}
         className="group-hover:ring-2 group-hover:ring-primary-foreground transition-all duration-300"
       />
     ),
   },
-  
 ];

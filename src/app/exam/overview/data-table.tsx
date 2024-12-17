@@ -1,7 +1,8 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import React from "react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import CreateExamFrom from "@/app/exam/new-exam/create-exam-form"
 
 import {
   ColumnDef,
@@ -89,6 +90,7 @@ export function DataTable<TData, TValue>({
             Here's a list of exams for this campus!
           </p>
         </div>
+        <CreateExamFrom/>
       </div>
       <div className="flex items-center py-4">
         <Input
@@ -147,9 +149,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   );
                 })}

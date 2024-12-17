@@ -1,6 +1,4 @@
 import * as React from "react";
-
-
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -13,7 +11,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
 import {
   Table,
   TableBody,
@@ -31,7 +28,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Settings2 } from "lucide-react";
-
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -49,7 +45,6 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-
   const table = useReactTable({
     data,
     columns,
@@ -68,7 +63,6 @@ export function DataTable<TData, TValue>({
       rowSelection,
     },
   });
-
   return (
     <div className="w-full border border-gray-200 p-8 rounded-lg">
       <div className="flex items-center justify-between space-y-2">
@@ -90,12 +84,10 @@ export function DataTable<TData, TValue>({
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-   
             <Button variant="outline" className="ml-auto">
               <Settings2 className="h-4 w-4" />
               View
             </Button>
-           
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             {table
@@ -133,9 +125,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   );
                 })}
@@ -148,7 +140,7 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                className="py-4 border-0 hover:bg-primary hover:text-primary-foreground">
+                  className="py-4 border-0 hover:bg-primary hover:text-primary-foreground">
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="p-3">
                       {flexRender(

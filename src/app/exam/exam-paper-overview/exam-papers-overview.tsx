@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { columns } from "@/app/exam/exam-paper-overview/exam-paper-comlums";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { DataTableSkeleton } from "@/app/exam/exam-paper-overview/table-skeleton";
-import { NoResultPage, ErrorPage } from '@/app/authentication/error/page';
+import { ErrorPage } from '@/app/authentication/error/page';
 import { DataTable } from '@/app/exam/exam-paper-overview/data-table';
 
 interface ExamPapers {
@@ -47,6 +47,10 @@ async function getData(): Promise<ExamPapers[]> {
         throw new Error(`Failed to fetch data: ${error}`);
     }
 
+    if (res.status === 204) {
+        const dataNull: ExamPapers[] = [];
+        return dataNull;
+    }
     // Parse và trả về dữ liệu JSON
     const data: ExamPapers[] = await res.json();
     return data;
@@ -69,10 +73,6 @@ export default function Page() {
 
     if (!data) {
         return <DataTableSkeleton />;
-    }
-
-    if (data.length === 0) {
-        return <NoResultPage />;
     }
 
     return (

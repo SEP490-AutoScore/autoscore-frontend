@@ -1,23 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 import { DataTable } from "@/app/ai-api-key/data-table";
-import { AIApiKey, createColumns, updateSelectedKey } from "@/app/ai-api-key/columns";
-
-import  {PopupComponent} from "@/app/ai-api-key/PopupComponent";
+import { AIApiKey, createColumns, updateSelectedKey, deleteAIApiKey } from "@/app/ai-api-key/columns";
+import { DialogComponent } from "@/app/ai-api-key/DialogComponent";
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 import { AIApiKeysSkeleton } from "@/app/ai-api-key/ai-api-key-skeleton";
 import { Button } from "@/components/ui/button";
-import  {CreateKeyPopup} from "@/app/ai-api-key/CreateKeyPopup";
-
+import { CreateKeyDialog } from "@/app/ai-api-key/CreateKeyDialog";
+import { useToastNotification } from "@/hooks/use-toast-notification";
+import ViewDetailDialog from "./AIApiKeyDetail";
+import { checkPermission } from "@/hooks/use-auth";
 
 export async function getAIApiKeys(): Promise<AIApiKey[]> {
-
-
   const token = localStorage.getItem("jwtToken");
-
-  if (!token) {
-    throw new Error("JWT token not found.");
-  }
-
   const response = await fetch(`${BASE_URL}${API_ENDPOINTS.aiApiKeys}`, {
     method: "GET",
     headers: {
@@ -25,14 +19,11 @@ export async function getAIApiKeys(): Promise<AIApiKey[]> {
       "Content-Type": "application/json",
     },
   });
-
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(`Error fetching API keys: ${errorData.message}`);
   }
-
   const data = await response.json();
-
   return data.map((item: AIApiKey) => ({
     aiApiKeyId: item.aiApiKeyId,
     aiName: item.aiName,
@@ -49,12 +40,18 @@ export async function getAIApiKeys(): Promise<AIApiKey[]> {
 export default function AIApiKeysPage() {
   const [data, setData] = useState<AIApiKey[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [popupData, setPopupData] = useState(null); 
-  const [showPopup, setShowPopup] = useState(false); 
-
-  const [showCreatePopup, setShowCreatePopup] = useState(false);
-
-
+  const [showDialog, setShowDialog] = useState(false);
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const notify = useToastNotification();
+  const [viewDetailDialogOpen, setViewDetailDialogOpen] = useState(false);
+  const [selectedAiApiKeyId, setSelectedAiApiKeyId] = useState<number | null>(null);
+  const handleViewDetail = async (aiApiKeyId: number): Promise<void> => {
+    setSelectedAiApiKeyId(aiApiKeyId);
+    setViewDetailDialogOpen(true);
+  };
+  const handleCloseDialog = () => {
+    setViewDetailDialogOpen(false);
+  };
   const fetchData = useCallback(async () => {
     try {
       const fetchedData = await getAIApiKeys();
@@ -70,118 +67,83 @@ export default function AIApiKeysPage() {
     fetchData();
   }, [fetchData]);
 
-  const fetchPopupData = async () => {
-    const token = localStorage.getItem("jwtToken");
-    if (!token) {
-      console.error("JWT token not found.");
-      return;
-    }
-    try {
-
-      const response = await fetch(`${BASE_URL}${API_ENDPOINTS.showQuestionAskAi}`, {
-
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setPopupData(data);
-        setShowPopup(true); // Show popup
-      } else {
-        console.error("Failed to fetch data:", response.statusText);
-      }
-    } catch (error) {
-      console.error("Error fetching popup data:", error);
-    }
-  };
-
-
   const handleSelectKey = useCallback(async (aiApiKeyId: number) => {
     try {
       await updateSelectedKey(aiApiKeyId);
       setData((prevData) =>
         prevData.map((key) =>
           key.aiApiKeyId === aiApiKeyId ? { ...key, selected: true } : { ...key, selected: false }
-        )
-      );
+        ));
+      notify({
+        title: "Successfully",
+        description: "Select key successfully!",
+        variant: "default",
+      });
     } catch (error) {
-      console.error("Error selecting key:", error);
+      notify({
+        title: "Successfully",
+        description: "Select key successfully!",
+        variant: "default",
+      });
       fetchData();
     }
   }, [fetchData]);
 
-  const columns = createColumns(handleSelectKey);
-
-
-   const handleCreateKey = async (keyData: any) => {
-    const token = localStorage.getItem("jwtToken");
-    if (!token) {
-      console.error("JWT token not found.");
-      return;
-    }
+  const handleDeleteKey = useCallback(async (aiApiKeyId: number) => {
     try {
-      const response = await fetch(`${BASE_URL}${API_ENDPOINTS.aiApiKeys}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(keyData),
+      await deleteAIApiKey(aiApiKeyId);
+      setData((prevData) => prevData.filter((key) => key.aiApiKeyId !== aiApiKeyId));
+      notify({
+        title: "Successfully",
+        description: "Successfully!",
+        variant: "default",
       });
-
-      if (response.ok) {
-        alert("Key created successfully!");
-        fetchData(); // Cập nhật danh sách sau khi thêm mới
-      } else {
-        const errorData = await response.json();
-        console.error("Failed to create key:", errorData.message);
-      }
     } catch (error) {
-      console.error("Error creating key:", error);
+      notify({
+        title: "Failure",
+        description: "You are not owned this key",
+        variant: "destructive",
+      });
     }
-  };
+  }, []);
 
- 
-  
+  const columns = createColumns(handleSelectKey, handleDeleteKey, handleViewDetail);
   if (loading) {
     return <AIApiKeysSkeleton />;
   }
-
-   return (
+  return (
     <div className="container mx-auto">
-
-    {/* Nút Show question ask AI */}
-    <div className="mb-4 flex justify-end gap-x-2">
-      <Button variant="outline" onClick={fetchPopupData}>
-        Show question ask AI
-      </Button>
-      <Button variant="outline" onClick={() => setShowCreatePopup(true)}>
-          Create new key
-        </Button>
-    </div>
-
-
-      {/* Bảng DataTable */}
+      <div className="mb-4 flex justify-end gap-x-2">
+        {checkPermission({ permission: "VIEW_GHERKIN_POSTMAN" }) && (
+          <Button variant="outline" onClick={() => setShowDialog(true)}>
+            Show AI Prompt
+          </Button>
+        )}
+        {checkPermission({ permission: "CREATE_API_KEY" }) && (
+          <Button variant="outline" onClick={() => setShowCreateDialog(true)}>
+            Create New AI Key
+          </Button>
+        )}
+      </div>
       <DataTable columns={columns} data={data} />
-
-      {/* Popup */}
-      {showPopup && (
-        <PopupComponent data={popupData} onClose={() => setShowPopup(false)} />
-      )}
-
-         {showCreatePopup && (
-        <CreateKeyPopup
-          onClose={() => setShowCreatePopup(false)}
-          onSubmit={handleCreateKey}
+      <DialogComponent open={showDialog} onClose={() => setShowDialog(false)} />
+      {showCreateDialog && (
+        <CreateKeyDialog
+          open={showCreateDialog}
+          onClose={() => {
+            setShowCreateDialog(false);
+            fetchData();
+          }}
         />
       )}
-  
-
-
-
+      {selectedAiApiKeyId !== null && (
+        <ViewDetailDialog
+          aiApiKeyId={selectedAiApiKeyId}
+          open={viewDetailDialogOpen}
+          onClose={handleCloseDialog}
+          onUpdateSuccess={fetchData}
+        />
+      )}
     </div>
   );
 }

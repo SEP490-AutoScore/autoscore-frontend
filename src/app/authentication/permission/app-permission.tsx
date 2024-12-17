@@ -7,7 +7,9 @@ import { DataTableSkeleton } from "@/app/authentication/permission/data-table-sk
 import { NoResultPage, ErrorPage } from "@/app/authentication/error/page";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { DialogPermission } from "./create/dialog";
+import { useNavigate } from "react-router-dom";
 
 async function getData(): Promise<Permissions[]> {
   const token = localStorage.getItem("jwtToken");
@@ -15,7 +17,7 @@ async function getData(): Promise<Permissions[]> {
     throw new Error("JWT Token không tồn tại. Vui lòng đăng nhập.");
   }
 
-  const res = await fetch(`${BASE_URL}${API_ENDPOINTS.getAllPermisisons}`, {
+  const res = await fetch(`${BASE_URL}${API_ENDPOINTS.getAllPermissions}`, {
     method: "GET",
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -27,15 +29,21 @@ async function getData(): Promise<Permissions[]> {
   return res.json();
 }
 
-export default function Page() {
+export default function Page({ reload }: { reload?: boolean }) {
   const [data, setData] = useState<Permissions[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
+    if (reload) {
+      getData()
+      .then(setData)
+      .catch((err) => setError(err.message));
+      navigate("/permissions", { state: { reload: false } });
+    };
     getData()
       .then(setData)
       .catch((err) => setError(err.message));
-  }, []);
+  }, [ reload, navigate ]);
 
   if (error) return <ErrorPage />;
   if (!data) return <DataTableSkeleton />;
@@ -50,11 +58,17 @@ export default function Page() {
             Here's a list of permissions in the system!
           </p>
         </div>
-        <Link to="#">
-          <Button variant="outline" className="ml-auto text-primary border-primary rounded-full px-6">
-            Add New
-          </Button>
-        </Link>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              variant="outline"
+              className="ml-auto text-primary border-primary rounded-full px-6"
+            >
+              Add New
+            </Button>
+          </DialogTrigger>
+          <DialogPermission />
+        </Dialog>
       </div>
       {data.map((category) => (
         <PermissionCategoryTable

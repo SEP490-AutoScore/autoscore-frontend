@@ -1,58 +1,78 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardHeader } from "@/components/ui/card";
 
 interface Subject {
-    subjectId: number;
-    subjectName: string;
-    subjectCode: string;
+  subjectId: number;
+  subjectName: string;
+  subjectCode: string;
 }
 
 interface Semester {
-    semesterName: string;
-    semesterCode: string;
+  semesterId: number;
+  semesterName: string;
+  semesterCode: string;
+}
+
+interface Important {
+  importantId: number;
+  importantName: string;
+  importantCode: string;
+  importantScrip: string;
 }
 
 interface ExamPaper {
-    examPaperId: number;
-    examPaperCode: string;
-    subject: Subject | null; // Subject can be null
-    semester: Semester | null; // Semester can be null
-    duration: number | null; // Duration can be null
+  examPaperId: number;
+  examPaperCode: string;
+  examId: number;
+  importants: Important[];
+  isUsed: boolean;
+  status: string;
+  instruction: string;
+  duration: number;
+  subject: Subject;
 }
 
-export function ExamPaperInfo({ examPaper }: { examPaper: ExamPaper }) {
-    return (
-        <Card className="border shadow-md">
-            <CardHeader>
-                <CardTitle>Exam Paper</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                    <div>
-                        <p className="font-semibold">Exam Code:</p>
-                        <p>{examPaper.examPaperCode || "N/A"}</p>
-                    </div>
-                    <div>
-                        <p className="font-semibold">Subject:</p>
-                        <p>
-                            {examPaper.subject
-                                ? `${examPaper.subject.subjectName || "N/A"} (${examPaper.subject.subjectCode || "N/A"})`
-                                : "N/A"}
-                        </p>
-                    </div>
-                    <div>
-                        <p className="font-semibold">Semester:</p>
-                        <p>
-                            {examPaper.semester
-                                ? `${examPaper.semester.semesterName || "N/A"} (${examPaper.semester.semesterCode || "N/A"})`
-                                : "N/A"}
-                        </p>
-                    </div>
-                    <div>
-                        <p className="font-semibold">Duration:</p>
-                        <p>{examPaper.duration !== null && examPaper.duration >= 0 ? `${examPaper.duration} minutes` : "N/A"}</p>
-                    </div>
-                </div>
-            </CardContent>
-        </Card>
-    );
+interface Exam {
+  examId: number;
+  examCode: string;
+  examAt: string;
+  gradingAt: string;
+  publishAt: string;
+  semester: Semester;
+  subject: Subject;
+  type: string;
+  status: boolean;
+}
+
+export function ExamPaperInfo({
+  examPaper,
+  exam,
+}: {
+  examPaper: ExamPaper;
+  exam: Exam;
+}) {
+  return (
+    <CardHeader>
+      <div>
+        <p>
+          <span className="font-semibold">
+            {exam.examCode}_{examPaper.examPaperCode}
+          </span>
+        </p>
+        <p>
+          <span className="font-semibold">{exam.semester.semesterName}</span>
+        </p>
+        <p>
+          <span>Subject: </span>
+          <span className="font-semibold">
+            {examPaper.subject.subjectCode || "N/A"}
+          </span>
+        </p>
+        <p>
+          <span>Duration: </span>
+          <span className="font-semibold">{examPaper.duration || "N/A"}</span>
+          {" "} minutes
+        </p>
+      </div>
+    </CardHeader>
+  );
 }

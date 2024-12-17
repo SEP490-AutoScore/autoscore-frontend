@@ -1,49 +1,192 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import useSSE from "./grading-hook";
-import { GRADING_URL} from "@/config/apiConfig";
+import { GRADING_URL } from "@/config/apiConfig";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 
-const SSEComponent: React.FC = () => {
-  const events = useSSE(`${GRADING_URL}/events`);
+const STATUS_NODES = ["PENDING", "IMPORTANT", "GRADING", "PLAGIARISM", "DONE"];
+
+interface InitialProgress {
+  processId: number;
+  status: string;
+  startDate: string;
+  updateDate: string;
+  examPaperId: number;
+}
+
+interface SSEEvent {
+  processId: number;
+  status: string;
+  startDate: string;
+  updateDate: string;
+  examPaperId: number;
+}
+
+interface SSEComponentProps {
+  examPaperId: number;
+}
+
+const SSEComponent: React.FC<SSEComponentProps> = ({ examPaperId }) => {
+  const [initialProgress, setInitialProgress] = useState<InitialProgress | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [gradingNotFound, setGradingNotFound] = useState(false);
+  const token = localStorage.getItem("jwtToken");
+
+  if (!token) {
+    throw new Error("JWT Token không tồn tại. Vui lòng đăng nhập.");
+  }
+
+  // Subscribe to SSE events
+  const events: SSEEvent[] = useSSE(`${GRADING_URL}${API_ENDPOINTS.events}`);
+
+  useEffect(() => {
+    const fetchInitialProgress = async () => {
+      try {
+        const response = await fetch(
+          `${BASE_URL}${API_ENDPOINTS.gradingProcess}?examPaperId=${examPaperId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        if (data && data.examPaperId === examPaperId) {
+          setInitialProgress(data);
+          setGradingNotFound(false);
+        } else {
+          setGradingNotFound(true);
+        }
+      } catch (error) {
+        console.error("Failed to fetch initial progress:", error);
+        setGradingNotFound(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInitialProgress();
+  }, [examPaperId, token]);
+
+  // Update the progress when an event is received
+  useEffect(() => {
+    if (events.length > 0) {
+      const latestEvent = events.find(
+        (event) => initialProgress && event.processId === initialProgress.processId
+      );
+
+      if (latestEvent) {
+        setInitialProgress((prevProgress) =>
+          prevProgress
+            ? {
+                ...prevProgress,
+                status: latestEvent.status,
+                updateDate: latestEvent.updateDate,
+              }
+            : prevProgress
+        );
+      }
+    }
+  }, [events, initialProgress]);
+
+  if (loading) {
+    return (
+      <div className="p-6 bg-white rounded-lg shadow-md text-gray-700">
+        Loading grading process...
+      </div>
+    );
+  }
+
+  if (gradingNotFound) {
+    return (
+      <div >
+        <div className="flex items-center justify-between space-y-2 mb-4">
+              <div>
+                <h2 className="text-2xl font-bold tracking-tight">
+                  Exams Paper Grading ProcessProcess
+                </h2>
+                <p className="text-muted-foreground">
+                  Here is grading process of this exam paper.
+                </p>
+              </div>
+        </div>
+        <div className="p-3 bg-white rounded-lg shadow-md text-gray-700 w-full">
+          <p>This exam is not currently being graded.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const isDone = initialProgress?.status === "DONE";
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold">Grading process</h1>
-      <ul className="mt-4 space-y-4">
-        {events.map((event) => {
-          // Tính toán tỷ lệ phần trăm tiến trình
-          const progress = (event.successProcess / event.totalProcess) * 100;
+    <div className="p-6 bg-white rounded-lg shadow-md">
+      <h1 className="text-2xl font-bold text-gray-800">Grading Process</h1>
 
-          return (
-            <li
-              key={event.processId} // Sử dụng processId làm key để tránh render lại tất cả items
-              className="p-4 border rounded shadow-md bg-gray-50"
-            >
-              <p><strong>Status:</strong> {event.status}</p>
-              <div className="mt-2">
-                <div className="relative pt-1">
-                  <div className="flex mb-2 items-center justify-between">
-                    <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-teal-600 bg-teal-200">
-                      {progress.toFixed(0)}%
-                    </span>
-                  </div>
-                  <div className="flex mb-2 items-center justify-between">
-                    <div className="w-full bg-gray-200 rounded-full">
-                      <div
-                        className="bg-teal-500 text-xs font-medium text-teal-100 text-center p-0.5 leading-none rounded-full"
-                        style={{ width: `${progress}%` }}
-                      >
-                        {/* Thanh tiến trình */}
-                      </div>
+      {initialProgress && (
+        <div className="mt-6">
+          <div className={`p-6 border rounded-lg shadow-sm ${initialProgress.status === "Error" ? "bg-red-50 border-red-500" : "bg-gray-50"}`}>
+            <p className={`text-lg font-semibold ${initialProgress.status === "Error" ? "text-red-600" : "text-gray-700"}`}>
+              <strong>Status:</strong> {initialProgress.status}
+            </p>
+
+            <div className="mt-4 flex justify-center">
+              <div className="flex items-center">
+                {STATUS_NODES.map((status, index) => {
+                  const isCompleted = isDone || index < STATUS_NODES.indexOf(initialProgress.status);
+                  const isActive = index === STATUS_NODES.indexOf(initialProgress.status);
+
+                  return (
+                    <div key={status} className="flex items-center">
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <div
+                            className={`w-12 h-12 flex items-center justify-center rounded-full ${
+                              isCompleted
+                                ? "bg-primary text-white"
+                                : isActive
+                                ? "bg-primary text-white"
+                                : "bg-gray-300 text-gray-500"
+                            }`}
+                          >
+                            {isCompleted ? "✔" : index + 1}
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <span>{status}</span>
+                        </TooltipContent>
+                      </Tooltip>
+
+                      {index < STATUS_NODES.length - 1 && (
+                        <div
+                          className={`h-2 w-56 ${
+                            isCompleted
+                              ? "bg-secondary"
+                              : isActive
+                              ? "bg-primary"
+                              : "bg-gray-300"
+                          }`}
+                        />
+                      )}
                     </div>
-                  </div>
-                </div>
+                  );
+                })}
               </div>
-              <p><strong>Start Date:</strong> {event.startDate}</p>
-              <p><strong>Update Date:</strong> {event.updateDate}</p>
-            </li>
-          );
-        })}
-      </ul>
+            </div>
+
+            <div className="mt-4 space-y-2">
+              <p className="text-sm text-gray-600">
+                <strong>Start Date:</strong> {initialProgress.startDate}
+              </p>
+              <p className="text-sm text-gray-600">
+                <strong>Update Date:</strong> {initialProgress.updateDate}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,8 +1,9 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { TrendingUp } from "lucide-react"
-import { Label, Pie, PieChart } from "recharts"
+import React, { useEffect, useState } from "react";
+import { TrendingUp } from "lucide-react";
+import { Label, Pie, PieChart, Cell, Legend } from "recharts";
+import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 
 import {
   Card,
@@ -11,62 +12,116 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 287, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 190, fill: "var(--color-other)" },
-]
+} from "@/components/ui/chart";
 
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
+// Define the type for chart data
+type ChartDataItem = {
+  name: string;
+  value: number;
+  fill: string;
+};
+
+// Define the chart configuration with colors
+const chartConfig: ChartConfig = {
+  excellent: {
+    label: "Excellent (9-10)",
+    color: "#4CAF50", // Green
   },
-  chrome: {
-    label: "Chrome",
-    color: "hsl(var(--chart-1))",
+  good: {
+    label: "Good (8-9)",
+    color: "#2196F3", // Blue
   },
-  safari: {
-    label: "Safari",
-    color: "hsl(var(--chart-2))",
+  fair: {
+    label: "Fair (5-8)",
+    color: "#FFC107", // Yellow
   },
-  firefox: {
-    label: "Firefox",
-    color: "hsl(var(--chart-3))",
+  poor: {
+    label: "Poor (4-5)",
+    color: "#FF9800", // Orange
   },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
+  bad: {
+    label: "Bad (0-4)",
+    color: "#F44336", // Red
   },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
-} satisfies ChartConfig
+};
 
 export function PieChartComponent() {
-  const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0)
-  }, [])
+  const [chartData, setChartData] = useState<ChartDataItem[]>([]);
+  const [, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    const fetchChartData = async () => {
+      try {
+        const token = localStorage.getItem("jwtToken");
+
+        if (!token) {
+          setError("JWT token not found.");
+          setLoading(false);
+          return;
+        }
+        const response = await fetch(
+          `${BASE_URL}${API_ENDPOINTS.scoreCategories}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        // Map API data to chart format
+        const formattedData: ChartDataItem[] = [
+          { name: "Excellent (9-10 point)", value: data.excellent, fill: chartConfig.excellent.color || '#000' },
+          { name: "Good (8-9 point)", value: data.good, fill: chartConfig.good.color || '#000' },
+          { name: "Fair (5-8 point)", value: data.fair, fill: chartConfig.fair.color || '#000' },
+          { name: "Poor (4-5 point)", value: data.poor, fill: chartConfig.poor.color || '#000' },
+          { name: "Bad (0-4 point)", value: data.bad, fill: chartConfig.bad.color || '#000' },
+        ];
+        setChartData(formattedData);
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to fetch data.");
+        setLoading(false);
+      }
+    };
+    fetchChartData();
+  }, []);
+
+  const totalScores = React.useMemo(() => {
+    return chartData.reduce((acc, curr) => acc + curr.value, 0);
+  }, [chartData]);
+  if (error) {
+    return (
+      <Card className="h-full">
+        <CardHeader className="">
+          <CardTitle>Score Distribution</CardTitle>
+          <CardDescription>
+            There is no data for statistics
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
 
   return (
-    <Card className="flex flex-col h-full">
-      <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Donut with Text</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+    <Card className="flex flex-col">
+      <CardHeader className="pb-0">
+        <CardTitle>Score Distribution</CardTitle>
+        <CardDescription>Score categories from Excellent to Bad</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
+          className="w-full h-[550px]"
         >
           <PieChart>
             <ChartTooltip
@@ -75,11 +130,15 @@ export function PieChartComponent() {
             />
             <Pie
               data={chartData}
-              dataKey="visitors"
-              nameKey="browser"
-              innerRadius={60}
+              dataKey="value"
+              nameKey="name"
+              innerRadius={100}
+              outerRadius={180}
               strokeWidth={5}
             >
+              {chartData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.fill} />
+              ))}
               <Label
                 content={({ viewBox }) => {
                   if (viewBox && "cx" in viewBox && "cy" in viewBox) {
@@ -95,32 +154,25 @@ export function PieChartComponent() {
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {totalVisitors.toLocaleString()}
+                          {totalScores.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Visitors
+                          assignments
                         </tspan>
                       </text>
-                    )
+                    );
                   }
                 }}
               />
             </Pie>
+            <Legend layout="horizontal" wrapperStyle={{ marginBottom: '22px' }} />
           </PieChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter>
     </Card>
-  )
+  );
 }

@@ -3,7 +3,8 @@ import { DataTable } from "@/app/authentication/account/overview/data-table";
 import { useState, useEffect } from "react";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { DataTableSkeleton } from "@/app/authentication/account/overview/data-table-skeleton";
-import { NoResultPage, ErrorPage } from '@/app/authentication/error/page';
+import { NoResultPage, ErrorPage } from "@/app/authentication/error/page";
+import { useNavigate } from "react-router-dom";
 
 interface Account {
   accountId: number;
@@ -30,7 +31,6 @@ async function getData(): Promise<Account[]> {
     throw new Error("JWT Token không tồn tại. Vui lòng đăng nhập.");
   }
 
-
   // Gửi request GET đến API
   const res = await fetch(`${BASE_URL}${API_ENDPOINTS.getAllAccounts}`, {
     method: "GET",
@@ -51,19 +51,24 @@ async function getData(): Promise<Account[]> {
   return data;
 }
 
-export default function Page() {
+export default function Page({ reload }: { reload?: boolean }) {
   const [data, setData] = useState<Account[] | null>(null); // State để lưu dữ liệu
   const [error, setError] = useState<string | null>(null); // State để lưu lỗi nếu có
-
+  const navigate = useNavigate();
   useEffect(() => {
-    // Gọi API khi component được render
+    if (reload) {
+      getData()
+        .then((fetchedData) => setData(fetchedData))
+        .catch((err) => setError(err.message));
+      navigate("/accounts", { state: { reload: false } });
+    }
     getData()
       .then((fetchedData) => setData(fetchedData))
       .catch((err) => setError(err.message));
-  }, []);
+  }, [ reload, navigate ]);
 
   if (error) {
-    return <ErrorPage />
+    return <ErrorPage />;
   }
 
   if (!data) {

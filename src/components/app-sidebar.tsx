@@ -5,11 +5,12 @@ import {
   Shield,
   BookOpen,
   Settings,
-  NotebookPen
+  NotebookPen,
+  ChartSpline,
+  Building2,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
-// import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
 import { AutoScoreSwitcher } from "@/components/autoscore-switcher";
 import {
@@ -22,25 +23,33 @@ import {
 import { NavPermission } from "./nav-permission";
 import { NavGrading } from "./nav-grading";
 
-// This is sample data.
 const data = {
   user: {
-    name: localStorage.getItem("name") || "uknown",
+    id: Number(localStorage.getItem("id")) || 0,
+    name: localStorage.getItem("name") || "unknown",
     email: localStorage.getItem("email") || "nN1xj@example.com",
     role: localStorage.getItem("role") || "unknown",
     position: localStorage.getItem("position") || "unknown",
     permissions: localStorage.getItem("permissions") || [],
     avatar:
-      localStorage.getItem("picture") ||
+      localStorage.getItem("avatar") ||
       "https://img.myloview.cz/nalepky/default-avatar-profile-in-trendy-style-for-social-media-user-icon-400-228654852.jpg",
-    campus: localStorage.getItem("campus") || "uknown",
+    campus: localStorage.getItem("campus") || "unknown",
   },
   navMain: [
     {
       title: "Dashboard",
       url: "/dashboard",
       icon: PieChart,
-      allowedRoles: ["ADMIN", "EXAMNIER"],
+      allowedRoles: ["ADMIN", "EXAMINER", "LECTURER", "HEAD_OF_DEPARTMENT"],
+      permission: "DASHBOARD",
+      items: [],
+    },
+    {
+      title: "Analysis",
+      url: "/analysis",
+      icon: ChartSpline,
+      allowedRoles: ["ADMIN", "EXAMINER", "LECTURER", "HEAD_OF_DEPARTMENT"],
       permission: "DASHBOARD",
       items: [],
     },
@@ -50,14 +59,9 @@ const data = {
       title: "Accounts",
       url: "?",
       icon: UsersRound,
-      allowedRoles: ["ADMIN"],
+      allowedRoles: ["ADMIN", "EXAMINER", "HEAD_OF_DEPARTMENT"],
       permission: "VIEW_ACCOUNT",
       items: [
-        // {
-        //   title: "Add User",
-        //   url: "##.",
-        //   permission: "CREATE_ACCOUNT",
-        // },
         {
           title: "Users",
           url: "/accounts",
@@ -84,13 +88,32 @@ const data = {
         },
       ],
     },
+    {
+      title: "Organization",
+      url: "$$$",
+      icon: Building2,
+      allowedRoles: ["ADMIN"],
+      permission: "ALL_ACCESS",
+      items: [
+        {
+          title: "Organizations",
+          url: "/organizations",
+          permission: "ALL_ACCESS",
+        },
+        {
+          title: "Positions",
+          url: "/positions",
+          permission: "ALL_ACCESS",
+        },
+      ],
+    },
   ],
-  navgrading: [
+  navGrading: [
     {
       title: "Examination",
       url: "###",
       icon: BookOpen,
-      allowedRoles: ["ADMIN"],
+      allowedRoles: ["ADMIN", "EXAMINER", "LECTURER", "HEAD_OF_DEPARTMENT"],
       permission: "VIEW_EXAM",
       items: [
         {
@@ -111,17 +134,28 @@ const data = {
       ],
     },
     {
-      title: "Setting",
-      url: "/ai-api-keys",
-      allowedRoles: ["ADMIN", "EXAMNINER"],
-      icon: Settings,
-      items: [],
+      title: "Other",
+      url: "!!",
+      allowedRoles: ["ADMIN", "EXAMINER", "LECTURER", "HEAD_OF_DEPARTMENT"],
+      icon: NotebookPen,
+      items: [
+        {
+          title: "Subjects",
+          url: "/subjects",
+          permission: "VIEW_EXAM",
+        },
+        {
+          title: "Semesters",
+          url: "/semesters",
+          permission: "VIEW_EXAM",
+        },
+      ],
     },
     {
-      title: "Grading",
-      url: "/grading",
-      allowedRoles: ["ADMIN", "EXAMNINER"],
-      icon: NotebookPen,
+      title: "Setting",
+      url: "/ai-api-keys",
+      allowedRoles: ["ADMIN", "EXAMINER", "LECTURER", "HEAD_OF_DEPARTMENT"],
+      icon: Settings,
       items: [],
     },
   ],
@@ -138,13 +172,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const allItems = [
       ...data.navMain,
       ...data.navPermission,
-      ...data.navgrading,
+      ...data.navGrading,
     ];
 
     // Lọc các mục hợp lệ
     const validItem = allItems.find((item) => {
-      const hasRole = !item.allowedRoles || item.allowedRoles.includes(userRole);
-      const hasPermission = !item.permission || userPermissions.includes(item.permission);
+      const hasRole =
+        !item.allowedRoles || item.allowedRoles.includes(userRole);
+      const hasPermission =
+        !item.permission || userPermissions.includes(item.permission);
       return hasRole && hasPermission;
     });
 
@@ -167,7 +203,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <AutoScoreSwitcher campus={data.user.campus.toString() || "FPT University"} />
+        <AutoScoreSwitcher
+          campus={data.user.campus.toString() || "FPT University"}
+        />
       </SidebarHeader>
       <SidebarContent>
         <NavMain
@@ -185,7 +223,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           permissions={userPermissions}
         />
         <NavGrading
-          items={data.navgrading}
+          items={data.navGrading}
           selectedItem={selectedItem}
           setSelectedItem={setSelectedItem}
           role={userRole}

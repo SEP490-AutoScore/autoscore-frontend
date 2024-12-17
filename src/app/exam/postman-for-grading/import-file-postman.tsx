@@ -27,7 +27,6 @@ const ImpostFilePostmanPopup: React.FC<ImpostFilePostmanPopupProps> = ({
   const showToast = useToastNotification();
   const token = localStorage.getItem("jwtToken");
 
-  // Hàm upload file
   const importFile = async (selectedFile: File) => {
     if (!token) {
       showToast({
@@ -73,7 +72,8 @@ const ImpostFilePostmanPopup: React.FC<ImpostFilePostmanPopupProps> = ({
             description: "File imported successfully.",
             variant: "default",
           });
-          onClose(); 
+          window.location.reload();
+          onClose();
         } else {
           showToast({
             title: "Unexpected Response",
@@ -124,7 +124,7 @@ const ImpostFilePostmanPopup: React.FC<ImpostFilePostmanPopupProps> = ({
               accept=".json"
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               onChange={handleFileChange}
-              disabled={isUploading} 
+              disabled={isUploading}
             />
             <div className="w-full flex justify-center mb-4">
               <img src={UploadImage} alt="Upload" className="w-20 h-fit" />
@@ -148,7 +148,6 @@ const ImpostFilePostmanPopup: React.FC<ImpostFilePostmanPopupProps> = ({
             <DialogDescription>Maximum size: 25MB</DialogDescription>
           </div>
 
-          {/* Progress bar hoặc trạng thái upload */}
           {isUploading && (
             <div className="text-sm text-primary font-medium">
               Uploading...
@@ -156,7 +155,6 @@ const ImpostFilePostmanPopup: React.FC<ImpostFilePostmanPopupProps> = ({
           )}
         </div>
 
-        {/* Nút hành động */}
         <div className="flex justify-end space-x-2">
           <Button
             className="bg-white text-primary border border-primary hover:bg-primary hover:text-white"

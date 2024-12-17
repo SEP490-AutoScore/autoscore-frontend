@@ -3,6 +3,7 @@
 import * as React from "react";
 import { BASE_URL, API_ENDPOINTS } from "@/config/apiConfig";
 import { Button } from "@/components/ui/button";
+import { checkPermission } from "@/hooks/use-auth";
 import {
   Dialog,
   DialogTrigger,
@@ -12,6 +13,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { useToastNotification } from "@/hooks/use-toast-notification";
+import { useNavigate } from "react-router-dom";
 
 interface Subject {
   subjectId: number;
@@ -44,7 +46,9 @@ export const CreateExamPaperDialog: React.FC<CreateExamPaperDialogProps> = ({
   const [selectedImportants, setSelectedImportants] = React.useState<Set<number>>(
     new Set()
   );
+  const hasPermission = checkPermission({ permission: "CREATE_EXAM_PAPER" });
   const [error, setError] = React.useState<string>("");
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     fetchSubjects();
@@ -114,7 +118,7 @@ export const CreateExamPaperDialog: React.FC<CreateExamPaperDialogProps> = ({
         variant: "destructive",
       });
     }
-  
+
     try {
       const examId = 0; // Giá trị mặc định hoặc có thể thay đổi tùy logic
       const subjectId = selectedSubject; // Lấy id của subject đã chọn từ selectedSubject
@@ -137,15 +141,15 @@ export const CreateExamPaperDialog: React.FC<CreateExamPaperDialogProps> = ({
           }),
         }
       );
-  
+
       if (!response.ok) {
         throw new Error("Failed to create exam paper");
       }
-  
+
       showToast({
         title: "Create success",
         description: "Create new exam paper success",
-        variant: "destructive",
+        variant: "default",
       });
       setExamPaperCode("");
       setDuration(0);
@@ -154,13 +158,18 @@ export const CreateExamPaperDialog: React.FC<CreateExamPaperDialogProps> = ({
       setSelectedSubject(null);
       setImportants([]);
       setSelectedImportants(new Set());
-  
+      navigate(0);
+
       if (onExamPaperCreated) onExamPaperCreated();
     } catch (err: any) {
       setError(err.message);
     }
   };
-  
+
+  if (!hasPermission) {
+    return <></>
+  }
+
 
   return (
     <Dialog>
@@ -172,8 +181,7 @@ export const CreateExamPaperDialog: React.FC<CreateExamPaperDialogProps> = ({
           Add New
         </Button>
       </DialogTrigger>
-
-      <DialogContent className="w-full max-w-lg bg-white p-6 rounded-lg shadow-lg">
+      <DialogContent className="w-full max-w-lg h-[80vh] bg-white p-6 rounded-lg shadow-lg overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create New Exam Paper</DialogTitle>
         </DialogHeader>
@@ -206,7 +214,7 @@ export const CreateExamPaperDialog: React.FC<CreateExamPaperDialogProps> = ({
               value={instruction}
               onChange={(e) => setInstruction(e.target.value)}
               placeholder="Enter instructions"
-              className="w-full mt-2 p-2 border rounded-md"
+              className="w-full mt-2 p-2 border rounded-md h-40"
             />
           </div>
 

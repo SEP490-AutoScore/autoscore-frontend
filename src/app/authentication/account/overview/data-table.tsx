@@ -34,6 +34,9 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Settings2 } from "lucide-react";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { DialogCreateAccount } from "../create/dialog"
+import { checkPermission } from "@/hooks/use-auth";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -88,15 +91,27 @@ export function DataTable<TData, TValue>({
             Here's a list of accounts for this campus!
           </p>
         </div>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              variant="outline"
+              className="ml-auto text-primary border-primary rounded-full px-6"
+              disabled={!checkPermission({ permission: "CREATE_ACCOUNT" })}
+            >
+              Add New
+            </Button>
+          </DialogTrigger>
+          <DialogCreateAccount />
+        </Dialog>
       </div>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter by exam code..."
+          placeholder="Filter by email.."
           value={
-            (table.getColumn("examCode")?.getFilterValue() as string) ?? ""
+            (table.getColumn("email")?.getFilterValue() as string) ?? ""
           }
           onChange={(event) =>
-            table.getColumn("examCode")?.setFilterValue(event.target.value)
+            table.getColumn("email")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -161,7 +176,7 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="border-0 hover:bg-primary hover:text-primary-foreground"
+                  className="border-0 hover:bg-primary hover:text-primary-foreground "
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

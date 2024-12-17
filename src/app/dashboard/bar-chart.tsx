@@ -1,77 +1,138 @@
-"use client"
-
-import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
-
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+  CardDescription,
+} from "@/components/ui/card";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  LabelList,
+} from "recharts";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-]
+} from "@/components/ui/chart";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+type BarChartComponentProps = {
+  data: {
+    Spring: number;
+    Summer: number;
+    Fall: number;
+  };
+  error: string | null;
+  year: string;
+  handleYearChange: (value: string) => void;
+};
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "hsl(var(--chart-1))",
+  "exam-counts": {
+    label: "Exam Counts",
+    color: "#FF8D29",
   },
-  mobile: {
-    label: "Mobile",
-    color: "hsl(var(--chart-2))",
-  },
-} satisfies ChartConfig
 
-export function BarChartComponent() {
+} satisfies ChartConfig;
+
+export function BarChartComponent({
+  data,
+  error,
+  year,
+  handleYearChange,
+}: BarChartComponentProps) {
+
+  if (error) {
+    return (
+      <Card className="h-full">
+        <CardHeader className="">
+          <CardTitle>Exams Each Year</CardTitle>
+
+          <CardDescription>There is no data for statistics</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+  // Data for BarChart
+  const chartData = [
+    { semester: "Spring", Exams: data.Spring },
+    { semester: "Summer", Exams: data.Summer },
+    { semester: "Fall", Exams: data.Fall },
+  ];
+  // Generate years from current year to 10 years ago
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 11 }, (_, index) => (currentYear - index).toString());
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Bar Chart - Multiple</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+      <CardHeader className="relative">
+        <CardTitle>Exams Each Year</CardTitle>
+        <CardDescription>Exams counts per semester for selected year</CardDescription>
+        {/* Dropdown select to choose year */}
+        <div className="absolute top-2 right-2">
+          <Select onValueChange={handleYearChange} defaultValue={year}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select year" />
+            </SelectTrigger>
+            <SelectContent>
+              {years.map((year) => (
+                <SelectItem key={year} value={year}>
+                  {year}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={chartData}>
+        <ChartContainer
+          config={chartConfig}
+          className="w-full h-[502px]"
+        >
+          <BarChart
+            accessibilityLayer
+            data={chartData}
+            margin={{
+              top: 20,
+            }}
+          >
             <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
+            <XAxis dataKey="semester" tickLine={true}
+              axisLine={true} />
+            <YAxis tickLine={true}
+              axisLine={true} />
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent indicator="dashed" />}
+              content={<ChartTooltipContent hideLabel />}
             />
-            <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-            <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+            <Bar
+              dataKey="Exams"
+              fill={chartConfig["exam-counts"].color}
+              radius={8}
+              barSize={50}
+            >
+              <LabelList
+                position="top"
+                offset={12}
+                className="fill-foreground"
+                fontSize={12}
+              />
+            </Bar>
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter>
     </Card>
-  )
+  );
 }

@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Score, columns } from "@/app/score/scores/columns";
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
 import { DataTable } from "@/app/score/scores/data-table";
-import { useLocation } from "react-router-dom";
 import { ErrorPage } from "@/app/authentication/error/page";
 import { DataTableSkeleton } from "../scores/data-table-skeleton";
 
@@ -40,18 +39,28 @@ async function getData(exampaperid: number) {
     return [];
   }
 }
-export default function ScorePage() {
+
+interface ScorePageProps {
+  exportListScore: () => Promise<void>;
+  exportLogRun: () => Promise<void>;
+  examId: number;
+  examPaperId: number;
+}
+export default function ScorePage({ exportListScore, exportLogRun, examId, examPaperId }: ScorePageProps) {
   const [data, setData] = useState<Score[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const location = useLocation();
   const [error, setError] = useState<string | null>(null);
-  const { examPaperId } = location.state || {};
 
   useEffect(() => {
     setLoading(true);
     getData(examPaperId)
       .then((fetchedData) => {
-        setData(fetchedData);
+        const scoresWithExamId = fetchedData.map((score: Score) => ({
+          ...score,
+          examId: examId,
+          examPaperId: examPaperId,
+        }));
+        setData(scoresWithExamId);
         setError(null);
       })
       .catch((err) => setError(err.message))
@@ -60,7 +69,7 @@ export default function ScorePage() {
       console.error("exampaperid is undefined!");
       return;
     }
-  }, [examPaperId]);
+  }, [examPaperId, examId]);
 
   if (loading) {
     return <DataTableSkeleton />;
@@ -70,5 +79,5 @@ export default function ScorePage() {
     return <ErrorPage />;
   }
 
-  return <DataTable columns={columns} data={data} />;
+  return <DataTable columns={columns} data={data} exportListScore={exportListScore} exportLogRun={exportLogRun}/>;
 }

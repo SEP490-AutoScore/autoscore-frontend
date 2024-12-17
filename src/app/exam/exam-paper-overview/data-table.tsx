@@ -90,6 +90,7 @@ export function DataTable<TData, TValue>({
             Here's a list of exam paper!
           </p>
         </div>
+        <CreateExamPaperDialog />
       </div>
       <div className="flex items-center py-4">
         <Input
@@ -102,7 +103,6 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
-        <CreateExamPaperDialog />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
