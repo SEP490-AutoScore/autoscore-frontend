@@ -41,6 +41,7 @@ export const CreateExamPaperDialog: React.FC<CreateExamPaperDialogProps> = ({
     null
   );
   const showToast = useToastNotification();
+  const navigate = useNavigate();
   const [subjects, setSubjects] = React.useState<Subject[]>([]);
   const [importants, setImportants] = React.useState<Important[]>([]);
   const [selectedImportants, setSelectedImportants] = React.useState<Set<number>>(
@@ -48,7 +49,6 @@ export const CreateExamPaperDialog: React.FC<CreateExamPaperDialogProps> = ({
   );
   const hasPermission = checkPermission({ permission: "CREATE_EXAM_PAPER" });
   const [error, setError] = React.useState<string>("");
-  const navigate = useNavigate();
 
   React.useEffect(() => {
     fetchSubjects();
