@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
+import { ReasonDialog } from "./reason-dialog";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -24,6 +25,7 @@ export type Score = {
   gratedAt: Date;
   totalScore: number;
   levelOfPlagiarism: string;
+  reason: string;
 };
 export const columns: ColumnDef<Score>[] = [
   {
@@ -65,16 +67,35 @@ export const columns: ColumnDef<Score>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
+            <Link
+              to="/exams/exam-papers/score-details"
+              state={{
+                scoreId: score.scoreId,
+                examId: score.examId,
+                examPaperId: score.examPaperId,
+              }}
+            >
+              <DropdownMenuItem>View score details</DropdownMenuItem>
+            </Link>
+            {/* <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(score.studentCode)}
             >
               Copy student code
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
             <DropdownMenuSeparator />
-            <Link to="/exams/exam-papers/plagiarism" state={{ scoreId: score.scoreId, examId: score.examId, examPaperId: score.examPaperId }}>
-            <DropdownMenuItem>View plagiarism</DropdownMenuItem></Link>
-            <Link to="/exams/exam-papers/score-details" state={{ scoreId: score.scoreId, examId: score.examId, examPaperId: score.examPaperId }}>
-              <DropdownMenuItem>View score details</DropdownMenuItem>
+            <ReasonDialog
+              reason={score.reason}
+              trigger={<DropdownMenuItem onSelect={(e) => e.preventDefault()}>Show Reason</DropdownMenuItem>}
+            />
+            <Link
+              to="/exams/exam-papers/plagiarism"
+              state={{
+                scoreId: score.scoreId,
+                examId: score.examId,
+                examPaperId: score.examPaperId,
+              }}
+            >
+              <DropdownMenuItem>View plagiarism</DropdownMenuItem>
             </Link>
           </DropdownMenuContent>
         </DropdownMenu>

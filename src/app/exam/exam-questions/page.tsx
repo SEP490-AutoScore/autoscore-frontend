@@ -14,6 +14,7 @@ import { Card } from "@/components/ui/card";
 import UpdateExamPaper from "../exam-papers/update-exam-paper-form";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import ScorePage from "@/app/score/scores/scores";
+import { useToastNotification } from "@/hooks/use-toast-notification";
 import CompleteExamPaper from "@/app/exam/exam-questions/complete-exam-paper"
 
 interface Subject {
@@ -67,6 +68,7 @@ export default function ExamPaperDetails() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>("details");
+  const showToast = useToastNotification();
   const onGradingReload = location.state?.onGradingReload || false;
   const onScoreReload = location.state?.onScoreReload || false;
 
@@ -161,7 +163,11 @@ export default function ExamPaperDetails() {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error(error);
-      alert("Failed to export scores. Please try again.");
+      showToast({
+        title: "Download Failed",
+        description: "Failed to export scores.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -178,7 +184,12 @@ export default function ExamPaperDetails() {
         }
       );
       if (!response.ok) {
-        throw new Error("Failed to download the log files");
+        showToast({
+          title: "Download Failed",
+          description: "Failed to download the log files",
+          variant: "destructive",
+        });
+        return;
       }
 
       const blob = await response.blob();
