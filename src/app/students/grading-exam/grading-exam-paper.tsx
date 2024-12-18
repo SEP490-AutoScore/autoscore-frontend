@@ -26,10 +26,12 @@ import { useToastNotification } from "@/hooks/use-toast-notification";
 
 interface ExamPaperIdDialogButtonProps {
   examPaperId: number; // Prop to receive the examPaperId
+  examPaperStatus?: string;
 }
 
 const ExamPaperIdDialogButton: React.FC<ExamPaperIdDialogButtonProps> = ({
   examPaperId,
+  examPaperStatus
 }) => {
   const [examType, setExamType] = useState<string>("ASSIGNMENT");
   const [numberDeploy] = useState<number>(1);
@@ -40,6 +42,10 @@ const ExamPaperIdDialogButton: React.FC<ExamPaperIdDialogButtonProps> = ({
   const handleCancel = () => {
     setIsOpen(false); // Close the dialog
   };
+
+  if (examPaperStatus !== "COMPLETE") {
+    return <></>;
+  }
 
   const handleStartGrading = async () => {
     if (numberDeploy < 1) {
@@ -75,7 +81,7 @@ const ExamPaperIdDialogButton: React.FC<ExamPaperIdDialogButtonProps> = ({
         title: "Grading process",
         description: "Your grading process has been created",
         variant: "default",
-    });
+      });
 
       setIsOpen(false); // Close the dialog after successful submission
     } catch (error) {
@@ -83,7 +89,7 @@ const ExamPaperIdDialogButton: React.FC<ExamPaperIdDialogButtonProps> = ({
         title: "Grading process",
         description: "Your grading process request fail! Please check and try again!",
         variant: "destructive",
-    });
+      });
     }
   };
   const hasPermission = checkPermission({ permission: "CREATE_EXAM_PAPER" });

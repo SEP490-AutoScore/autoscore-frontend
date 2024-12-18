@@ -15,6 +15,7 @@ import UpdateExamPaper from "../exam-papers/update-exam-paper-form";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import ScorePage from "@/app/score/scores/scores";
 import { useToastNotification } from "@/hooks/use-toast-notification";
+import CompleteExamPaper from "@/app/exam/exam-questions/complete-exam-paper"
 
 interface Subject {
   subjectId: number;
@@ -285,11 +286,13 @@ export default function ExamPaperDetails() {
                 </p>
               </div>
               <div className="flex space-x-2">
-                <Grading examPaperId={examPaperId} />
+                <CompleteExamPaper examPaperId={examPaperId} examPaperStatus={examPaper?.status} />
+                <Grading examPaperId={examPaperId} examPaperStatus={examPaper?.status} />
                 <UpdateExamPaper
                   examPaperId={examPaperId}
                   subjectId={examPaper!.subject.subjectId}
                   examId={examId}
+                  examPaperStatus={examPaper?.status}
                 />
               </div>
             </div>

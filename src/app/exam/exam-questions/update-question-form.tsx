@@ -130,7 +130,14 @@ export default function UpdateQuestion({
       body: JSON.stringify(payload),
     })
       .then((response) => {
-        if (!response.ok) throw new Error("Failed to update question");
+        if (!response.ok){
+          showToast({
+            title: "Update Fail",
+            description: "Exam are grading or complete.",
+            variant: "destructive",
+          });
+          throw new Error("Failed to update question");
+        }
         showToast({
           title: "Update Success",
           description: "Question updated successfully.",

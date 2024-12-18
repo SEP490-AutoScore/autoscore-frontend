@@ -73,6 +73,6 @@ export function ExamPaperInfo({
           {" "} minutes
         </p>
       </div>
-    </CardHeader>
+    </CardHeader> 
   );
 }
