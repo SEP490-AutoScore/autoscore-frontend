@@ -5,6 +5,7 @@ import { PlagiarismComparison } from "@/app/score/plagiarism/comparison";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLocation } from "react-router-dom";
 import { API_ENDPOINTS, BASE_URL } from "@/config/apiConfig";
+import { NoResultPage } from "@/app/authentication/error/page";
 
 export interface CodePlagiarism {
   codePlagiarismId: number;
@@ -91,9 +92,10 @@ export default function PlagiarismPage() {
       )}
       {error && <p className="text-red-500">{error}</p>}
       {!loading && !error && plagiarismData.length === 0 && (
-        <p>
-          No plagiarism data found.
-        </p>
+        // <p>
+        //   No plagiarism data found.
+        // </p>
+        <NoResultPage/>
       )}
       <div className="space-y-6">
         {plagiarismData.map((item) => (

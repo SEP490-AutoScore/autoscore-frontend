@@ -1,7 +1,7 @@
 // Base URL của API
-export const BASE_URL = "http://34.142.205.176:8080";
+export const BASE_URL = "http://backend.autoscore.io.vn:8080";
 
-export const GRADING_URL = "http://34.142.205.176:8081";
+export const GRADING_URL = "http://backend.autoscore.io.vn:8081";
 
 // Các endpoint API
 export const API_ENDPOINTS = {
@@ -54,7 +54,7 @@ export const API_ENDPOINTS = {
   getExamInfo: "/api/exam",
   scoreOverview: "/api/score/getAll",
   score: "/api/score",
-  scoreDetail: "/api/score/details",
+  scoreDetail: "/api/score-details/details",
   plagiarism: "/api/score/code-plagiarism",
   exportScore: "/api/score/export",
   txtLog: "/api/score/txtLog",
@@ -160,5 +160,6 @@ export const API_ENDPOINTS = {
   gradingProcess: "/api/grading/ws/progress",
 
   //grading event
-  events: "/events"
+  events: "/events",
+  completeExamPaper : "/api/exam-paper/exam-paper/complete",
 };
