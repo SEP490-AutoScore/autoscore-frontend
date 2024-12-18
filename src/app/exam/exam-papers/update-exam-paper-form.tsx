@@ -32,12 +32,14 @@ interface UpdateExamPaperProps {
   examPaperId: number;
   subjectId: number;
   examId: number;
+  examPaperStatus?: string;
 }
 
 export default function UpdateExamPaper({
   examPaperId,
   subjectId,
   examId,
+  examPaperStatus,
 }: UpdateExamPaperProps) {
   const [open, setOpen] = useState(false); // Dialog open state
   const [formData, setFormData] = useState({
@@ -48,7 +50,6 @@ export default function UpdateExamPaper({
   });
   const [importants, setImportants] = useState<Important[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
   const showToast = useToastNotification();
   const navigate = useNavigate();
 
@@ -56,12 +57,15 @@ export default function UpdateExamPaper({
     setOpen(false); // Close the dialog
   };
 
+  if (examPaperStatus === "COMPLETE") {
+    return <></>;
+  }
+
 
   // Fetch exam paper details and importants
   useEffect(() => {
     if (!open) return; // Only fetch data when dialog is opened
     const token = localStorage.getItem("jwtToken");
-    setLoading(true);
 
     Promise.all([
       // Fetch exam paper details
@@ -95,7 +99,6 @@ export default function UpdateExamPaper({
         setImportants(importantList);
       })
       .catch((err) => setErrorMessage(err.message))
-      .finally(() => setLoading(false));
   }, [open, examPaperId, subjectId]);
 
   // Handle form submission
@@ -143,11 +146,14 @@ export default function UpdateExamPaper({
         setOpen(false); // Close dialog
         navigate(0);
       })
-      .catch((err) => setErrorMessage(err.message));
+      .catch(() => {
+        showToast({
+          title: "Update fail",
+          description: "Exam paper updated fail.",
+          variant: "destructive",
+        });
+      });
   };
-  if (loading) {
-    return <p>Loading...</p>;
-  }
 
   return (
     <>

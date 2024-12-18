@@ -19,7 +19,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { FilePenLine, Telescope, Upload } from "lucide-react";
+import { Telescope } from "lucide-react";
 
 interface DatabaseResponse {
   examDatabaseId: number;

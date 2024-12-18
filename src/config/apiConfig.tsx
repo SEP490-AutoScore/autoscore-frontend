@@ -160,5 +160,6 @@ export const API_ENDPOINTS = {
   gradingProcess: "/api/grading/ws/progress",
 
   //grading event
-  events: "/events"
+  events: "/events",
+  completeExamPaper : "/api/exam-paper/exam-paper/complete",
 };

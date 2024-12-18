@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { NotFoundPage } from "@/app/authentication/error/page";
+import PickExamPaper from "@/app/exam/exam-papers/pick-exam-paper";
 
 interface Important {
   importantId: number;
@@ -139,13 +140,16 @@ export function ExamPaperList({
               This is a list of all the exam papers in this exam.
             </CardDescription>
           </div>
-          <CreateExamPaperForm
-            examId={examId}
-            importants={importants}
-            subjectId={subjectId}
-            onSuccess={handleFormSuccess}
-            onError={handleFormError}
-          />
+          <div className="flex space-x-2">
+            <CreateExamPaperForm
+              examId={examId}
+              importants={importants}
+              subjectId={subjectId}
+              onSuccess={handleFormSuccess}
+              onError={handleFormError}
+            />
+            <PickExamPaper examId={examId} />
+          </div>
         </CardHeader>
         <Separator />
         <CardContent>
