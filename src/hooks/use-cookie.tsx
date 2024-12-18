@@ -5,7 +5,7 @@ export const useCookie = () => {
   const setCookie = useCallback((name: string, value: string, date: number) => {
     const newDate = new Date();
     newDate.setTime(newDate.getTime() + date);
-    document.cookie = `${name}=${value};expires=${newDate.toUTCString()};path=/;Secure;SameSite=Strict`;
+    document.cookie = `${name}=${value};expires=${newDate.toUTCString()};path=/;SameSite=Strict`;
   }, []);
 
   // Hàm lấy giá trị cookie
@@ -16,7 +16,7 @@ export const useCookie = () => {
 
   // Hàm xóa cookie
   const deleteCookie = useCallback((name: string) => {
-    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;Secure;SameSite=Strict`;
+    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Strict`;
   }, []);
 
   return { setCookie, getCookie, deleteCookie };

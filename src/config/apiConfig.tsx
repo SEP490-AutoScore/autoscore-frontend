@@ -1,7 +1,7 @@
 // Base URL của API
-export const BASE_URL = "http://localhost:8080";
+export const BASE_URL = "http://backend.autoscore.io.vn:8080";
 
-export const GRADING_URL = "http://localhost:8081";
+export const GRADING_URL = "http://backend.autoscore.io.vn:8081";
 
 // Các endpoint API
 export const API_ENDPOINTS = {
